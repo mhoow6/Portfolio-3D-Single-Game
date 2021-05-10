@@ -1,0 +1,28 @@
+# Ignore Directory
+Library/
+Logs/
+obj/
+Packages/
+ProjectSettings/
+Temp/
+UserSettings/
+.vs/
+
+# Ignore Assets
+Assets/_TerrainAutoUpgrade/
+Assets/ExplosiveLLC/
+Assets/Kevin Iglesias/
+Assets/Polygonal Metalon/
+Assets/PolygonFantasyRivals/
+Assets/PolygonKnights/
+Assets/PolygonNature/
+Assets/Resources/
+Assets/RPGPP_LT/
+Assets/SkySerie Freebie/
+
+# Ignore File
+*.csproj
+*.sln
+*.meta
+*.mat
+*.vsconfig
