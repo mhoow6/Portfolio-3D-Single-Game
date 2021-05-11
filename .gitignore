@@ -16,9 +16,16 @@ Assets/Polygonal Metalon/
 Assets/PolygonFantasyRivals/
 Assets/PolygonKnights/
 Assets/PolygonNature/
-Assets/Resources/
 Assets/RPGPP_LT/
 Assets/SkySerie Freebie/
+
+# Except Tables
+Assets/Resources/Character/
+Assets/Resources/Particle/
+Assets/Resources/Props/
+Assets/Resources/Rocks/
+Assets/Resources/Terrain/
+Assets/Resources/Vegetation/
 
 # Ignore File
 *.csproj
