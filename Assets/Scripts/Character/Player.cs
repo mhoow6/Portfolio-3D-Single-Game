@@ -4,9 +4,32 @@ using UnityEngine;
 
 public class Player : Character
 {
+    public ushort basic_weapon_id;
+    public ushort equip_weapon_id; // 플레이어 테이블에도 착용한 장비의 ID 정보를 가지고 있어야할까?
+
+    // 미구현
+    public float combat_move_speed;
+    public float skill_1_damage;
+    public float skill_1_distance;
+    public float skill_1_angle;
+    public float skill_2_damage;
+    public float skill_2_distance;
+    public float skill_2_angle;
+
+    public GameObject item_SwordSheath;
+    public GameObject item_Sword;
+
     void Awake()
     {
-        HP = 100; // 임시
+        // 추후에 테이블에서 로드하게 하자.
+        hp = 100;
+        moveSpeed = 3.0f;
+        combat_move_speed = 2.0f;
+        basic_weapon_id = 3000;
+        equip_weapon_id = 3001;
+        attack_damage = 20;
+        attack_distance = 2f;
+        attack_angle = 60f;
     }
 
     public void Attack(int ani_id)
@@ -15,15 +38,15 @@ public class Player : Character
         switch (ani_id)
         {
             case (int)PlayerAnimation.AniType.ATTACK:
-                attack_damage = ResourceManager.instance.weapons.punch_attack_damage;
-                attack_distance = ResourceManager.instance.weapons.punch_attack_distance;
-                attack_angle = ResourceManager.instance.weapons.punch_attack_angle;
+                attack_damage = ResourceManager.instance.GetWeaponFromWeaponID(basic_weapon_id).basic_damage;
+                attack_distance = ResourceManager.instance.GetWeaponFromWeaponID(basic_weapon_id).basic_distance;
+                attack_angle = ResourceManager.instance.GetWeaponFromWeaponID(basic_weapon_id).basic_angle;
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_01:
-                attack_damage = ResourceManager.instance.weapons.combat_attack_damage;
-                attack_distance = ResourceManager.instance.weapons.combat_attack_distance;
-                attack_angle = ResourceManager.instance.weapons.combat_attack_angle;
+                attack_damage = ResourceManager.instance.GetWeaponFromWeaponID(equip_weapon_id).basic_damage;
+                attack_distance = ResourceManager.instance.GetWeaponFromWeaponID(equip_weapon_id).basic_distance;
+                attack_angle = ResourceManager.instance.GetWeaponFromWeaponID(equip_weapon_id).basic_angle;
                 break;
         }
 
@@ -39,13 +62,23 @@ public class Player : Character
                 PlayerAndMonster_Distance <= attack_distance &&
                 PlayerAndMonster_Angle <= attack_angle)
             {
-                mob.HP -= attack_damage;
+                mob.hp -= attack_damage;
             }
         }
     }
 
     public void WeaponSwitch()
     {
-
+        if (item_SwordSheath.activeSelf == true)
+        {
+            item_SwordSheath.SetActive(false);
+            item_Sword.SetActive(true);
+        }
+        else
+        {
+            item_SwordSheath.SetActive(true);
+            item_Sword.SetActive(false);
+        }
+        
     }
 }
