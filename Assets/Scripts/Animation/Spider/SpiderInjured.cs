@@ -6,7 +6,7 @@ public class SpiderInjured : SpiderAnimation
 {
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (animator.GetComponent<Monster>().HP <= 0)
+        if (animator.GetComponent<Monster>().hp <= 0)
             animator.SetInteger("ani_id", (int)AniType.DEAD);
 
         animator.SetInteger("ani_id", (int)AniType.IDLE);
