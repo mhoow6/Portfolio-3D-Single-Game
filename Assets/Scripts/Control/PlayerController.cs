@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    private Transform cameraArm;
+    public Transform cameraArm;
 
     [SerializeField]
-    private float moveSpeed = 3.0f;
+    private float moveSpeed;
 
     public Player player;
 
@@ -20,6 +19,11 @@ public class PlayerController : MonoBehaviour
     {
         immobile = false;
         isCombatMode = false;
+    }
+
+    private void Start()
+    {
+        GameManager.instance.controller = this;
     }
 
     private void Update()
@@ -44,9 +48,7 @@ public class PlayerController : MonoBehaviour
             player.transform.forward = moveVector.normalized;
 
         if (isCombatMode)
-            moveSpeed = 1.0f;
-        else
-            moveSpeed = 3.0f;
+            moveSpeed = player.combat_move_speed;
 
         transform.position += moveVector * Time.deltaTime * moveSpeed;
     }
