@@ -1,0 +1,3 @@
+id,weapon_name,basic_damage,basic_distance,basic_angle
+3000,barehand,20,2,60
+3001,sword,40,4,50

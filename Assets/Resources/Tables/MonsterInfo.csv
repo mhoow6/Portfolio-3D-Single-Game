@@ -1,0 +1,4 @@
+id,monster_name,hp,attack_damage,attack_distance,attack_angle,skill_1_damage,skill_1_distance,skill_1_angle
+1000,Polygonal_Metalon_Purple,150,10,2,60,0,0,0
+1001,Polygonal_Metalon_Green,150,10,2,60,0,0,0
+1002,Polygonal_Metalon_Red,150,10,2,60,0,0,0
