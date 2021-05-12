@@ -14,33 +14,45 @@ public static class SaveManager
         string path = string.Empty;
         path = EditorUtility.SaveFilePanel("Save Scene", path, "scene", "csv");
         SaveScene(path);
+
+        Debug.Log("Scene Save Completed.");
     }
 
-    [MenuItem("Menu/Save/Monster Data")]
-    public static void SaveMonster()
+    [MenuItem("Menu/Save/Monster Position Data")]
+    public static void SaveMonsterPosition()
     {
         string path = string.Empty;
         path = EditorUtility.SaveFilePanel("Save Monster", path, "monster", "csv");
-        SaveMonster(path);
+        SaveMonsterPosition(path);
+
+        Debug.Log("Monster Position Save Completed.");
     }
 
-    private static void SaveMonster(string filePath)
+    private static void SaveMonsterPosition(string filePath)
     {
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
 
         using (StreamWriter sw = new StreamWriter(filePath))
         {
-            foreach (GameObject monster in monsters)
+            sw.WriteLine("index,id,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
+
+            for(int i = 0; i < monsters.Length; i++)
             {
                 sw.WriteLine(
-                    monster.name + "," +
-                    monster.transform.position.x + "," +
-                    monster.transform.position.z
+                    i.ToString() + "," +
+                    MonsterNameToID(monsters[i].name) + "," +
+                    monsters[i].transform.position.x + "," +
+                    monsters[i].transform.position.y + "," +
+                    monsters[i].transform.position.z + "," +
+                    monsters[i].transform.rotation.eulerAngles.x + "," +
+                    monsters[i].transform.rotation.eulerAngles.y + "," +
+                    monsters[i].transform.rotation.eulerAngles.z + "," +
+                    monsters[i].transform.localScale.x + "," +
+                    monsters[i].transform.localScale.y + "," +
+                    monsters[i].transform.localScale.z
                     );
             }
         }
-
-        Debug.Log("Monster Save Completed.");
     }
 
     private static void SaveScene(string filePath)
@@ -70,8 +82,6 @@ public static class SaveManager
 
             sw.Close();
         }
-
-        Debug.Log("Scene Save Completed.");
     }
 
     private static string FilteredName(string objName)
@@ -120,5 +130,20 @@ public static class SaveManager
         }
 
         return result;
+    }
+
+    private static ushort MonsterNameToID(string mobName)
+    {
+        string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
+
+        MonsterInfoTableManager.LoadTable(mobInfoPath);
+
+        foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
+        {
+            if (mobName == mobinfo.monster_name)
+                return mobinfo.id;
+        }
+
+        throw new System.NotSupportedException("몬스터중에" + mobName + " 은 없습니다.");
     }
 }

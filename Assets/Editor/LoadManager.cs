@@ -12,38 +12,58 @@ public static class LoadManager
         string path = string.Empty;
         path = EditorUtility.OpenFilePanel("Load Scene", path, "csv");
         LoadScene(path);
+
+        Debug.Log("Scene Load Completed.");
     }
 
-    [MenuItem("Menu/Load/Monster Data")]
-    public static void LoadMonster()
+    [MenuItem("Menu/Load/Monster Position Data")]
+    public static void LoadMonsterPosition()
     {
         string path = string.Empty;
         path = EditorUtility.OpenFilePanel("Load Monster", path, "csv");
-        LoadMonster(path);
+        LoadMonsterPosition(path);
+
+        Debug.Log("Monster Position Load Completed.");
     }
 
-    private static void LoadMonster(string filePath)
+    private static void LoadMonsterPosition(string filePath)
     {
         using (StreamReader sr = new StreamReader(filePath))
         {
             string line = string.Empty;
             GameObject parent = new GameObject("Monster");
 
+            sr.ReadLine(); // 첫 레코드 스킵
+
             while((line = sr.ReadLine()) != null)
             {
                 string[] datas = line.Split(',');
 
-                string objName = datas[0];
-                float xPos = float.Parse(datas[1]);
-                float zPos = float.Parse(datas[2]);
+                ushort index = ushort.Parse(datas[0]);
+                ushort id = ushort.Parse(datas[1]);
+                float xPos = float.Parse(datas[2]);
+                float yPos = float.Parse(datas[3]);
+                float zPos = float.Parse(datas[4]);
+                float xRot = float.Parse(datas[5]);
+                float yRot = float.Parse(datas[6]);
+                float zRot = float.Parse(datas[7]);
+                float xScale = float.Parse(datas[8]);
+                float yScale = float.Parse(datas[9]);
+                float zScale = float.Parse(datas[10]);
 
-                GameObject _obj = Resources.Load<GameObject>("Character/Monster/" + objName);
+                string mobName = GetMonsterNametoID(id);
+
+                GameObject _obj = Resources.Load<GameObject>("Character/Monster/" + mobName);
                 GameObject obj = GameObject.Instantiate(_obj);
+                Monster monster = Monster.AddMonsterComponent(obj, id);
 
-                Monster monster = Monster.AddMonsterComponent(obj, objName);
-                monster.name = objName;
+                monster.index = index;
+                monster.id = id;
+                monster.name = mobName;
 
-                monster.transform.position = Utility.RayToDown(new Vector3(xPos, 0, zPos));
+                monster.transform.position = Utility.RayToDown(new Vector3(xPos, yPos, zPos)); // 떠 있는 현상 방지
+                monster.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
+                monster.transform.localScale = new Vector3(xScale, yScale, zScale);
 
                 monster.transform.SetParent(parent.transform);
             }
@@ -106,5 +126,20 @@ public static class LoadManager
 
             Debug.Log("Scene Load Completed.");
         }
+    }
+
+    private static string GetMonsterNametoID(ushort mobID)
+    {
+        string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
+
+        MonsterInfoTableManager.LoadTable(mobInfoPath);
+
+        foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
+        {
+            if (mobID == mobinfo.id)
+                return mobinfo.monster_name;
+        }
+
+        throw new System.NotSupportedException(mobID + "에 해당하는 몬스터는 없습니다.");
     }
 }
