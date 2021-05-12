@@ -4,8 +4,9 @@ using UnityEngine;
 
 public abstract class Character : MonoBehaviour
 {
-    public int HP;
-    public int attack_damage;
+    public float hp;
+    public float attack_damage;
     public float attack_distance;
     public float attack_angle;
+    public float moveSpeed;
 }
