@@ -16,6 +16,7 @@ public class Player : Character
     public float skill_2_distance;
     public float skill_2_angle;
 
+    // 추후에 자동 로드
     public GameObject item_SwordSheath;
     public GameObject item_Sword;
 
@@ -34,22 +35,6 @@ public class Player : Character
 
     public void Attack(int ani_id)
     {
-
-        switch (ani_id)
-        {
-            case (int)PlayerAnimation.AniType.ATTACK:
-                attack_damage = ResourceManager.instance.GetWeaponFromWeaponID(basic_weapon_id).basic_damage;
-                attack_distance = ResourceManager.instance.GetWeaponFromWeaponID(basic_weapon_id).basic_distance;
-                attack_angle = ResourceManager.instance.GetWeaponFromWeaponID(basic_weapon_id).basic_angle;
-                break;
-
-            case (int)PlayerAnimation.AniType.COMBAT_ATTACK_01:
-                attack_damage = ResourceManager.instance.GetWeaponFromWeaponID(equip_weapon_id).basic_damage;
-                attack_distance = ResourceManager.instance.GetWeaponFromWeaponID(equip_weapon_id).basic_distance;
-                attack_angle = ResourceManager.instance.GetWeaponFromWeaponID(equip_weapon_id).basic_angle;
-                break;
-        }
-
         foreach (Monster mob in GameManager.instance.monsters)
         {
             float PlayerAndMonster_Distance = Vector3.Distance(transform.position, mob.transform.position);
@@ -71,11 +56,19 @@ public class Player : Character
     {
         if (item_SwordSheath.activeSelf == true)
         {
+            attack_damage = ResourceManager.instance.GetWeaponFromWeaponID(equip_weapon_id).basic_damage;
+            attack_distance = ResourceManager.instance.GetWeaponFromWeaponID(equip_weapon_id).basic_distance;
+            attack_angle = ResourceManager.instance.GetWeaponFromWeaponID(equip_weapon_id).basic_angle;
+
             item_SwordSheath.SetActive(false);
             item_Sword.SetActive(true);
         }
         else
         {
+            attack_damage = ResourceManager.instance.GetWeaponFromWeaponID(basic_weapon_id).basic_damage;
+            attack_distance = ResourceManager.instance.GetWeaponFromWeaponID(basic_weapon_id).basic_distance;
+            attack_angle = ResourceManager.instance.GetWeaponFromWeaponID(basic_weapon_id).basic_angle;
+
             item_SwordSheath.SetActive(true);
             item_Sword.SetActive(false);
         }
