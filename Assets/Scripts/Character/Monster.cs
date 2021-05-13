@@ -6,16 +6,15 @@ public enum mobType
 {
     Polygonal_Metalon_Purple = 1000,
     Polygonal_Metalon_Green,
-    Polygonal_Metalon_Red
+    Polygonal_Metalon_Red,
+    Character_BR_BigOrk_01,
+    Character_BR_BigOrk_02
 }
 
 public class Monster : Character
 {
     public ushort index;
     public ushort id;
-    public float skill1_damage;
-    public float skill1_distance;
-    public float skill1_angle;
 
     private void Awake()
     {
@@ -54,6 +53,14 @@ public class Monster : Character
             case (ushort)mobType.Polygonal_Metalon_Red:
                 monster = obj.AddComponent<Spider>();
                 return monster;
+
+            case (ushort)mobType.Character_BR_BigOrk_01:
+                monster = obj.AddComponent<Ork>();
+                return monster;
+
+            case (ushort)mobType.Character_BR_BigOrk_02:
+                monster = obj.AddComponent<Ork>();
+                return monster;
         }
 
         throw new System.NotSupportedException(mobID + "에 해당하는 몬스터가 없어 스크립트 추가에 실패했습니다.");
@@ -64,14 +71,19 @@ public class CustomDummy : Monster
 {
 }
 
-public class NormalMob : Monster
+public class CommonMonster : Monster
+{
+}
+
+public class EliteMonster : Monster
 {
     public float skill_1_damage;
     public float skill_1_distance;
     public float skill_1_angle;
+
 }
 
-public class Spider : NormalMob
+public class Spider : CommonMonster
 {
     private void Start()
     {
@@ -81,14 +93,38 @@ public class Spider : NormalMob
 
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {
-            if (mobinfo.id >= (ushort)mobType.Polygonal_Metalon_Purple && mobinfo.id < (ushort)mobType.Polygonal_Metalon_Red)
+            if (mobinfo.id >= (ushort)mobType.Polygonal_Metalon_Purple && mobinfo.id <= (ushort)mobType.Polygonal_Metalon_Red)
             {
+                hp = mobinfo.hp;
                 attack_damage = mobinfo.attack_damage;
                 attack_distance = mobinfo.attack_distance;
                 attack_angle = mobinfo.attack_angle;
             }
         }
+    }
+}
 
-        GameManager.instance.monsters.Add(this);
+public class Ork : EliteMonster
+{
+    private void Start()
+    {
+        string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
+
+        MonsterInfoTableManager.LoadTable(mobInfoPath);
+
+        foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
+        {
+            if (mobinfo.id >= (ushort)mobType.Character_BR_BigOrk_01 && mobinfo.id <= (ushort)mobType.Character_BR_BigOrk_02)
+            {
+                hp = mobinfo.hp;
+                attack_damage = mobinfo.attack_damage;
+                attack_distance = mobinfo.attack_distance;
+                attack_angle = mobinfo.attack_angle;
+                skill_1_damage = mobinfo.skill_1_damage;
+                skill_1_distance = mobinfo.skill_1_distance;
+                skill_1_angle = mobinfo.skill_1_angle;
+
+            }
+        }
     }
 }
