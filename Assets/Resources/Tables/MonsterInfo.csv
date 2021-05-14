@@ -2,3 +2,4 @@ id,monster_name,hp,attack_damage,attack_distance,attack_angle,skill_1_damage,ski
 1000,Polygonal_Metalon_Purple,150,10,2,60,0,0,0
 1001,Polygonal_Metalon_Green,150,10,2,60,0,0,0
 1002,Polygonal_Metalon_Red,150,10,2,60,0,0,0
+1003,Character_BR_Troll_01,250,20,4,80,40,5,60

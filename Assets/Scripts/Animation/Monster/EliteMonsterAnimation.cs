@@ -40,7 +40,7 @@ public class EliteMonsterAnimation : MonsterAnimation
 
     protected override void SwitchInjured(Animator animator, float prevHP)
     {
-        if (animator.GetComponent<Monster>().hp < prevHP)
+        if (animator.GetComponent<Monster>().hp < prevHP && animator.GetComponent<Monster>().hp > 0)
             animator.SetInteger("ani_id", (int)AniType.INJURED);
     }
 

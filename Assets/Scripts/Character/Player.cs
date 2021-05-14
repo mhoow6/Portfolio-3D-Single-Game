@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player : Character
 {
     public ushort basic_weapon_id;
-    public ushort equip_weapon_id; // 플레이어 테이블에도 착용한 장비의 ID 정보를 가지고 있어야할까?
+    public ushort equip_weapon_id;
 
     // 미구현
     public float combat_move_speed;

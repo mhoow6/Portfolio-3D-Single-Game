@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class PlayerAnimation : StateMachineBehaviour
 {
+    public float animationDurationTime = 0.25f;
+    public float currentAnimationTime;
+
     public enum AniType {
         IDLE=0,
         WALK,
+        RUN,
         INJURED,
         DEAD,
-        ATTACK,
+        ATTACK_01,
+        ATTACK_02,
         ARMED,
         UNARMED,
+        ROLL,
         COMBAT_IDLE=10,
         COMBAT_WALK,
         COMBAT_INJURED,
@@ -19,67 +25,73 @@ public class PlayerAnimation : StateMachineBehaviour
         COMBAT_ATTACK_01,
         COMBAT_ATTACK_02,
         COMBAT_ATTACK_03,
-        COMBAT_ATTACK_04,
+        SKILL_1,
+        SKILL_2
     }
 
-    protected bool SwitchWalk(Animator animator)
+    protected void SwitchIdle(Animator animator)
+    {
+        if (!GameManager.instance.controller.isPlayerWantToMove)
+            animator.SetInteger("ani_id", (int)AniType.IDLE);
+    }
+
+    protected void SwitchWalk(Animator animator)
     {
         if (GameManager.instance.controller.moveVector.magnitude != 0)
         {
             animator.SetInteger("ani_id", (int)AniType.WALK);
-            return true;
         }
-        animator.SetInteger("ani_id", (int)AniType.IDLE);
-        return false;      
     }
 
-    protected bool SwitchAttack(Animator animator)
+    protected void SwitchAttack_1(Animator animator)
     {
-        if (Input.GetAxisRaw("Fire1") != 0) {
-            animator.SetInteger("ani_id", (int)AniType.ATTACK);
-            return true;
-        }
-        return false; 
+        if (Input.GetAxisRaw("Fire1") != 0)
+            animator.SetInteger("ani_id", (int)AniType.ATTACK_01);
     }
 
-    protected bool SwitchCombatMode(Animator animator)
+    protected void SwitchAttack_2(Animator animator)
+    {
+        if (Input.GetAxisRaw("Fire1") != 0)
+            animator.SetInteger("ani_id", (int)AniType.ATTACK_02);
+    }
+
+    protected void SwitchCombatMode(Animator animator)
     {
         if (GameManager.instance.controller.isCombatMode && Input.GetKeyDown(KeyCode.R))
         {
-            animator.SetBool("combatMode", false);
+            animator.SetInteger("ani_id", (int)AniType.UNARMED);
             GameManager.instance.controller.isCombatMode = false;
-            return false;
+            return;
         }
 
         if (!GameManager.instance.controller.isCombatMode && Input.GetKeyDown(KeyCode.R))
         {
-            animator.SetBool("combatMode", true);
+            animator.SetInteger("ani_id", (int)AniType.ARMED);
             GameManager.instance.controller.isCombatMode = true;
-            return true;
+            return;
         }
-
-        return false;
     }
 
-    protected bool SwitchCombatModeWalk(Animator animator)
+    protected void SwitchCombatModeIdle(Animator animator)
+    {
+        if (!Input.anyKeyDown && GameManager.instance.controller.isCombatMode)
+            animator.SetInteger("ani_id", (int)AniType.COMBAT_IDLE);
+    }
+
+    protected void SwitchCombatModeWalk(Animator animator)
     {
         if (GameManager.instance.controller.isCombatMode && GameManager.instance.controller.moveVector.magnitude != 0)
         {
             animator.SetInteger("ani_id", (int)AniType.COMBAT_WALK);
-            return true;
         }
-        animator.SetInteger("ani_id", (int)AniType.COMBAT_IDLE);
-        return false;
     }
 
-    protected bool SwitchCombatModeAttack(Animator animator)
+    protected void SwitchCombatModeAttack(Animator animator)
     {
         if (GameManager.instance.controller.isCombatMode && Input.GetAxisRaw("Fire1") != 0)
         {
             animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_01);
-            return true;
         }
-        return false;
     }
 
 }

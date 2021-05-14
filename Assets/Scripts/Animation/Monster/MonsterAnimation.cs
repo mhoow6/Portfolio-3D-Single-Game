@@ -5,7 +5,6 @@ using UnityEngine;
 abstract public class MonsterAnimation : StateMachineBehaviour
 {
     protected float prevHP;
-
     abstract protected void SwitchIdle(Animator animator);
     abstract protected void SwitchWalk(Animator animator);
     abstract protected void SwitchRun(Animator animator);

@@ -25,6 +25,7 @@ public class CustomCamera : MonoBehaviour
         offset = new Vector3(0, 1.683f, -0.07f);
     }
 
+
     void LateUpdate()
     {
         LookAround();

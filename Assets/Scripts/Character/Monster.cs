@@ -7,6 +7,7 @@ public enum mobType
     Polygonal_Metalon_Purple = 1000,
     Polygonal_Metalon_Green,
     Polygonal_Metalon_Red,
+    Character_BR_PigButcher_01,
     Character_BR_BigOrk_01,
     Character_BR_BigOrk_02
 }
@@ -21,7 +22,6 @@ public class Monster : Character
         hp = 100; // 임시
     }
 
-    // 몬스터마다 죽는 방식이 다를 수 있으므로 virtual
     virtual public void Dead()
     {
         if (hp < 0)
@@ -35,7 +35,6 @@ public class Monster : Character
         gameObject.SetActive(false);
     }
 
-    // Factory Method
     public static Monster AddMonsterComponent(GameObject obj, ushort mobID)
     {
         Monster monster = null;
@@ -54,6 +53,10 @@ public class Monster : Character
                 monster = obj.AddComponent<Spider>();
                 return monster;
 
+            case (ushort)mobType.Character_BR_PigButcher_01:
+                monster = obj.AddComponent<Spider>();
+                return monster;
+
             case (ushort)mobType.Character_BR_BigOrk_01:
                 monster = obj.AddComponent<Ork>();
                 return monster;
@@ -67,10 +70,6 @@ public class Monster : Character
     }
 }
 
-public class CustomDummy : Monster
-{
-}
-
 public class CommonMonster : Monster
 {
 }
@@ -80,7 +79,19 @@ public class EliteMonster : Monster
     public float skill_1_damage;
     public float skill_1_distance;
     public float skill_1_angle;
+}
 
+public class BossMonster : Monster
+{
+    public float skill_1_damage;
+    public float skill_1_distance;
+    public float skill_1_angle;
+    public float skill_2_damage;
+    public float skill_2_distance;
+    public float skill_2_angle;
+    public float skill_3_damage;
+    public float skill_3_distance;
+    public float skill_3_angle;
 }
 
 public class Spider : CommonMonster
@@ -94,6 +105,27 @@ public class Spider : CommonMonster
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {
             if (mobinfo.id >= (ushort)mobType.Polygonal_Metalon_Purple && mobinfo.id <= (ushort)mobType.Polygonal_Metalon_Red)
+            {
+                hp = mobinfo.hp;
+                attack_damage = mobinfo.attack_damage;
+                attack_distance = mobinfo.attack_distance;
+                attack_angle = mobinfo.attack_angle;
+            }
+        }
+    }
+}
+
+public class Pig : CommonMonster
+{
+    private void Start()
+    {
+        string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
+
+        MonsterInfoTableManager.LoadTable(mobInfoPath);
+
+        foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
+        {
+            if (mobinfo.id == (ushort)mobType.Character_BR_PigButcher_01)
             {
                 hp = mobinfo.hp;
                 attack_damage = mobinfo.attack_damage;

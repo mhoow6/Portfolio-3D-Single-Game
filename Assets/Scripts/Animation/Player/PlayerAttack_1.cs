@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCombatAttack : PlayerAnimation
+public class PlayerAttack_1 : PlayerAnimation
 {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -14,9 +14,14 @@ public class PlayerCombatAttack : PlayerAnimation
         if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 - animationDurationTime)
         {
             GameManager.instance.controller.immobile = false;
-            SwitchCombatModeWalk(animator);
-            SwitchCombatModeIdle(animator);
-            SwitchCombatModeAttack(animator);
+            SwitchWalk(animator);
+            SwitchIdle(animator);
+            SwitchAttack_2(animator);
         }
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        
     }
 }
