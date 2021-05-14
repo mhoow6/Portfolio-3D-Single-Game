@@ -14,11 +14,13 @@ public class PlayerController : MonoBehaviour
     public bool immobile;
     public Vector3 moveVector;
     public bool isCombatMode;
+    public bool isPlayerWantToMove;
 
     private void Awake()
     {
         immobile = false;
         isCombatMode = false;
+        isPlayerWantToMove = false;
     }
 
     private void Start()
@@ -33,11 +35,14 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        Vector2 moveInput;
+        Vector2 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        if (!immobile)
-            moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        if (moveInput.magnitude != 0)
+            isPlayerWantToMove = true;
         else
+            isPlayerWantToMove = false;
+
+        if (immobile)
             moveInput = Vector3.zero;
 
         Vector3 cameraForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
