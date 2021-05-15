@@ -1,0 +1,2 @@
+level,hp,attack_01_angle,attack_02_angle,combat_attack_01_angle,combat_attack_02_angle,combat_attack_03_angle,skill_01_angle,skill_02_angle,walk_speed,run_speed,combat_walk_speed,combat_run_speed,roll_distance,basic_weapon_id,equip_weapon_id
+1,100,50,50,60,60,60,80,80,2,4,2,4,1,3000,3001

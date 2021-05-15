@@ -1,5 +1,8 @@
-id,monster_name,hp,attack_damage,attack_distance,attack_angle,skill_1_damage,skill_1_distance,skill_1_angle
-1000,Polygonal_Metalon_Purple,150,10,2,60,0,0,0
-1001,Polygonal_Metalon_Green,150,10,2,60,0,0,0
-1002,Polygonal_Metalon_Red,150,10,2,60,0,0,0
-1003,Character_BR_Troll_01,250,20,4,80,40,5,60
+id,monster_name,monster_type,hp,attack_damage,attack_distance,attack_angle,skill_1_damage,skill_1_distance,skill_1_angle,skill_2_damage,skill_2_distance,skill_2_angle,skill_3_damage,skill_3_distance,skill_3_angle
+1000,Polygonal_Metalon_Purple,1,150,10,2,60,0,0,0,0,0,0,0,0,0
+1001,Polygonal_Metalon_Green,1,150,10,2,60,0,0,0,0,0,0,0,0,0
+1002,Polygonal_Metalon_Red,1,150,10,2,60,0,0,0,0,0,0,0,0,0
+1003,Character_BR_BigOrk_01,2,250,20,4,60,40,5,80,0,0,0,0,0,0
+1004,Character_BR_BigOrk_02,2,250,20,4,60,40,5,80,0,0,0,0,0,0
+1005,Character_BR_PigButcher_01,1,100,10,2,60,0,0,0,0,0,0,0,0,0
+1006,Character_BR_FortGolem_01,3,1000,25,4,60,30,4,60,50,6,60,75,8,80
