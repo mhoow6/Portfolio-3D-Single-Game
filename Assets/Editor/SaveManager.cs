@@ -28,6 +28,16 @@ public static class SaveManager
         Debug.Log("Monster Position Save Completed.");
     }
 
+    [MenuItem("Menu/Save/Player Position Data")]
+    public static void SavePlayerPosition()
+    {
+        string path = string.Empty;
+        path = EditorUtility.SaveFilePanel("Save Monster", path, "monster", "csv");
+        SavePlayerPosition(path);
+
+        Debug.Log("Player Position Save Completed.");
+    }
+
     private static void SaveMonsterPosition(string filePath)
     {
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
@@ -40,7 +50,7 @@ public static class SaveManager
             {
                 sw.WriteLine(
                     i.ToString() + "," +
-                    MonsterNameToID(monsters[i].name) + "," +
+                    GetMonsterIDFromName(monsters[i].name) + "," +
                     monsters[i].transform.position.x + "," +
                     monsters[i].transform.position.y + "," +
                     monsters[i].transform.position.z + "," +
@@ -52,6 +62,31 @@ public static class SaveManager
                     monsters[i].transform.localScale.z
                     );
             }
+
+            sw.Close();
+        }
+    }
+
+    private static void SavePlayerPosition(string filePath)
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+        using (StreamWriter sw = new StreamWriter(filePath))
+        {
+            sw.WriteLine("xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
+            sw.WriteLine(
+                player.transform.position.x + "," +
+                player.transform.position.y + "," +
+                player.transform.position.z + "," +
+                player.transform.rotation.eulerAngles.x + "," +
+                player.transform.rotation.eulerAngles.y + "," +
+                player.transform.rotation.eulerAngles.z + "," +
+                player.transform.localScale.x + "," +
+                player.transform.localScale.y + "," +
+                player.transform.localScale.z
+                );
+
+            sw.Close();
         }
     }
 
@@ -132,7 +167,7 @@ public static class SaveManager
         return result;
     }
 
-    private static ushort MonsterNameToID(string mobName)
+    private static ushort GetMonsterIDFromName(string mobName)
     {
         string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
 

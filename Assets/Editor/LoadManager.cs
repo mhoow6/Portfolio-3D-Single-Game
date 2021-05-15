@@ -26,6 +26,66 @@ public static class LoadManager
         Debug.Log("Monster Position Load Completed.");
     }
 
+    [MenuItem("Menu/Load/Player Position Data")]
+    public static void LoadPlayerPosition()
+    {
+        string path = string.Empty;
+        path = EditorUtility.OpenFilePanel("Load Monster", path, "csv");
+        LoadPlayerPosition(path);
+
+        Debug.Log("Player Position Load Completed.");
+    }
+
+    private static void LoadPlayerPosition(string filePath)
+    {
+        using(StreamReader sr = new StreamReader(filePath))
+        {
+            string line = string.Empty;
+            GameObject parent = new GameObject("Player");
+            GameObject cameraArm = new GameObject("camerArm");
+
+            sr.ReadLine();
+
+            string[] datas = sr.ReadLine().Split(',');
+            float xPos = float.Parse(datas[0]);
+            float yPos = float.Parse(datas[1]);
+            float zPos = float.Parse(datas[2]);
+            float xRot = float.Parse(datas[3]);
+            float yRot = float.Parse(datas[4]);
+            float zRot = float.Parse(datas[5]);
+            float xScale = float.Parse(datas[6]);
+            float yScale = float.Parse(datas[7]);
+            float zScale = float.Parse(datas[8]);
+
+            GameObject _player = Resources.Load<GameObject>("Character/Player/Character_Knight_01_Black");
+            GameObject player = GameObject.Instantiate(_player);
+            Player playerScript = player.AddComponent<Player>();
+
+            playerScript.name = "Character_Knight_01_Black";
+            playerScript.transform.position = new Vector3(xPos, yPos, zPos);
+            playerScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
+            playerScript.transform.localScale = new Vector3(xScale, yScale, zScale);
+
+            parent.transform.position = playerScript.transform.position;
+            parent.transform.rotation = playerScript.transform.rotation;
+
+            CustomCamera cameraScript = cameraArm.AddComponent<CustomCamera>();
+            cameraScript.player = playerScript;
+
+            // cameraArm.transform.localPosition = playerScript.transform.position + cameraScript.offset
+            cameraScript.transform.localPosition = playerScript.transform.position + new Vector3(0, 1.683f, 0);
+            cameraScript.transform.rotation = playerScript.transform.rotation;
+
+            // globalPosition x,y,z -> locaPosition z,y,x
+            Camera.main.transform.localPosition = cameraScript.transform.localPosition + new Vector3(-3.54f, 0, 0);
+            Camera.main.transform.rotation = cameraScript.transform.rotation;
+
+            playerScript.transform.SetParent(parent.transform);
+            cameraScript.transform.SetParent(parent.transform);
+            Camera.main.transform.SetParent(cameraScript.transform);            
+        }
+    }
+
     private static void LoadMonsterPosition(string filePath)
     {
         using (StreamReader sr = new StreamReader(filePath))
@@ -51,7 +111,7 @@ public static class LoadManager
                 float yScale = float.Parse(datas[9]);
                 float zScale = float.Parse(datas[10]);
 
-                string mobName = GetMonsterNametoID(id);
+                string mobName = GetMonsterNameFromID(id);
 
                 GameObject _obj = Resources.Load<GameObject>("Character/Monster/" + mobName);
                 GameObject obj = GameObject.Instantiate(_obj);
@@ -69,7 +129,6 @@ public static class LoadManager
             }
         }
     }
-
     private static void LoadScene(string filePath)
     {
         using (StreamReader sr = new StreamReader(filePath))
@@ -127,8 +186,7 @@ public static class LoadManager
             Debug.Log("Scene Load Completed.");
         }
     }
-
-    private static string GetMonsterNametoID(ushort mobID)
+    private static string GetMonsterNameFromID(ushort mobID)
     {
         string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
 
