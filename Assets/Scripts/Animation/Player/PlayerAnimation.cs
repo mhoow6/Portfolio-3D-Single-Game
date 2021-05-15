@@ -25,8 +25,8 @@ public class PlayerAnimation : StateMachineBehaviour
         COMBAT_ATTACK_01,
         COMBAT_ATTACK_02,
         COMBAT_ATTACK_03,
-        SKILL_1,
-        SKILL_2
+        SKILL_01,
+        SKILL_02
     }
 
     protected void SwitchIdle(Animator animator)

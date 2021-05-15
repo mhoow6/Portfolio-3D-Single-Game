@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         GameManager.instance.controller = this;
+        moveSpeed = player.walk_speed;
     }
 
     private void Update()
@@ -45,15 +46,15 @@ public class PlayerController : MonoBehaviour
         if (immobile)
             moveInput = Vector3.zero;
 
+        if (isCombatMode)
+            moveSpeed = player.combat_walk_speed;
+
         Vector3 cameraForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
         Vector3 cameraRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
         moveVector = cameraForward * moveInput.y + cameraRight * moveInput.x;
 
         if (moveVector.magnitude != 0)
             player.transform.forward = moveVector.normalized;
-
-        if (isCombatMode)
-            moveSpeed = player.combat_move_speed;
 
         transform.position += moveVector * Time.deltaTime * moveSpeed;
     }

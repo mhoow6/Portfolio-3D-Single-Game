@@ -22,7 +22,7 @@ public class CustomCamera : MonoBehaviour
         zoomMax = 1f;
         zoomSenstivity = 0.5f;
         zoomSpeed = 5.0f;
-        offset = new Vector3(0, 1.683f, -0.07f);
+        offset = new Vector3(0, 1.683f, 0);
     }
 
 

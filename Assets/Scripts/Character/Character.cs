@@ -8,5 +8,5 @@ public abstract class Character : MonoBehaviour
     public float attack_damage;
     public float attack_distance;
     public float attack_angle;
-    public float moveSpeed;
+    public float walk_speed;
 }
