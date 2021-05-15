@@ -7,24 +7,29 @@ using System.IO;
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager instance;
-
-    // WeaponInfoTableManager로 옮길 것
-    public List<Weapon> weapons;
-
     private string forestMonsterPath;
+    private string testMonsterPath;
     private string weaponPath;
     private string playerPath;
+    private string monsterPath;
     private string npcPath;
 
     private void Awake()
     {
         instance = this;
-        weapons = new List<Weapon>();
         forestMonsterPath = Application.dataPath + "/Resources/Tables/ForestMonsterPosition.csv";
+        testMonsterPath = Application.dataPath + "/Resources/Tables/TestMonsterPosition.csv";
         weaponPath = Application.dataPath + "/Resources/Tables/WeaponInfo.csv";
+        playerPath = Application.dataPath + "/Resources/Tables/PlayerInfo.csv";
+        monsterPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
+        npcPath = Application.dataPath + "/Resources/Tables/NPCInfo.csv";
 
-        ResourceFromWeaponTable(weaponPath);
-        // CreateMonster(forestMonsterPath);
+        WeaponInfoTableManager.LoadTable(weaponPath);
+        PlayerInfoTableManager.LoadTable(playerPath);
+        MonsterInfoTableManager.LoadTable(monsterPath);
+        NPCInfoTableManager.LoadTable(npcPath);
+
+        CreateMonster(testMonsterPath);
     }
 
     private void CreateMonster(string fileName)
@@ -52,7 +57,7 @@ public class ResourceManager : MonoBehaviour
                 float yScale = float.Parse(datas[9]);
                 float zScale = float.Parse(datas[10]);
 
-                string mobName = GetMonsterNametoID(id);
+                string mobName = MonsterInfoTableManager.GetMonsterNameFromID(id);
 
                 GameObject _obj = Resources.Load<GameObject>("Character/Monster/" + mobName);
                 GameObject obj = Instantiate(_obj);
@@ -71,59 +76,4 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    // WeaponInfoTableManager로 옮길 것
-    private void ResourceFromWeaponTable(string fileName)
-    {
-        using (StreamReader sr = new StreamReader(fileName))
-        {
-            string line = string.Empty;
-
-            while ((line = sr.ReadLine()) != null)
-            {
-                string[] datas = line.Split(',');
-
-                if (datas[0] == "id")
-                    continue;
-
-                Weapon weapon = new Weapon();
-                weapon.id = ushort.Parse(datas[0]);
-                weapon.weapon_name = datas[1];
-                weapon.basic_damage = float.Parse(datas[2]);
-                weapon.basic_distance = float.Parse(datas[3]);
-                weapon.basic_angle = float.Parse(datas[4]);
-
-                weapons.Add(weapon);
-            }
-        }
-    }
-
-    private void CheckWeaponData()
-    {
-        Debug.Log(weapons[0].id);
-    }
-
-    public Weapon GetWeaponFromWeaponID(ushort weaponID)
-    {
-        foreach (Weapon weapon in weapons)
-        {
-            if (weapon.id == weaponID)
-                return weapon;
-        }
-        throw new System.NotSupportedException("무기중에" + weaponID + " 은 없습니다.");
-    }
-
-    private static string GetMonsterNametoID(ushort mobID)
-    {
-        string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
-
-        MonsterInfoTableManager.LoadTable(mobInfoPath);
-
-        foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
-        {
-            if (mobID == mobinfo.id)
-                return mobinfo.monster_name;
-        }
-
-        throw new System.NotSupportedException(mobID + "에 해당하는 몬스터는 없습니다.");
-    }
 }
