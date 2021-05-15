@@ -7,19 +7,21 @@ public enum mobType
     Polygonal_Metalon_Purple = 1000,
     Polygonal_Metalon_Green,
     Polygonal_Metalon_Red,
-    Character_BR_PigButcher_01,
     Character_BR_BigOrk_01,
-    Character_BR_BigOrk_02
+    Character_BR_BigOrk_02,
+    Character_BR_PigButcher_01,
+    Character_BR_FortGolem_01
 }
 
 public class Monster : Character
 {
-    public ushort index;
     public ushort id;
+    public ushort index;
+    public byte monster_type;
 
     private void Awake()
     {
-        hp = 100; // 임시
+        hp = 100; // 테스트
     }
 
     virtual public void Dead()
@@ -54,7 +56,7 @@ public class Monster : Character
                 return monster;
 
             case (ushort)mobType.Character_BR_PigButcher_01:
-                monster = obj.AddComponent<Spider>();
+                monster = obj.AddComponent<Pig>();
                 return monster;
 
             case (ushort)mobType.Character_BR_BigOrk_01:
@@ -64,9 +66,13 @@ public class Monster : Character
             case (ushort)mobType.Character_BR_BigOrk_02:
                 monster = obj.AddComponent<Ork>();
                 return monster;
+
+            case (ushort)mobType.Character_BR_FortGolem_01:
+                monster = obj.AddComponent<Golem>();
+                return monster;
         }
 
-        throw new System.NotSupportedException(mobID + "에 해당하는 몬스터가 없어 스크립트 추가에 실패했습니다.");
+        throw new System.NotSupportedException(mobID.ToString() + " 에 해당하는 몬스터가 없어 스크립트 추가에 실패했습니다.");
     }
 }
 
@@ -98,10 +104,6 @@ public class Spider : CommonMonster
 {
     private void Start()
     {
-        string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
-
-        MonsterInfoTableManager.LoadTable(mobInfoPath);
-
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {
             if (mobinfo.id >= (ushort)mobType.Polygonal_Metalon_Purple && mobinfo.id <= (ushort)mobType.Polygonal_Metalon_Red)
@@ -110,6 +112,7 @@ public class Spider : CommonMonster
                 attack_damage = mobinfo.attack_damage;
                 attack_distance = mobinfo.attack_distance;
                 attack_angle = mobinfo.attack_angle;
+                monster_type = mobinfo.monster_type;
             }
         }
     }
@@ -119,10 +122,6 @@ public class Pig : CommonMonster
 {
     private void Start()
     {
-        string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
-
-        MonsterInfoTableManager.LoadTable(mobInfoPath);
-
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {
             if (mobinfo.id == (ushort)mobType.Character_BR_PigButcher_01)
@@ -131,6 +130,7 @@ public class Pig : CommonMonster
                 attack_damage = mobinfo.attack_damage;
                 attack_distance = mobinfo.attack_distance;
                 attack_angle = mobinfo.attack_angle;
+                monster_type = mobinfo.monster_type;
             }
         }
     }
@@ -140,10 +140,6 @@ public class Ork : EliteMonster
 {
     private void Start()
     {
-        string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
-
-        MonsterInfoTableManager.LoadTable(mobInfoPath);
-
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {
             if (mobinfo.id >= (ushort)mobType.Character_BR_BigOrk_01 && mobinfo.id <= (ushort)mobType.Character_BR_BigOrk_02)
@@ -155,7 +151,34 @@ public class Ork : EliteMonster
                 skill_1_damage = mobinfo.skill_1_damage;
                 skill_1_distance = mobinfo.skill_1_distance;
                 skill_1_angle = mobinfo.skill_1_angle;
+                monster_type = mobinfo.monster_type;
+            }
+        }
+    }
+}
 
+public class Golem: BossMonster
+{
+    private void Start()
+    {
+        foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
+        {
+            if (mobinfo.id == (ushort)mobType.Character_BR_FortGolem_01)
+            {
+                hp = mobinfo.hp;
+                attack_damage = mobinfo.attack_damage;
+                attack_distance = mobinfo.attack_distance;
+                attack_angle = mobinfo.attack_angle;
+                skill_1_damage = mobinfo.skill_1_damage;
+                skill_1_distance = mobinfo.skill_1_distance;
+                skill_1_angle = mobinfo.skill_1_angle;
+                skill_2_damage = mobinfo.skill_2_damage;
+                skill_2_distance = mobinfo.skill_2_distance;
+                skill_2_angle = mobinfo.skill_2_angle;
+                skill_3_damage = mobinfo.skill_3_damage;
+                skill_3_distance = mobinfo.skill_3_distance;
+                skill_3_angle = mobinfo.skill_3_angle;
+                monster_type = mobinfo.monster_type;
             }
         }
     }
