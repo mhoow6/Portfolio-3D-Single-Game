@@ -8,6 +8,8 @@ public class Player : Character
     public ushort basic_weapon_id;
     public ushort equip_weapon_id;
     public float combat_walk_speed;
+    public Transform sheath;
+    public Transform righthand;
 
     // 추후에 자동 로드
     public GameObject item_SwordSheath;
@@ -24,6 +26,10 @@ public class Player : Character
         attack_angle = PlayerInfoTableManager.playerInfo.attack_01_angle;
         attack_damage = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_damage;
         attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
+        sheath = GetSheathParent();
+        righthand = GetRighthandParent();
+        item_SwordSheath = SetWeaponToSheath(equip_weapon_id);
+        item_Sword = SetWeaponToRighthand(equip_weapon_id);
     }
 
     public void Attack(int ani_id)
@@ -91,5 +97,66 @@ public class Player : Character
             item_Sword.SetActive(false);
         }
 
+    }
+
+    // 매개변수 문자열, 로직 합체
+    private Transform GetSheathParent()
+    {
+        Transform[] children = transform.GetComponentsInChildren<Transform>();
+        Transform spine;    
+
+        foreach (Transform child in children)
+        {
+            if (child.name == "Spine_03")
+            {
+                spine = child;
+                return spine;
+            }     
+        }
+        return null;
+    }
+
+    private Transform GetRighthandParent()
+    {
+        Transform[] children = transform.GetComponentsInChildren<Transform>();
+        Transform hand;
+
+        foreach (Transform child in children)
+        {
+            if (child.name == "Hand_R")
+            {
+                hand = child;
+                return hand;
+            }
+        }
+        return null;
+    } 
+
+    // 무기 스위칭시 부모의 위치를 바꾸게 하는 방법이 낫지 않을까?
+    private GameObject SetWeaponToSheath(ushort equipWeaponID)
+    {
+        GameObject _weapon = Resources.Load<GameObject>("Weapon/" + WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equipWeaponID).weapon_name);
+        GameObject weapon = Instantiate(_weapon);
+
+        weapon.name = "Weapon (Spine)";
+        weapon.transform.SetParent(sheath);
+        weapon.transform.localPosition = new Vector3(-17.6000004f, 24.7000008f, 18);
+        weapon.transform.localRotation = Quaternion.Euler(new Vector3(288.065979f, 201.414993f, 98.0909805f));
+
+        return weapon;
+    }
+
+    private GameObject SetWeaponToRighthand(ushort equipWeaponID)
+    {
+        GameObject _weapon = Resources.Load<GameObject>("Weapon/" + WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equipWeaponID).weapon_name);
+        GameObject weapon = Instantiate(_weapon);
+
+        weapon.name = "Weapon (RH)";
+        weapon.transform.SetParent(righthand);
+        weapon.transform.localPosition = new Vector3(11.6000004f, 1.89999998f, 0.699999988f);
+        weapon.transform.localRotation = Quaternion.Euler(new Vector3(80.5413818f, 22.6469021f, 205.775742f));
+        weapon.SetActive(false);
+
+        return weapon;
     }
 }
