@@ -36,13 +36,13 @@ public static class LoadManager
         Debug.Log("Player Position Load Completed.");
     }
 
-    private static void LoadPlayerPosition(string filePath)
+    public static void LoadPlayerPosition(string filePath)
     {
         using(StreamReader sr = new StreamReader(filePath))
         {
             string line = string.Empty;
             GameObject parent = new GameObject("Player");
-            GameObject cameraArm = new GameObject("camerArm");
+            GameObject cameraArm = new GameObject("cameraArm");
 
             sr.ReadLine();
 
@@ -73,11 +73,11 @@ public static class LoadManager
             cameraScript.player = playerScript;
 
             // cameraArm.transform.localPosition = playerScript.transform.position + cameraScript.offset
-            cameraScript.transform.localPosition = playerScript.transform.position + new Vector3(0, 1.683f, 0);
+            cameraScript.transform.localPosition = playerScript.transform.position + cameraScript.offset;
             cameraScript.transform.rotation = playerScript.transform.rotation;
 
             // globalPosition x,y,z -> locaPosition z,y,x
-            Camera.main.transform.localPosition = cameraScript.transform.localPosition + new Vector3(-3.54f, 0, 0);
+            Camera.main.transform.localPosition = cameraScript.transform.localPosition + cameraScript.cameraDistance;
             Camera.main.transform.rotation = cameraScript.transform.rotation;
 
             playerScript.transform.SetParent(parent.transform);
@@ -111,7 +111,7 @@ public static class LoadManager
                 float yScale = float.Parse(datas[9]);
                 float zScale = float.Parse(datas[10]);
 
-                string mobName = GetMonsterNameFromID(id);
+                string mobName = MonsterInfoTableManager.GetMonsterNameFromID(id);
 
                 GameObject _obj = Resources.Load<GameObject>("Character/Monster/" + mobName);
                 GameObject obj = GameObject.Instantiate(_obj);
@@ -185,19 +185,5 @@ public static class LoadManager
 
             Debug.Log("Scene Load Completed.");
         }
-    }
-    private static string GetMonsterNameFromID(ushort mobID)
-    {
-        string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
-
-        MonsterInfoTableManager.LoadTable(mobInfoPath);
-
-        foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
-        {
-            if (mobID == mobinfo.id)
-                return mobinfo.monster_name;
-        }
-
-        throw new System.NotSupportedException(mobID + "에 해당하는 몬스터는 없습니다.");
     }
 }
