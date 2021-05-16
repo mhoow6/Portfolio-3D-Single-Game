@@ -12,7 +12,8 @@ public class CustomCamera : MonoBehaviour
     private float zoomMax;
     private float zoomSenstivity;
     private float zoomSpeed;
-    private Vector3 offset;
+    public Vector3 offset = new Vector3(0, 1.683f, 0);
+    public Vector3 cameraDistance = new Vector3(-3.54f, 0, 0);
 
     void Awake()
     {
@@ -22,9 +23,7 @@ public class CustomCamera : MonoBehaviour
         zoomMax = 1f;
         zoomSenstivity = 0.5f;
         zoomSpeed = 5.0f;
-        offset = new Vector3(0, 1.683f, 0);
     }
-
 
     void LateUpdate()
     {
