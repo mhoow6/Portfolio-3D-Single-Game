@@ -50,7 +50,7 @@ public static class SaveManager
             {
                 sw.WriteLine(
                     i.ToString() + "," +
-                    GetMonsterIDFromName(monsters[i].name) + "," +
+                    GetMonsterIDFromName(EraseBracketInName(monsters[i].name)) + "," +
                     monsters[i].transform.position.x + "," +
                     monsters[i].transform.position.y + "," +
                     monsters[i].transform.position.z + "," +
@@ -179,6 +179,17 @@ public static class SaveManager
                 return mobinfo.id;
         }
 
-        throw new System.NotSupportedException("몬스터중에" + mobName + " 은 없습니다.");
+        throw new System.NotSupportedException("몬스터 중에 " + mobName + " 은 없습니다.");
+    }
+
+    private static string EraseBracketInName(string mobName)
+    {
+        string mobNameWithNoSpace = mobName.Replace(" ", "");
+        int index = mobNameWithNoSpace.IndexOf('(');
+
+        if (index == -1)
+            return mobName;
+
+        return mobNameWithNoSpace.Remove(index);
     }
 }
