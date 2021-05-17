@@ -18,10 +18,11 @@ public class Monster : Character
     public ushort id;
     public ushort index;
     public byte monster_type;
+    public float run_speed;
 
     private void Awake()
     {
-        hp = 100; // 테스트
+        hp = 100; // TestZone Only
     }
 
     virtual public void Dead()
@@ -104,17 +105,22 @@ public class Spider : CommonMonster
 {
     private void Start()
     {
+        // 반복
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {
-            if (mobinfo.id >= (ushort)mobType.Polygonal_Metalon_Purple && mobinfo.id <= (ushort)mobType.Polygonal_Metalon_Red)
+            if (mobinfo.id == (ushort)mobType.Polygonal_Metalon_Purple)
             {
                 hp = mobinfo.hp;
                 attack_damage = mobinfo.attack_damage;
                 attack_distance = mobinfo.attack_distance;
                 attack_angle = mobinfo.attack_angle;
                 monster_type = mobinfo.monster_type;
+                walk_speed = mobinfo.walk_speed;
+                run_speed = mobinfo.run_speed;
+                return;
             }
         }
+        // 반복
     }
 }
 
@@ -131,6 +137,9 @@ public class Pig : CommonMonster
                 attack_distance = mobinfo.attack_distance;
                 attack_angle = mobinfo.attack_angle;
                 monster_type = mobinfo.monster_type;
+                walk_speed = mobinfo.walk_speed;
+                run_speed = mobinfo.run_speed;
+                return;
             }
         }
     }
@@ -142,7 +151,7 @@ public class Ork : EliteMonster
     {
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {
-            if (mobinfo.id >= (ushort)mobType.Character_BR_BigOrk_01 && mobinfo.id <= (ushort)mobType.Character_BR_BigOrk_02)
+            if (mobinfo.id == (ushort)mobType.Character_BR_BigOrk_01)
             {
                 hp = mobinfo.hp;
                 attack_damage = mobinfo.attack_damage;
@@ -152,6 +161,9 @@ public class Ork : EliteMonster
                 skill_1_distance = mobinfo.skill_1_distance;
                 skill_1_angle = mobinfo.skill_1_angle;
                 monster_type = mobinfo.monster_type;
+                walk_speed = mobinfo.walk_speed;
+                run_speed = mobinfo.run_speed;
+                return;
             }
         }
     }
@@ -179,6 +191,9 @@ public class Golem: BossMonster
                 skill_3_distance = mobinfo.skill_3_distance;
                 skill_3_angle = mobinfo.skill_3_angle;
                 monster_type = mobinfo.monster_type;
+                walk_speed = mobinfo.walk_speed;
+                run_speed = mobinfo.run_speed;
+                return;
             }
         }
     }
