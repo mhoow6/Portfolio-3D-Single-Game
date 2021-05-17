@@ -21,6 +21,8 @@ public struct MonsterInfo
     public float skill_3_damage;
     public float skill_3_distance;
     public float skill_3_angle;
+    public float walk_speed;
+    public float run_speed;
 }
 
 public static class MonsterInfoTableManager
@@ -57,6 +59,8 @@ public static class MonsterInfoTableManager
                 mobInfo.skill_3_damage = float.Parse(datas[13]);
                 mobInfo.skill_3_distance = float.Parse(datas[14]);
                 mobInfo.skill_3_angle = float.Parse(datas[15]);
+                mobInfo.walk_speed = float.Parse(datas[16]);
+                mobInfo.run_speed = float.Parse(datas[16]);
 
                 mobInfoList.Add(mobInfo);
             }
