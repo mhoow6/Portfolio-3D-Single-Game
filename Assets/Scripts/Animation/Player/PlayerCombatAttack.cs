@@ -10,13 +10,14 @@ public class PlayerCombatAttack : PlayerAnimation
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {        
+        SwitchCombatModeWalk(animator);
+        SwitchCombatModeIdle(animator);
+        SwitchCombatModeAttack(animator);
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1 - animationDurationTime)
-        {
-            GameManager.instance.controller.immobile = false;
-            SwitchCombatModeWalk(animator);
-            SwitchCombatModeIdle(animator);
-            SwitchCombatModeAttack(animator);
-        }
+        GameManager.instance.controller.immobile = false;
     }
 }
