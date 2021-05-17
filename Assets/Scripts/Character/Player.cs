@@ -66,7 +66,8 @@ public class Player : Character
                 (mob.transform.position - transform.position).normalized)
                 ) * Mathf.Rad2Deg;
 
-            if (mob.gameObject.activeSelf == true &&
+            if (mob != null &&
+                mob.gameObject.activeSelf == true &&
                 PlayerAndMonster_Distance <= attack_distance &&
                 PlayerAndMonster_Angle <= attack_angle)
             {
