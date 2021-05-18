@@ -22,6 +22,8 @@ Assets/Scenes/
 Assets/Mini Legion Grunt PBR HP Polyart/
 Assets/Mini Legion Rock Golem PBR HP Polyart/
 Assets/Polytope Studio/
+Assets/NEXON Font/
+Assets/GUI Pro Kit Fantasy RPG/
 
 # Except Tables
 Assets/Resources/Character/
@@ -38,3 +40,4 @@ Assets/Resources/Weapon/
 *.meta
 *.mat
 *.vsconfig
+*.txt
