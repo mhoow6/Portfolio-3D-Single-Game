@@ -5,13 +5,22 @@ using UnityEngine;
 public class Player : Character
 {
     public byte level;
+    public float currentHp;
+    public float mp;
+    public float currentMp;
+    public float sp;
+    public float currentSp;
+    public float attack_sp;
+    public float combat_attack_sp;
+    public float skill_01_mp;
+    public float skill_01_sp;
+    public float skill_02_mp;
+    public float skill_02_sp;
     public ushort basic_weapon_id;
     public ushort equip_weapon_id;
     public float combat_walk_speed;
     public Transform sheath;
     public Transform righthand;
-
-    // 추후에 자동 로드
     public GameObject item_SwordSheath;
     public GameObject item_Sword;
 
@@ -19,6 +28,17 @@ public class Player : Character
     {
         level = PlayerInfoTableManager.playerInfo.level;
         hp = PlayerInfoTableManager.playerInfo.hp;
+        currentHp = hp;
+        mp = PlayerInfoTableManager.playerInfo.mp;
+        currentMp = mp;
+        sp = PlayerInfoTableManager.playerInfo.sp;
+        currentSp = sp;
+        attack_sp = PlayerInfoTableManager.playerInfo.attack_sp;
+        combat_attack_sp = PlayerInfoTableManager.playerInfo.combat_attack_sp;
+        skill_01_mp = PlayerInfoTableManager.playerInfo.skill_01_mp;
+        skill_01_sp = PlayerInfoTableManager.playerInfo.skill_01_sp;
+        skill_02_mp = PlayerInfoTableManager.playerInfo.skill_02_mp;
+        skill_02_sp = PlayerInfoTableManager.playerInfo.skill_02_sp;
         walk_speed = PlayerInfoTableManager.playerInfo.walk_speed;
         combat_walk_speed = PlayerInfoTableManager.playerInfo.combat_walk_speed;
         basic_weapon_id = PlayerInfoTableManager.playerInfo.basic_weapon_id;
@@ -30,6 +50,14 @@ public class Player : Character
         righthand = GetRighthandParent();
         item_SwordSheath = SetWeaponToSheath(equip_weapon_id);
         item_Sword = SetWeaponToRighthand(equip_weapon_id);
+    }
+
+    private void Update()
+    {
+        GameManager.instance.playerHP.value = currentHp / hp;
+        GameManager.instance.playerMP.value = currentMp / mp;
+        GameManager.instance.playerSP.value = currentSp / sp;
+        GameManager.instance.playerLevel.text = level.ToString();
     }
 
     public void Attack(int ani_id)

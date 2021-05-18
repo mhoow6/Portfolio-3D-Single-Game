@@ -7,6 +7,7 @@ public class PlayerAttack_2 : PlayerAnimation
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.immobile = true;
+        GameManager.instance.controller.player.currentSp -= GameManager.instance.controller.player.attack_sp;
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -19,5 +20,6 @@ public class PlayerAttack_2 : PlayerAnimation
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.immobile = false;
+        // 초당 sp가 올라가게 구현
     }
 }
