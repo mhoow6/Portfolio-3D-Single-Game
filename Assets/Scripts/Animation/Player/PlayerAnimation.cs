@@ -45,13 +45,15 @@ public class PlayerAnimation : StateMachineBehaviour
 
     protected void SwitchAttack_1(Animator animator)
     {
-        if (Input.GetAxisRaw("Fire1") != 0)
+        if (Input.GetAxisRaw("Fire1") != 0 &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.attack_sp)
             animator.SetInteger("ani_id", (int)AniType.ATTACK_01);
     }
 
     protected void SwitchAttack_2(Animator animator)
     {
-        if (Input.GetAxisRaw("Fire1") != 0)
+        if (Input.GetAxisRaw("Fire1") != 0 &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.attack_sp)
             animator.SetInteger("ani_id", (int)AniType.ATTACK_02);
     }
 
