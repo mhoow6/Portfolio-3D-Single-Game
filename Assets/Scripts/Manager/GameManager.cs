@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.UI;
+using TMPro;
 
 // 테이블로부터 씬, 몬스터, NPC, 플레이어 기본 위치 로드
 // 캐릭터 오브젝트 관리
@@ -10,6 +12,10 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public PlayerController controller;
     public List<Monster> monsters = new List<Monster>();
+    public Slider playerHP;
+    public Slider playerMP;
+    public Slider playerSP;
+    public TMP_Text playerLevel;
 
     private string villagePath;
     private string villageNPCPath;
@@ -119,17 +125,16 @@ public class GameManager : MonoBehaviour
             // Camera Load
             CustomCamera cameraScript = cameraArm.AddComponent<CustomCamera>();
             cameraScript.player = playerScript;
-            cameraScript.transform.localPosition = playerScript.transform.position + new Vector3(0, 1.683f, 0);
+            cameraScript.transform.localPosition = playerScript.transform.position + cameraScript.offset;
             cameraScript.transform.rotation = playerScript.transform.rotation;
-            // globalPosition x,y,z -> locaPosition z,y,x
-            Camera.main.transform.localPosition = cameraScript.transform.localPosition + new Vector3(-3.54f, 0, 0);
+            Camera.main.transform.localPosition = cameraScript.transform.localPosition + cameraScript.cameraDistance; // globalPosition x,y,z -> locaPosition z,y,x
             Camera.main.transform.rotation = cameraScript.transform.rotation;
 
             // Controller Load
             PlayerController _controller = parent.AddComponent<PlayerController>();
             _controller.player = playerScript;
             _controller.cameraArm = cameraScript.transform;
-            GameManager.instance.controller = _controller;
+            this.controller = _controller;
             
             // Set Parent each
             playerScript.transform.SetParent(parent.transform);
@@ -147,6 +152,8 @@ public class GameManager : MonoBehaviour
             string line = string.Empty;
             string path = string.Empty;
             GameObject parent = null;
+
+            sr.ReadLine(); // 스킵
 
             while ((line = sr.ReadLine()) != null)
             {
