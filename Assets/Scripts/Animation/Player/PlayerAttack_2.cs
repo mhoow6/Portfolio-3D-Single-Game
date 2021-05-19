@@ -20,6 +20,6 @@ public class PlayerAttack_2 : PlayerAnimation
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.immobile = false;
-        // 초당 sp가 올라가게 구현
+        GameManager.instance.controller.player.isPlayerNeedSP = true;
     }
 }

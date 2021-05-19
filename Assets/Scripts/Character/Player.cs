@@ -14,8 +14,10 @@ public class Player : Character
     public float combat_attack_sp;
     public float skill_01_mp;
     public float skill_01_sp;
+    public float skill_01_cooldown;
     public float skill_02_mp;
     public float skill_02_sp;
+    public float skill_02_cooldown;
     public ushort basic_weapon_id;
     public ushort equip_weapon_id;
     public float combat_walk_speed;
@@ -23,6 +25,9 @@ public class Player : Character
     public Transform righthand;
     public GameObject item_SwordSheath;
     public GameObject item_Sword;
+    public bool isPlayerNeedSP;
+
+    private bool CR_running;
 
     void Awake()
     {
@@ -37,8 +42,10 @@ public class Player : Character
         combat_attack_sp = PlayerInfoTableManager.playerInfo.combat_attack_sp;
         skill_01_mp = PlayerInfoTableManager.playerInfo.skill_01_mp;
         skill_01_sp = PlayerInfoTableManager.playerInfo.skill_01_sp;
+        skill_01_cooldown = PlayerInfoTableManager.playerInfo.skill_01_cooldown;
         skill_02_mp = PlayerInfoTableManager.playerInfo.skill_02_mp;
         skill_02_sp = PlayerInfoTableManager.playerInfo.skill_02_sp;
+        skill_02_cooldown = PlayerInfoTableManager.playerInfo.skill_02_cooldown;
         walk_speed = PlayerInfoTableManager.playerInfo.walk_speed;
         combat_walk_speed = PlayerInfoTableManager.playerInfo.combat_walk_speed;
         basic_weapon_id = PlayerInfoTableManager.playerInfo.basic_weapon_id;
@@ -50,6 +57,8 @@ public class Player : Character
         righthand = GetRighthandParent();
         item_SwordSheath = SetWeaponToSheath(equip_weapon_id);
         item_Sword = SetWeaponToRighthand(equip_weapon_id);
+        isPlayerNeedSP = false;
+        CR_running = false;
     }
 
     private void Update()
@@ -58,6 +67,9 @@ public class Player : Character
         GameManager.instance.playerMP.value = currentMp / mp;
         GameManager.instance.playerSP.value = currentSp / sp;
         GameManager.instance.playerLevel.text = level.ToString();
+
+        if (isPlayerNeedSP && !CR_running)
+            StartCoroutine(SpRecovery(1f));
     }
 
     public void Attack(int ani_id)
@@ -187,5 +199,25 @@ public class Player : Character
         weapon.SetActive(false);
 
         return weapon;
+    }
+
+    private IEnumerator SpRecovery(float recoveryDuration)
+    {
+        CR_running = true;
+        WaitForSeconds wt = new WaitForSeconds(recoveryDuration);
+
+        while (currentSp < sp)
+        {
+            yield return wt;
+            currentSp += 3f;
+
+            if (currentSp >= sp)
+            {
+                currentSp = sp;
+                isPlayerNeedSP = false;
+                CR_running = false;
+                yield break;
+            }
+        }
     }
 }
