@@ -255,7 +255,7 @@ public static class SaveManager
 
         foreach (NpcInfo npcinfo in NPCInfoTableManager.npcInfoList)
         {
-            if (npcName == npcinfo.name)
+            if (npcName == npcinfo.npc_name)
                 return npcinfo.id;
         }
 
