@@ -36,6 +36,16 @@ public static class LoadManager
         Debug.Log("Player Position Load Completed.");
     }
 
+    [MenuItem("Menu/Load/NPC Position Data")]
+    public static void LoadNPCPosition()
+    {
+        string path = string.Empty;
+        path = EditorUtility.OpenFilePanel("Load Monster", path, "csv");
+        LoadNPCPosition(path);
+
+        Debug.Log("NPC Position Load Completed.");
+    }
+
     public static void LoadPlayerPosition(string filePath)
     {
         using(StreamReader sr = new StreamReader(filePath))
@@ -88,6 +98,9 @@ public static class LoadManager
 
     private static void LoadMonsterPosition(string filePath)
     {
+        string monsterInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
+        MonsterInfoTableManager.LoadTable(monsterInfoPath);
+
         using (StreamReader sr = new StreamReader(filePath))
         {
             string line = string.Empty;
@@ -129,6 +142,54 @@ public static class LoadManager
             }
         }
     }
+
+    private static void LoadNPCPosition(string filePath)
+    {
+        string npcInfoPath = Application.dataPath + "/Resources/Tables/NPCInfo.csv";
+        NPCInfoTableManager.LoadTable(npcInfoPath);
+
+        using (StreamReader sr = new StreamReader(filePath))
+        {
+            string line = string.Empty;
+            GameObject parent = new GameObject("NPC");
+
+            sr.ReadLine();
+
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] datas = line.Split(',');
+
+                ushort index = ushort.Parse(datas[0]);
+                ushort id = ushort.Parse(datas[1]);
+                float xPos = float.Parse(datas[2]);
+                float yPos = float.Parse(datas[3]);
+                float zPos = float.Parse(datas[4]);
+                float xRot = float.Parse(datas[5]);
+                float yRot = float.Parse(datas[6]);
+                float zRot = float.Parse(datas[7]);
+                float xScale = float.Parse(datas[8]);
+                float yScale = float.Parse(datas[9]);
+                float zScale = float.Parse(datas[10]);
+
+                string npcName = NPCInfoTableManager.GetNPCNameFromID(id);
+
+                GameObject _npc = Resources.Load<GameObject>("Character/NPC/" + npcName);
+                GameObject npc = GameObject.Instantiate(_npc);
+                NPC npcScript = npc.AddComponent<NPC>();
+
+                npcScript.gameObject.name = npcName;
+                npcScript.index = index;
+                npcScript.id = id;
+                npcScript.transform.position = new Vector3(xPos, yPos, zPos);
+                npcScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
+                npcScript.transform.localScale = new Vector3(xScale, yScale, zScale);
+
+                npcScript.transform.SetParent(parent.transform);
+            }
+
+        }
+    }
+
     private static void LoadScene(string filePath)
     {
         using (StreamReader sr = new StreamReader(filePath))
@@ -136,6 +197,8 @@ public static class LoadManager
             string line = string.Empty;
             string path = string.Empty;
             GameObject parent = null;
+
+            sr.ReadLine();
 
             while((line = sr.ReadLine()) != null)
             {
