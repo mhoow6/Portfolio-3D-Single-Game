@@ -1,2 +1,2 @@
-level,hp,mp,sp,attack_01_angle,attack_02_angle,attack_sp,combat_attack_01_angle,combat_attack_02_angle,combat_attack_03_angle,combat_attack_sp,skill_01_angle,skill_01_mp,skill_01_sp,skill_02_angle,skill_02_mp,skill_02_sp,walk_speed,run_speed,combat_walk_speed,combat_run_speed,roll_distance,basic_weapon_id,equip_weapon_id
-1,200,100,100,50,50,10,60,60,60,15,80,20,20,80,40,40,2,4,2,4,1,3000,3001
+level,hp,mp,sp,attack_01_angle,attack_02_angle,attack_sp,combat_attack_01_angle,combat_attack_02_angle,combat_attack_03_angle,combat_attack_sp,skill_01_angle,skill_01_mp,skill_01_sp,skill_01_cooldown,skill_02_angle,skill_02_mp,skill_02_sp,skill_02_cooldown,walk_speed,run_speed,combat_walk_speed,combat_run_speed,roll_distance,basic_weapon_id,equip_weapon_id
+1,200,100,100,50,50,10,60,60,60,15,80,20,20,6,80,40,40,20,2,4,2,4,1,3000,3001
