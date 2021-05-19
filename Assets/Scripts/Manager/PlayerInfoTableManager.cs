@@ -19,9 +19,11 @@ public struct PlayerInfo
     public float skill_01_angle;
     public float skill_01_mp;
     public float skill_01_sp;
+    public float skill_01_cooldown;
     public float skill_02_angle;
     public float skill_02_mp;
     public float skill_02_sp;
+    public float skill_02_cooldown;
     public float walk_speed;
     public float run_speed;
     public float combat_walk_speed;
@@ -61,16 +63,18 @@ public static class PlayerInfoTableManager
                 playerInfo.skill_01_angle = float.Parse(datas[11]);
                 playerInfo.skill_01_mp = float.Parse(datas[12]);
                 playerInfo.skill_01_sp = float.Parse(datas[13]);
-                playerInfo.skill_02_angle = float.Parse(datas[14]);
-                playerInfo.skill_02_mp = float.Parse(datas[15]);
-                playerInfo.skill_02_sp = float.Parse(datas[16]);
-                playerInfo.walk_speed = float.Parse(datas[17]);
-                playerInfo.run_speed = float.Parse(datas[18]);
-                playerInfo.combat_walk_speed = float.Parse(datas[19]);
-                playerInfo.combat_run_speed = float.Parse(datas[20]);
-                playerInfo.roll_distance = float.Parse(datas[21]);
-                playerInfo.basic_weapon_id = ushort.Parse(datas[22]);
-                playerInfo.equip_weapon_id = ushort.Parse(datas[23]);
+                playerInfo.skill_01_cooldown = float.Parse(datas[14]);
+                playerInfo.skill_02_angle = float.Parse(datas[15]);
+                playerInfo.skill_02_mp = float.Parse(datas[16]);
+                playerInfo.skill_02_sp = float.Parse(datas[17]);
+                playerInfo.skill_02_cooldown = float.Parse(datas[18]);
+                playerInfo.walk_speed = float.Parse(datas[19]);
+                playerInfo.run_speed = float.Parse(datas[20]);
+                playerInfo.combat_walk_speed = float.Parse(datas[21]);
+                playerInfo.combat_run_speed = float.Parse(datas[22]);
+                playerInfo.roll_distance = float.Parse(datas[23]);
+                playerInfo.basic_weapon_id = ushort.Parse(datas[24]);
+                playerInfo.equip_weapon_id = ushort.Parse(datas[25]);
             }
 
             sr.Close();
