@@ -18,7 +18,6 @@ Assets/PolygonKnights/
 Assets/PolygonNature/
 Assets/RPGPP_LT/
 Assets/SkySerie Freebie/
-Assets/Scenes/
 Assets/Mini Legion Grunt PBR HP Polyart/
 Assets/Mini Legion Rock Golem PBR HP Polyart/
 Assets/Polytope Studio/
@@ -33,11 +32,17 @@ Assets/Resources/Rocks/
 Assets/Resources/Terrain/
 Assets/Resources/Vegetation/
 Assets/Resources/Weapon/
+Assets/Resources/Sprite/
 
 # Ignore File
+*.unity
 *.csproj
 *.sln
 *.meta
 *.mat
 *.vsconfig
 *.txt
+*.renderTexture
+
+# Ignore UnitTest
+Assets/Scripts/UnitTest/
