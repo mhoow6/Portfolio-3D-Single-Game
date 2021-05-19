@@ -20,7 +20,6 @@ public class GameManager : MonoBehaviour
     private string villagePath;
     private string villageNPCPath;
     private string villagePlayerPath;
-
     private string forestPath;
     private string forestMonsterPath;
     private string forestPlayerPath;
@@ -30,8 +29,8 @@ public class GameManager : MonoBehaviour
         instance = this;
 
         villagePath = Application.dataPath + "/Resources/Tables/Village.csv";
-        // villageNPCPath
-        // villagePlayerPath
+        villageNPCPath = Application.dataPath + "/Resources/Tables/VillageNPCPosition.csv";
+        villagePlayerPath = Application.dataPath + "/Resources/Tables/VillagePlayerPosition.csv";
 
         forestPath = Application.dataPath + "/Resources/Tables/Forest.csv";
         forestMonsterPath = Application.dataPath + "/Resources/Tables/ForestMonsterPosition.csv";
@@ -39,6 +38,18 @@ public class GameManager : MonoBehaviour
     }
 
     private void Start()
+    {
+        CreateVillage();
+    }
+
+    private void CreateVillage()
+    {
+        CreateScene(villagePath);
+        CreatePlayer(villagePlayerPath);
+        CreateNPC(villageNPCPath);
+    }
+
+    private void CreateForest()
     {
         CreateScene(forestPath);
         CreateMonster(forestMonsterPath);
@@ -118,28 +129,37 @@ public class GameManager : MonoBehaviour
             playerScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
             playerScript.transform.localScale = new Vector3(xScale, yScale, zScale);
 
-            // 의미 있나?
-            parent.transform.position = playerScript.transform.position;
-            parent.transform.rotation = playerScript.transform.rotation;
-
             // Camera Load
             CustomCamera cameraScript = cameraArm.AddComponent<CustomCamera>();
             cameraScript.player = playerScript;
-            cameraScript.transform.localPosition = playerScript.transform.position + cameraScript.offset;
+            cameraScript.transform.position = playerScript.transform.position + cameraScript.offset;
             cameraScript.transform.rotation = playerScript.transform.rotation;
-            Camera.main.transform.localPosition = cameraScript.transform.localPosition + cameraScript.cameraDistance; // globalPosition x,y,z -> locaPosition z,y,x
+            Camera.main.transform.position = cameraScript.transform.position + cameraScript.cameraDistance; // globalPosition x,y,z -> locaPosition z,y,x
             Camera.main.transform.rotation = cameraScript.transform.rotation;
+
+            // Minimap Icon Load
+            GameObject minimapIcon = new GameObject("MinimapIcon");
+            SpriteRenderer iconRenderer = minimapIcon.AddComponent<SpriteRenderer>();
+            minimapIcon.transform.position = playerScript.transform.position + new Vector3(0, 1f, 0);
+            minimapIcon.transform.localScale = new Vector3(0.2f, 0.2f);
+            minimapIcon.layer = 6; // Ignore MainCamera
+            iconRenderer.sprite = Resources.Load<Sprite>("Sprite/player_icon");
+            iconRenderer.color = Color.blue;
 
             // Controller Load
             PlayerController _controller = parent.AddComponent<PlayerController>();
             _controller.player = playerScript;
             _controller.cameraArm = cameraScript.transform;
             this.controller = _controller;
-            
-            // Set Parent each
+
+            // Set Parent each            
             playerScript.transform.SetParent(parent.transform);
             cameraScript.transform.SetParent(parent.transform);
             Camera.main.transform.SetParent(cameraScript.transform);
+            minimapIcon.transform.SetParent(playerScript.transform);
+
+            // local Rotation Setup
+            minimapIcon.transform.localRotation = Quaternion.Euler(new Vector3(90f, 0f, 180f));
         }
 
         Debug.Log("Player Load Completed.");
@@ -203,5 +223,51 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("Scene Load Completed.");
         }
+    }
+
+    private static void CreateNPC(string filePath)
+    {
+        using (StreamReader sr = new StreamReader(filePath))
+        {
+            string line = string.Empty;
+            GameObject parent = new GameObject("NPC");
+
+            sr.ReadLine();
+
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] datas = line.Split(',');
+
+                ushort index = ushort.Parse(datas[0]);
+                ushort id = ushort.Parse(datas[1]);
+                float xPos = float.Parse(datas[2]);
+                float yPos = float.Parse(datas[3]);
+                float zPos = float.Parse(datas[4]);
+                float xRot = float.Parse(datas[5]);
+                float yRot = float.Parse(datas[6]);
+                float zRot = float.Parse(datas[7]);
+                float xScale = float.Parse(datas[8]);
+                float yScale = float.Parse(datas[9]);
+                float zScale = float.Parse(datas[10]);
+
+                string npcName = NPCInfoTableManager.GetNPCNameFromID(id);
+
+                GameObject _npc = Resources.Load<GameObject>("Character/NPC/" + npcName);
+                GameObject npc = GameObject.Instantiate(_npc);
+                NPC npcScript = npc.AddComponent<NPC>();
+
+                npcScript.gameObject.name = npcName;
+                npcScript.index = index;
+                npcScript.id = id;
+                npcScript.transform.position = new Vector3(xPos, yPos, zPos);
+                npcScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
+                npcScript.transform.localScale = new Vector3(xScale, yScale, zScale);
+
+                npcScript.transform.SetParent(parent.transform);
+            }
+
+        }
+
+        Debug.Log("NPC Position Load Completed.");
     }
 }
