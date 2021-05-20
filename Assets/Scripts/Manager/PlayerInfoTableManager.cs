@@ -26,9 +26,10 @@ public struct PlayerInfo
     public float skill_02_cooldown;
     public float walk_speed;
     public float run_speed;
-    public float combat_walk_speed;
-    public float combat_run_speed;
+    public float run_sp;
+    public float combat_walk_speed;    
     public float roll_distance;
+    public float roll_sp;
     public ushort basic_weapon_id;
     public ushort equip_weapon_id;
 }
@@ -70,11 +71,12 @@ public static class PlayerInfoTableManager
                 playerInfo.skill_02_cooldown = float.Parse(datas[18]);
                 playerInfo.walk_speed = float.Parse(datas[19]);
                 playerInfo.run_speed = float.Parse(datas[20]);
-                playerInfo.combat_walk_speed = float.Parse(datas[21]);
-                playerInfo.combat_run_speed = float.Parse(datas[22]);
+                playerInfo.run_sp = float.Parse(datas[21]);
+                playerInfo.combat_walk_speed = float.Parse(datas[22]);
                 playerInfo.roll_distance = float.Parse(datas[23]);
-                playerInfo.basic_weapon_id = ushort.Parse(datas[24]);
-                playerInfo.equip_weapon_id = ushort.Parse(datas[25]);
+                playerInfo.roll_sp = float.Parse(datas[24]);
+                playerInfo.basic_weapon_id = ushort.Parse(datas[25]);
+                playerInfo.equip_weapon_id = ushort.Parse(datas[26]);
             }
 
             sr.Close();
