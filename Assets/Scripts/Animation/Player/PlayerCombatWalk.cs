@@ -6,8 +6,9 @@ public class PlayerCombatWalk : PlayerAnimation
 {
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        SwitchCombatModeIdle(animator);
-        SwitchCombatModeAttack(animator);
-        SwitchCombatModeWalk(animator);
+        CombatModeIdleCondition(animator);
+        CombatModeAttack_01_Condition(animator);
+        CombatModeWalkCondition(animator);
+        DeadCondition(animator);
     }
 }

@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerAnimation : StateMachineBehaviour
 {
-    public float animationDurationTime = 0.25f;
+    public const float animationTransitionTime = 0.25f;
+    public const float attackAvailableTime = 0.4f;
+    public const float attackClipSpeed = 0.8f;
+    public const float combatAttackClipSpeed = 0.65f;
     public float currentAnimationTime;
 
     public enum AniType {
@@ -29,71 +32,103 @@ public class PlayerAnimation : StateMachineBehaviour
         SKILL_02
     }
 
-    protected void SwitchIdle(Animator animator)
+    protected void IdleCondition(Animator animator)
     {
         if (!GameManager.instance.controller.isPlayerWantToMove)
             animator.SetInteger("ani_id", (int)AniType.IDLE);
     }
 
-    protected void SwitchWalk(Animator animator)
+    protected void WalkCondition(Animator animator)
     {
-        if (GameManager.instance.controller.moveVector.magnitude != 0)
-        {
+        if (GameManager.instance.controller.isPlayerWantToMove && !Input.GetKey(KeyCode.LeftShift))
             animator.SetInteger("ani_id", (int)AniType.WALK);
-        }
     }
 
-    protected void SwitchAttack_1(Animator animator)
+    protected void RunCondition(Animator animator)
+    {
+        if (GameManager.instance.controller.isPlayerWantToMove && Input.GetKey(KeyCode.LeftShift) &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.run_sp)
+                animator.SetInteger("ani_id", (int)AniType.RUN); 
+    }
+
+    protected void DeadCondition(Animator animator)
+    {
+        if (GameManager.instance.controller.player.currentHp <= 0)
+            animator.SetInteger("ani_id", (int)AniType.DEAD);
+    }
+
+    protected void Attack_01_Condition(Animator animator)
     {
         if (Input.GetAxisRaw("Fire1") != 0 &&
             GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.attack_sp)
-            animator.SetInteger("ani_id", (int)AniType.ATTACK_01);
+                animator.SetInteger("ani_id", (int)AniType.ATTACK_01);  
     }
 
-    protected void SwitchAttack_2(Animator animator)
+    protected void Attack_02_Condition(Animator animator)
     {
         if (Input.GetAxisRaw("Fire1") != 0 &&
             GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.attack_sp)
-            animator.SetInteger("ani_id", (int)AniType.ATTACK_02);
+                animator.SetInteger("ani_id", (int)AniType.ATTACK_02);
     }
 
-    protected void SwitchCombatMode(Animator animator)
+    protected void SwitchCombatModeCondition(Animator animator)
     {
-        if (GameManager.instance.controller.isCombatMode && Input.GetKeyDown(KeyCode.R))
+        if (GameManager.instance.controller.player.isCombatMode && Input.GetKeyDown(KeyCode.R))
         {
             animator.SetInteger("ani_id", (int)AniType.UNARMED);
-            GameManager.instance.controller.isCombatMode = false;
             return;
         }
 
-        if (!GameManager.instance.controller.isCombatMode && Input.GetKeyDown(KeyCode.R))
+        if (!GameManager.instance.controller.player.isCombatMode && Input.GetKeyDown(KeyCode.R))
         {
             animator.SetInteger("ani_id", (int)AniType.ARMED);
-            GameManager.instance.controller.isCombatMode = true;
             return;
         }
     }
 
-    protected void SwitchCombatModeIdle(Animator animator)
+    protected void RollCondition(Animator animator)
     {
-        if (!Input.anyKeyDown && GameManager.instance.controller.isCombatMode)
-            animator.SetInteger("ani_id", (int)AniType.COMBAT_IDLE);
+        if (Input.GetKeyDown(KeyCode.Space) &&
+            !GameManager.instance.controller.player.isCombatMode &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.roll_sp)
+                animator.SetInteger("ani_id", (int)AniType.ROLL); 
     }
 
-    protected void SwitchCombatModeWalk(Animator animator)
+    protected void CombatModeIdleCondition(Animator animator)
     {
-        if (GameManager.instance.controller.isCombatMode && GameManager.instance.controller.moveVector.magnitude != 0)
-        {
-            animator.SetInteger("ani_id", (int)AniType.COMBAT_WALK);
-        }
+        if (GameManager.instance.controller.player.isCombatMode &&
+            !GameManager.instance.controller.isPlayerWantToMove)
+                animator.SetInteger("ani_id", (int)AniType.COMBAT_IDLE);
     }
 
-    protected void SwitchCombatModeAttack(Animator animator)
+    protected void CombatModeWalkCondition(Animator animator)
     {
-        if (GameManager.instance.controller.isCombatMode && Input.GetAxisRaw("Fire1") != 0)
-        {
-            animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_01);
-        }
+        if (GameManager.instance.controller.player.isCombatMode &&
+            GameManager.instance.controller.isPlayerWantToMove)
+                animator.SetInteger("ani_id", (int)AniType.COMBAT_WALK);
     }
 
+    protected void CombatModeAttack_01_Condition(Animator animator)
+    {
+        if (GameManager.instance.controller.player.isCombatMode &&
+            Input.GetAxisRaw("Fire1") != 0 &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_attack_sp)
+                animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_01);
+    }
+
+    protected void CombatModeAttack_02_Condition(Animator animator)
+    {
+        if (GameManager.instance.controller.player.isCombatMode &&
+            Input.GetAxisRaw("Fire1") != 0 &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_attack_sp)
+                animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_02);
+    }
+
+    protected void CombatModeAttack_03_Condition(Animator animator)
+    {
+        if (GameManager.instance.controller.player.isCombatMode &&
+            Input.GetAxisRaw("Fire1") != 0 &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_attack_sp)
+                animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_03);
+    }
 }

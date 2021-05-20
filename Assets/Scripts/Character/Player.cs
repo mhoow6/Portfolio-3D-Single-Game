@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class Player : Character
 {
+    // Load From Table
     public byte level;
-    public float currentHp;
+    public float hp;
     public float mp;
-    public float currentMp;
     public float sp;
-    public float currentSp;
     public float attack_sp;
     public float combat_attack_sp;
     public float skill_01_mp;
@@ -18,26 +17,36 @@ public class Player : Character
     public float skill_02_mp;
     public float skill_02_sp;
     public float skill_02_cooldown;
+    public float run_speed;
+    public float run_sp;
+    public float combat_walk_speed;
+    public float roll_distance;
+    public float roll_sp;
     public ushort basic_weapon_id;
     public ushort equip_weapon_id;
-    public float combat_walk_speed;
-    public Transform sheath;
-    public Transform righthand;
-    public GameObject item_SwordSheath;
-    public GameObject item_Sword;
+    // Load From Table
+
+    public float currentHp;
+    public float currentMp;
+    public float currentSp;
     public bool isPlayerNeedSP;
+    public bool isCombatMode;
+    public bool isPlayerWalk;
+    public float SpRecoveryDuration;
+    public float SpRecoveryPoint;
 
-    private bool CR_running;
+    private Transform sheath;
+    private Transform righthand;
+    private GameObject item_SwordSheath;
+    private GameObject item_Sword;
+    private bool SpRecovery_running;
 
-    void Awake()
+    void Start()
     {
         level = PlayerInfoTableManager.playerInfo.level;
         hp = PlayerInfoTableManager.playerInfo.hp;
-        currentHp = hp;
         mp = PlayerInfoTableManager.playerInfo.mp;
-        currentMp = mp;
         sp = PlayerInfoTableManager.playerInfo.sp;
-        currentSp = sp;
         attack_sp = PlayerInfoTableManager.playerInfo.attack_sp;
         combat_attack_sp = PlayerInfoTableManager.playerInfo.combat_attack_sp;
         skill_01_mp = PlayerInfoTableManager.playerInfo.skill_01_mp;
@@ -47,29 +56,37 @@ public class Player : Character
         skill_02_sp = PlayerInfoTableManager.playerInfo.skill_02_sp;
         skill_02_cooldown = PlayerInfoTableManager.playerInfo.skill_02_cooldown;
         walk_speed = PlayerInfoTableManager.playerInfo.walk_speed;
+        run_speed = PlayerInfoTableManager.playerInfo.run_speed;
+        run_sp = PlayerInfoTableManager.playerInfo.run_sp;
         combat_walk_speed = PlayerInfoTableManager.playerInfo.combat_walk_speed;
+        roll_distance = PlayerInfoTableManager.playerInfo.roll_distance;
+        roll_sp = PlayerInfoTableManager.playerInfo.roll_sp;
         basic_weapon_id = PlayerInfoTableManager.playerInfo.basic_weapon_id;
-        equip_weapon_id = PlayerInfoTableManager.playerInfo.equip_weapon_id; // 장비창 구현시 선택한 장비의 아이디를 적용하게 끔 구현
+        equip_weapon_id = PlayerInfoTableManager.playerInfo.equip_weapon_id;
         attack_angle = PlayerInfoTableManager.playerInfo.attack_01_angle;
         attack_damage = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_damage;
         attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
+
+        currentHp = hp;
+        currentMp = mp;
+        currentSp = sp;
+        SpRecoveryDuration = 0.75f;
+        SpRecoveryPoint = 3f;
+        isPlayerNeedSP = false;
+        isCombatMode = false;
+        SpRecovery_running = false;
         sheath = GetSheathParent();
         righthand = GetRighthandParent();
         item_SwordSheath = SetWeaponToSheath(equip_weapon_id);
         item_Sword = SetWeaponToRighthand(equip_weapon_id);
-        isPlayerNeedSP = false;
-        CR_running = false;
     }
 
     private void Update()
     {
-        GameManager.instance.playerHP.value = currentHp / hp;
-        GameManager.instance.playerMP.value = currentMp / mp;
-        GameManager.instance.playerSP.value = currentSp / sp;
-        GameManager.instance.playerLevel.text = level.ToString();
+        // UIStatusUpdate()
 
-        if (isPlayerNeedSP && !CR_running)
-            StartCoroutine(SpRecovery(1f));
+        if (isPlayerNeedSP && !SpRecovery_running)
+            StartCoroutine(SpRecovery(SpRecoveryDuration));
     }
 
     public void Attack(int ani_id)
@@ -203,21 +220,34 @@ public class Player : Character
 
     private IEnumerator SpRecovery(float recoveryDuration)
     {
-        CR_running = true;
+        SpRecovery_running = true;
         WaitForSeconds wt = new WaitForSeconds(recoveryDuration);
 
         while (currentSp < sp)
         {
             yield return wt;
-            currentSp += 3f;
+            currentSp += SpRecoveryPoint;
 
             if (currentSp >= sp)
             {
                 currentSp = sp;
                 isPlayerNeedSP = false;
-                CR_running = false;
+                SpRecovery_running = false;
                 yield break;
             }
         }
+    }
+
+    private void UIStatusUpdate()
+    {
+        GameManager.instance.playerHP.value = currentHp / hp;
+        GameManager.instance.playerMP.value = currentMp / mp;
+        GameManager.instance.playerSP.value = currentSp / sp;
+        GameManager.instance.playerLevel.text = level.ToString();
+    }
+
+    private void UIDeadUpdate()
+    {
+        /* Need Implement */
     }
 }
