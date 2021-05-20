@@ -15,11 +15,12 @@ public enum mobType
 
 public class Monster : Character
 {
+    public float hp;
+    public float run_speed;
     public ushort id;
     public ushort index;
     public byte monster_type;
-    public float run_speed;
-
+    
     private void Awake()
     {
         hp = 100; // TestZone Only

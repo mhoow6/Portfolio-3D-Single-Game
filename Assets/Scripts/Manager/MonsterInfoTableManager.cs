@@ -80,7 +80,7 @@ public static class MonsterInfoTableManager
         throw new System.NotSupportedException(mobID + " 에 해당하는 몬스터는 없습니다.");
     }
 
-    private static ushort GetMonsterIDFromName(string mobName)
+    public static ushort GetMonsterIDFromName(string mobName)
     {
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {

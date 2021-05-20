@@ -5,6 +5,8 @@ using UnityEngine;
 public class CustomCamera : MonoBehaviour
 {
     public Player player;
+    public Vector3 offset = new Vector3(0, 1.683f, 0);
+    public Vector3 cameraDistance = new Vector3(-3.54f, 0, 0);
 
     private float zoom;
     private float zoomResult;
@@ -12,8 +14,6 @@ public class CustomCamera : MonoBehaviour
     private float zoomMax;
     private float zoomSenstivity;
     private float zoomSpeed;
-    public Vector3 offset = new Vector3(0, 1.683f, 0);
-    public Vector3 cameraDistance = new Vector3(-3.54f, 0, 0);
 
     void Awake()
     {

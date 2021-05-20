@@ -20,6 +20,5 @@ public static class Utility
                 return hitinfo.point;
         }
         return spawnPos;
-        
     }
 }

@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        CreateVillage();
+        // CreateForest();
     }
 
     private void CreateVillage()
@@ -225,7 +225,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private static void CreateNPC(string filePath)
+    private void CreateNPC(string filePath)
     {
         using (StreamReader sr = new StreamReader(filePath))
         {
