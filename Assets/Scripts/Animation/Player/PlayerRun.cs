@@ -12,17 +12,17 @@ public class PlayerRun : PlayerAnimation
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        IdleCondition(animator);
-        WalkCondition(animator);
-        Attack_01_Condition(animator);
-
         GameManager.instance.controller.player.currentSp = Mathf.Lerp(
             GameManager.instance.controller.player.currentSp,
             GameManager.instance.controller.player.currentSp - GameManager.instance.controller.player.run_sp,
-            Time.deltaTime);
+            Time.deltaTime * GameManager.instance.controller.player.runningSpReductionRate);
 
+        IdleCondition(animator);
+        WalkCondition(animator);
         DeadCondition(animator);
+        Attack_01_Condition(animator);
         RollCondition(animator);
+
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

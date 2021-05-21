@@ -8,7 +8,10 @@ public class PlayerCombatIdle : PlayerAnimation
     {
         SwitchCombatModeCondition(animator);
         CombatModeWalkCondition(animator);
+        CombatModeDeadCondition(animator);
         CombatModeAttack_01_Condition(animator);
-        DeadCondition(animator);
+        CombatModeSkill_01_Condition(animator);
+        CombatModeSkill_02_Condition(animator);
+        CombatModeRollCondition(animator);
     }
 }

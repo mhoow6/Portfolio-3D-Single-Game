@@ -26,6 +26,7 @@ public class PlayerRoll : PlayerAnimation
         IdleCondition(animator);
         WalkCondition(animator);
         RunCondition(animator);
+        DeadCondition(animator);
         Attack_01_Condition(animator);
     }
 

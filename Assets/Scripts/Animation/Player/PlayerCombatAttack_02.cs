@@ -16,16 +16,18 @@ public class PlayerCombatAttack_02 : PlayerAnimation
         if (currentAnimationTime < (1 - animationTransitionTime))
             currentAnimationTime += Time.deltaTime * combatAttackClipSpeed;
 
-        if (currentAnimationTime > attackAvailableTime)
+        if (currentAnimationTime > interruptAvailableTime)
         {
             CombatModeAttack_03_Condition(animator);
+            CombatModeSkill_01_Condition(animator);
+            CombatModeSkill_02_Condition(animator);
+            CombatModeRollCondition(animator);
             return;
         }
             
         CombatModeWalkCondition(animator);
         CombatModeIdleCondition(animator);
-        DeadCondition(animator);
-
+        CombatModeDeadCondition(animator);
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
