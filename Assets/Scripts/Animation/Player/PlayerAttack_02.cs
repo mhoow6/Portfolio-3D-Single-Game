@@ -17,7 +17,7 @@ public class PlayerAttack_02 : PlayerAnimation
         if (currentAnimationTime < (1 - animationTransitionTime))
             currentAnimationTime += Time.deltaTime * attackClipSpeed;
 
-        if (currentAnimationTime > attackAvailableTime)
+        if (currentAnimationTime > interruptAvailableTime)
         {
             Attack_01_Condition(animator);
             RollCondition(animator);

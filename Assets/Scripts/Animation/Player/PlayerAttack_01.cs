@@ -17,7 +17,7 @@ public class PlayerAttack_01 : PlayerAnimation
         if (currentAnimationTime < (1 - animationTransitionTime))
             currentAnimationTime += Time.deltaTime * attackClipSpeed;
 
-        if (currentAnimationTime > attackAvailableTime)
+        if (currentAnimationTime > interruptAvailableTime)
         {
             Attack_02_Condition(animator);
             RollCondition(animator);
@@ -28,8 +28,7 @@ public class PlayerAttack_01 : PlayerAnimation
         WalkCondition(animator);
         RunCondition(animator);
         DeadCondition(animator);
-        
-
+       
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

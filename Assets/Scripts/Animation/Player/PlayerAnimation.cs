@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAnimation : StateMachineBehaviour
 {
     public const float animationTransitionTime = 0.25f;
-    public const float attackAvailableTime = 0.4f;
+    public const float interruptAvailableTime = 0.4f;
     public const float attackClipSpeed = 0.8f;
     public const float combatAttackClipSpeed = 0.65f;
     public float currentAnimationTime;
@@ -14,7 +14,7 @@ public class PlayerAnimation : StateMachineBehaviour
         IDLE=0,
         WALK,
         RUN,
-        INJURED,
+        INJURED, // NO ANIMATION
         DEAD,
         ATTACK_01,
         ATTACK_02,
@@ -23,13 +23,14 @@ public class PlayerAnimation : StateMachineBehaviour
         ROLL,
         COMBAT_IDLE=10,
         COMBAT_WALK,
-        COMBAT_INJURED,
+        COMBAT_INJURED, // NO ANIMATION
         COMBAT_DEAD,
         COMBAT_ATTACK_01,
         COMBAT_ATTACK_02,
         COMBAT_ATTACK_03,
-        SKILL_01,
-        SKILL_02
+        COMBAT_SKILL_01,
+        COMBAT_SKILL_02,
+        COMBAT_ROLL
     }
 
     protected void IdleCondition(Animator animator)
@@ -108,6 +109,13 @@ public class PlayerAnimation : StateMachineBehaviour
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_WALK);
     }
 
+    protected void CombatModeDeadCondition(Animator animator)
+    {
+        if (GameManager.instance.controller.player.isCombatMode &&
+            GameManager.instance.controller.player.currentHp <= 0)
+                animator.SetInteger("ani_id", (int)AniType.COMBAT_DEAD);
+    }
+
     protected void CombatModeAttack_01_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
@@ -130,5 +138,33 @@ public class PlayerAnimation : StateMachineBehaviour
             Input.GetAxisRaw("Fire1") != 0 &&
             GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_03);
+    }
+
+    protected void CombatModeSkill_01_Condition(Animator animator)
+    {
+        if (GameManager.instance.controller.player.isCombatMode &&
+            Input.GetKeyDown(KeyCode.E) &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_skill_01_sp &&
+            GameManager.instance.controller.player.currentMp >= GameManager.instance.controller.player.combat_skill_01_mp &&
+            GameManager.instance.controller.player.current_combat_skill_01_cooldown == 0)
+                animator.SetInteger("ani_id", (int)AniType.COMBAT_SKILL_01);
+    }
+
+    protected void CombatModeSkill_02_Condition(Animator animator)
+    {
+        if (GameManager.instance.controller.player.isCombatMode &&
+            Input.GetKeyDown(KeyCode.Q) &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_skill_02_sp &&
+            GameManager.instance.controller.player.currentMp >= GameManager.instance.controller.player.combat_skill_02_mp &&
+            GameManager.instance.controller.player.current_combat_skill_02_cooldown == 0)
+                animator.SetInteger("ani_id", (int)AniType.COMBAT_SKILL_02);
+    }
+
+    protected void CombatModeRollCondition(Animator animator)
+    {
+        if (Input.GetKeyDown(KeyCode.Space) &&
+            GameManager.instance.controller.player.isCombatMode &&
+            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.roll_sp)
+                animator.SetInteger("ani_id", (int)AniType.COMBAT_ROLL);
     }
 }
