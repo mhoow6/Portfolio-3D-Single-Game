@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-// 테이블로 부터 데이터 로드
-public class ResourceManager : MonoBehaviour
+public class TableManager : MonoBehaviour
 {
-    public static ResourceManager instance;
+    public static TableManager instance;
     private string weaponPath;
     private string playerPath;
     private string monsterPath;
@@ -20,10 +19,15 @@ public class ResourceManager : MonoBehaviour
         monsterPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
         npcPath = Application.dataPath + "/Resources/Tables/NPCInfo.csv";
 
-        WeaponInfoTableManager.LoadTable(weaponPath);
-        PlayerInfoTableManager.LoadTable(playerPath);
-        MonsterInfoTableManager.LoadTable(monsterPath);
-        NPCInfoTableManager.LoadTable(npcPath);
+        if (!SceneInfoManager.isTableManagerAwakeOnce)
+        {
+            WeaponInfoTableManager.LoadTable(weaponPath);
+            PlayerInfoTableManager.LoadTable(playerPath);
+            MonsterInfoTableManager.LoadTable(monsterPath);
+            NPCInfoTableManager.LoadTable(npcPath);
+        }
+
+        SceneInfoManager.isTableManagerAwakeOnce = true;
     }
 
 }
