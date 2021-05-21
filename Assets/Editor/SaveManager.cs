@@ -75,22 +75,28 @@ public static class SaveManager
 
     private static void SavePlayerPosition(string filePath)
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject[] player = GameObject.FindGameObjectsWithTag("Player");
 
         using (StreamWriter sw = new StreamWriter(filePath))
         {
-            sw.WriteLine("xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
-            sw.WriteLine(
-                player.transform.position.x + "," +
-                player.transform.position.y + "," +
-                player.transform.position.z + "," +
-                player.transform.rotation.eulerAngles.x + "," +
-                player.transform.rotation.eulerAngles.y + "," +
-                player.transform.rotation.eulerAngles.z + "," +
-                player.transform.localScale.x + "," +
-                player.transform.localScale.y + "," +
-                player.transform.localScale.z
-                );
+            sw.WriteLine("index,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
+
+            for (int i = 0; i < player.Length; i++)
+            {
+                sw.WriteLine(
+                    i + "," +
+                    player[i].transform.position.x + "," +
+                    player[i].transform.position.y + "," +
+                    player[i].transform.position.z + "," +
+                    player[i].transform.rotation.eulerAngles.x + "," +
+                    player[i].transform.rotation.eulerAngles.y + "," +
+                    player[i].transform.rotation.eulerAngles.z + "," +
+                    player[i].transform.localScale.x + "," +
+                    player[i].transform.localScale.y + "," +
+                    player[i].transform.localScale.z
+                    );
+            }
+            
 
             sw.Close();
         }

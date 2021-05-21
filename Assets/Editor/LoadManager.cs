@@ -57,15 +57,16 @@ public static class LoadManager
             sr.ReadLine();
 
             string[] datas = sr.ReadLine().Split(',');
-            float xPos = float.Parse(datas[0]);
-            float yPos = float.Parse(datas[1]);
-            float zPos = float.Parse(datas[2]);
-            float xRot = float.Parse(datas[3]);
-            float yRot = float.Parse(datas[4]);
-            float zRot = float.Parse(datas[5]);
-            float xScale = float.Parse(datas[6]);
-            float yScale = float.Parse(datas[7]);
-            float zScale = float.Parse(datas[8]);
+            byte index = byte.Parse(datas[0]);
+            float xPos = float.Parse(datas[1]);
+            float yPos = float.Parse(datas[2]);
+            float zPos = float.Parse(datas[3]);
+            float xRot = float.Parse(datas[4]);
+            float yRot = float.Parse(datas[5]);
+            float zRot = float.Parse(datas[6]);
+            float xScale = float.Parse(datas[7]);
+            float yScale = float.Parse(datas[8]);
+            float zScale = float.Parse(datas[9]);
 
             GameObject _player = Resources.Load<GameObject>("Character/Player/Character_Knight_01_Black");
             GameObject player = GameObject.Instantiate(_player);
