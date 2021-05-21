@@ -11,12 +11,12 @@ public class Player : Character
     public float sp;
     public float attack_sp;
     public float combat_attack_sp;
-    public float skill_01_mp;
-    public float skill_01_sp;
-    public float skill_01_cooldown;
-    public float skill_02_mp;
-    public float skill_02_sp;
-    public float skill_02_cooldown;
+    public float combat_skill_01_mp;
+    public float combat_skill_01_sp;
+    public float combat_skill_01_cooldown;
+    public float combat_skill_02_mp;
+    public float combat_skill_02_sp;
+    public float combat_skill_02_cooldown;
     public float run_speed;
     public float run_sp;
     public float combat_walk_speed;
@@ -29,17 +29,26 @@ public class Player : Character
     public float currentHp;
     public float currentMp;
     public float currentSp;
+    public float SpRecoveryPoint;
+    public float runningSpReductionRate;
+    public float current_combat_skill_01_cooldown;
+    public float current_combat_skill_02_cooldown;
     public bool isPlayerNeedSP;
     public bool isCombatMode;
     public bool isPlayerWalk;
-    public float SpRecoveryDuration;
-    public float SpRecoveryPoint;
-
+    public bool isPlayerUseCombatSkill01;
+    public bool isPlayerUseCombatSkill02;
+    
     private Transform sheath;
     private Transform righthand;
     private GameObject item_SwordSheath;
     private GameObject item_Sword;
     private bool SpRecovery_running;
+    private float SpRecoveryDuration;
+    private bool CombatSkill01Cooldown_running;
+    private float CombatSkill01CooldownDuration;
+    private bool CombatSkill02Cooldown_running;
+    private float CombatSkill02CooldownDuration;
 
     void Start()
     {
@@ -49,12 +58,12 @@ public class Player : Character
         sp = PlayerInfoTableManager.playerInfo.sp;
         attack_sp = PlayerInfoTableManager.playerInfo.attack_sp;
         combat_attack_sp = PlayerInfoTableManager.playerInfo.combat_attack_sp;
-        skill_01_mp = PlayerInfoTableManager.playerInfo.skill_01_mp;
-        skill_01_sp = PlayerInfoTableManager.playerInfo.skill_01_sp;
-        skill_01_cooldown = PlayerInfoTableManager.playerInfo.skill_01_cooldown;
-        skill_02_mp = PlayerInfoTableManager.playerInfo.skill_02_mp;
-        skill_02_sp = PlayerInfoTableManager.playerInfo.skill_02_sp;
-        skill_02_cooldown = PlayerInfoTableManager.playerInfo.skill_02_cooldown;
+        combat_skill_01_mp = PlayerInfoTableManager.playerInfo.skill_01_mp;
+        combat_skill_01_sp = PlayerInfoTableManager.playerInfo.skill_01_sp;
+        combat_skill_01_cooldown = PlayerInfoTableManager.playerInfo.skill_01_cooldown;
+        combat_skill_02_mp = PlayerInfoTableManager.playerInfo.skill_02_mp;
+        combat_skill_02_sp = PlayerInfoTableManager.playerInfo.skill_02_sp;
+        combat_skill_02_cooldown = PlayerInfoTableManager.playerInfo.skill_02_cooldown;
         walk_speed = PlayerInfoTableManager.playerInfo.walk_speed;
         run_speed = PlayerInfoTableManager.playerInfo.run_speed;
         run_sp = PlayerInfoTableManager.playerInfo.run_sp;
@@ -70,11 +79,17 @@ public class Player : Character
         currentHp = hp;
         currentMp = mp;
         currentSp = sp;
+        current_combat_skill_01_cooldown = 0;
+        current_combat_skill_02_cooldown = 0;
         SpRecoveryDuration = 0.75f;
+        runningSpReductionRate = 5f;
         SpRecoveryPoint = 3f;
+        CombatSkill01CooldownDuration = 1f;
         isPlayerNeedSP = false;
         isCombatMode = false;
         SpRecovery_running = false;
+        CombatSkill01Cooldown_running = false;
+        isPlayerUseCombatSkill01 = false;
         sheath = GetSheathParent();
         righthand = GetRighthandParent();
         item_SwordSheath = SetWeaponToSheath(equip_weapon_id);
@@ -83,10 +98,14 @@ public class Player : Character
 
     private void Update()
     {
-        // UIStatusUpdate()
-
         if (isPlayerNeedSP && !SpRecovery_running)
             StartCoroutine(SpRecovery(SpRecoveryDuration));
+
+        if (isPlayerUseCombatSkill01 && !CombatSkill01Cooldown_running)
+            StartCoroutine(CombatSkill01Cooldown(CombatSkill01CooldownDuration));
+
+        if (isPlayerUseCombatSkill02 && !CombatSkill02Cooldown_running)
+            StartCoroutine(CombatSkill01Cooldown(CombatSkill02CooldownDuration));
     }
 
     public void Attack(int ani_id)
@@ -105,11 +124,11 @@ public class Player : Character
                 attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_03_angle;
                 break;
 
-            case (int)PlayerAnimation.AniType.SKILL_01:
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_01:
                 attack_angle = PlayerInfoTableManager.playerInfo.skill_01_angle;
                 break;
 
-            case (int)PlayerAnimation.AniType.SKILL_02:
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
                 attack_angle = PlayerInfoTableManager.playerInfo.skill_02_angle;
                 break;
         }
@@ -188,7 +207,8 @@ public class Player : Character
             }
         }
         return null;
-    } 
+    }
+    // 매개변수 문자열, 로직 합체
 
     // 무기 스위칭시 부모의 위치를 바꾸게 하는 방법이 낫지 않을까?
     private GameObject SetWeaponToSheath(ushort equipWeaponID)
@@ -238,16 +258,42 @@ public class Player : Character
         }
     }
 
-    private void UIStatusUpdate()
+    // 매개변수를 통해 다르게 하자
+    private IEnumerator CombatSkill01Cooldown(float cooldownDuration)
     {
-        GameManager.instance.playerHP.value = currentHp / hp;
-        GameManager.instance.playerMP.value = currentMp / mp;
-        GameManager.instance.playerSP.value = currentSp / sp;
-        GameManager.instance.playerLevel.text = level.ToString();
+        CombatSkill01Cooldown_running = true;
+        WaitForSeconds wt = new WaitForSeconds(cooldownDuration);
+
+        while (current_combat_skill_01_cooldown != 0)
+        {
+            yield return wt;
+            current_combat_skill_01_cooldown -= cooldownDuration;
+
+            if (current_combat_skill_01_cooldown == 0)
+            {
+                CombatSkill01Cooldown_running = false;
+                yield break;
+            }
+
+        }
     }
 
-    private void UIDeadUpdate()
+    private IEnumerator CombatSkill02Cooldown(float cooldownDuration)
     {
-        /* Need Implement */
+        CombatSkill02Cooldown_running = true;
+        WaitForSeconds wt = new WaitForSeconds(cooldownDuration);
+
+        while (current_combat_skill_02_cooldown != 0)
+        {
+            yield return wt;
+            current_combat_skill_02_cooldown -= cooldownDuration;
+
+            if (current_combat_skill_02_cooldown == 0)
+            {
+                CombatSkill02Cooldown_running = false;
+                yield break;
+            }
+
+        }
     }
 }
