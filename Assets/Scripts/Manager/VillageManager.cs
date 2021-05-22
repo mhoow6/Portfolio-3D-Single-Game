@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.SceneManagement;
+using UnityEngine.AI;
 
 public class VillageManager : MonoBehaviour
 {
@@ -27,7 +28,6 @@ public class VillageManager : MonoBehaviour
         CreatePlayer(villagePlayerPath);
         CreateNPC(villageNPCPath);
 
-        Debug.Log((int)SceneInfoManager.beforeScene);
         SceneInfoManager.currentScene = SceneType.Village;
     }
 
@@ -44,7 +44,7 @@ public class VillageManager : MonoBehaviour
         {
             string line = string.Empty;
             GameObject parent = new GameObject("Player");
-            GameObject cameraArm = new GameObject("cameraArm");
+            GameObject cameraArm = new GameObject("CameraArm");
 
             sr.ReadLine();
 
@@ -70,7 +70,7 @@ public class VillageManager : MonoBehaviour
                 GameObject _player = Resources.Load<GameObject>("Character/Player/Character_Knight_01_Black");
                 GameObject player = GameObject.Instantiate(_player);
                 Player playerScript = player.AddComponent<Player>();
-                playerScript.name = "Character_Knight_01_Black";
+                playerScript.name = "Player";
                 playerScript.transform.position = new Vector3(xPos, yPos, zPos);
                 playerScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
                 playerScript.transform.localScale = new Vector3(xScale, yScale, zScale);
@@ -99,6 +99,9 @@ public class VillageManager : MonoBehaviour
                 _controller.player = playerScript;
                 _controller.cameraArm = cameraScript.transform;
                 GameManager.instance.controller = _controller;
+
+                // Add NavMeshAgent
+                player.AddComponent<NavMeshAgent>();
 
                 // Set Parent each            
                 playerScript.transform.SetParent(parent.transform);

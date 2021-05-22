@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
+using UnityEngine.AI;
 
 public class FieldManager : MonoBehaviour
 {
@@ -133,6 +134,9 @@ public class FieldManager : MonoBehaviour
             _controller.player = playerScript;
             _controller.cameraArm = cameraScript.transform;
             GameManager.instance.controller = _controller;
+
+            // Add NavMeshAgent
+            player.AddComponent<NavMeshAgent>();
 
             // Set Parent each            
             playerScript.transform.SetParent(parent.transform);
