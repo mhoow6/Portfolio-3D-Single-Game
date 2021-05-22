@@ -8,8 +8,8 @@ public class PlayerRoll : PlayerAnimation
     {
         GameManager.instance.controller.isPlayerWantToRoll = true;
         GameManager.instance.controller.immobile = true;
-        GameManager.instance.controller.player.currentSp -= GameManager.instance.controller.player.roll_sp;
         GameManager.instance.controller.player.isPlayerNeedSP = false;
+        GameManager.instance.controller.player.currentSp -= GameManager.instance.controller.player.roll_sp;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

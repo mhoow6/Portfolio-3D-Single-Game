@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        UIPlayerStatusUpdate();
+        if (playerHP != null)
+            UIPlayerStatusUpdate();
     }
 
     private void UIPlayerStatusUpdate()

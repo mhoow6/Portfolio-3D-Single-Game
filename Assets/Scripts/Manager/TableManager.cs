@@ -25,9 +25,8 @@ public class TableManager : MonoBehaviour
             PlayerInfoTableManager.LoadTable(playerPath);
             MonsterInfoTableManager.LoadTable(monsterPath);
             NPCInfoTableManager.LoadTable(npcPath);
+            SceneInfoManager.isTableManagerAwakeOnce = true;
         }
-
-        SceneInfoManager.isTableManagerAwakeOnce = true;
     }
 
 }
