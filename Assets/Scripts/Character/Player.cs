@@ -29,8 +29,8 @@ public class Player : Character
     public float currentHp;
     public float currentMp;
     public float currentSp;
-    public float SpRecoveryPoint;
-    public float runningSpReductionRate;
+    public const float SpRecoveryPoint = 3f;
+    public float runningSpReductionRate = 5f;
     public float current_combat_skill_01_cooldown;
     public float current_combat_skill_02_cooldown;
     public bool isPlayerNeedSP;
@@ -43,13 +43,12 @@ public class Player : Character
     private Transform righthand;
     private GameObject item_SwordSheath;
     private GameObject item_Sword;
-    private bool SpRecovery_running;
     private float SpRecoveryDuration;
+    private float SkillDuration;
+    private bool SpRecovery_running;
     private bool CombatSkill01Cooldown_running;
-    private float CombatSkill01CooldownDuration;
     private bool CombatSkill02Cooldown_running;
-    private float CombatSkill02CooldownDuration;
-
+    
     void Start()
     {
         level = PlayerInfoTableManager.playerInfo.level;
@@ -81,15 +80,20 @@ public class Player : Character
         currentSp = sp;
         current_combat_skill_01_cooldown = 0;
         current_combat_skill_02_cooldown = 0;
-        SpRecoveryDuration = 0.75f;
-        runningSpReductionRate = 5f;
-        SpRecoveryPoint = 3f;
-        CombatSkill01CooldownDuration = 1f;
-        isPlayerNeedSP = false;
+
         isCombatMode = false;
+
+        SpRecoveryDuration = 0.75f;
+        SkillDuration = 1f;
+
+        isPlayerNeedSP = false;
         SpRecovery_running = false;
-        CombatSkill01Cooldown_running = false;
+
         isPlayerUseCombatSkill01 = false;
+        isPlayerUseCombatSkill02 = false;
+        CombatSkill01Cooldown_running = false;
+        CombatSkill02Cooldown_running = false;
+           
         sheath = GetSheathParent();
         righthand = GetRighthandParent();
         item_SwordSheath = SetWeaponToSheath(equip_weapon_id);
@@ -102,10 +106,10 @@ public class Player : Character
             StartCoroutine(SpRecovery(SpRecoveryDuration));
 
         if (isPlayerUseCombatSkill01 && !CombatSkill01Cooldown_running)
-            StartCoroutine(CombatSkill01Cooldown(CombatSkill01CooldownDuration));
+            StartCoroutine(CombatSkill01Cooldown(SkillDuration));
 
         if (isPlayerUseCombatSkill02 && !CombatSkill02Cooldown_running)
-            StartCoroutine(CombatSkill01Cooldown(CombatSkill02CooldownDuration));
+            StartCoroutine(CombatSkill02Cooldown(SkillDuration));
     }
 
     public void Attack(int ani_id)
@@ -246,7 +250,9 @@ public class Player : Character
         while (currentSp < sp)
         {
             yield return wt;
-            currentSp += SpRecoveryPoint;
+
+            if (isPlayerNeedSP)
+                currentSp += SpRecoveryPoint;
 
             if (currentSp >= sp)
             {
