@@ -24,8 +24,9 @@ Assets/Polytope Studio/
 Assets/NEXON Font/
 Assets/GUI Pro Kit Fantasy RPG/
 Assets/PolygonParticleFX/
+Assets/Scenes/
 
-# Except Tables
+# Ignore Resources
 Assets/Resources/Character/
 Assets/Resources/Particle/
 Assets/Resources/Props/
