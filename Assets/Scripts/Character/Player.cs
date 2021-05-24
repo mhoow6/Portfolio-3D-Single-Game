@@ -29,8 +29,8 @@ public class Player : Character
     public float currentHp;
     public float currentMp;
     public float currentSp;
-    public const float SpRecoveryPoint = 3f;
-    public float runningSpReductionRate = 5f;
+    public float SpRecoveryPoint;
+    public float runningSpReductionRate;
     public float current_combat_skill_01_cooldown;
     public float current_combat_skill_02_cooldown;
     public bool isPlayerNeedSP;
@@ -85,6 +85,9 @@ public class Player : Character
 
         SpRecoveryDuration = 0.75f;
         SkillDuration = 1f;
+
+        SpRecoveryPoint = 3f;
+        runningSpReductionRate = 5f;
 
         isPlayerNeedSP = false;
         SpRecovery_running = false;
