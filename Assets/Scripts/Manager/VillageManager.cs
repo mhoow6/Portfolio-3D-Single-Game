@@ -71,7 +71,7 @@ public class VillageManager : MonoBehaviour
                 GameObject player = GameObject.Instantiate(_player);
                 Player playerScript = player.AddComponent<Player>();
                 playerScript.name = "Player";
-                playerScript.transform.position = new Vector3(xPos, yPos, zPos);
+                playerScript.transform.position = Utility.RayToDown(new Vector3(xPos, yPos, zPos));
                 playerScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
                 playerScript.transform.localScale = new Vector3(xScale, yScale, zScale);
 
