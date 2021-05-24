@@ -73,7 +73,7 @@ public static class LoadManager
             Player playerScript = player.AddComponent<Player>();
 
             playerScript.name = "Character_Knight_01_Black";
-            playerScript.transform.position = new Vector3(xPos, yPos, zPos);
+            playerScript.transform.position = Utility.RayToDown(new Vector3(xPos, yPos, zPos));
             playerScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
             playerScript.transform.localScale = new Vector3(xScale, yScale, zScale);
 
@@ -181,7 +181,7 @@ public static class LoadManager
                 npcScript.gameObject.name = npcName;
                 npcScript.index = index;
                 npcScript.id = id;
-                npcScript.transform.position = new Vector3(xPos, yPos, zPos);
+                npcScript.transform.position = Utility.RayToDown(new Vector3(xPos, yPos, zPos));
                 npcScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
                 npcScript.transform.localScale = new Vector3(xScale, yScale, zScale);
 
