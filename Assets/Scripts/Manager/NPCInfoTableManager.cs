@@ -47,7 +47,7 @@ public static class NPCInfoTableManager
                 return npcInfo.npc_name;
         }
 
-        throw new System.NotSupportedException(npcID + " 에 해당하는 몬스터는 없습니다.");
+        throw new System.NotSupportedException(npcID + " 에 해당하는 NPC는 없습니다.");
     }
 }
 

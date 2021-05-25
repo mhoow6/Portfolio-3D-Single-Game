@@ -4,7 +4,8 @@ using UnityEngine;
 
 public static class Utility
 {
-    const float SKY_HEIGHT = 100f;
+    const float SKY_HEIGHT = 20f;
+    const float CORRECT_Y_POS = 0.5f;
     public static Vector3 RayToDown(Vector3 spawnPos)
     {
         Vector3 origin = spawnPos;
@@ -17,7 +18,10 @@ public static class Utility
         if (Physics.Raycast(origin, Vector3.down, out hitinfo, Mathf.Infinity, layermask))
         {
             if (hitinfo.collider.CompareTag("Ground"))
+            {
+                Debug.Log("Ground hit");
                 return hitinfo.point;
+            }
         }
         return spawnPos;
     }
