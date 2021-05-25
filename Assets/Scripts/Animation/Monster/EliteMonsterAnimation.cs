@@ -4,53 +4,12 @@ using UnityEngine;
 
 public class EliteMonsterAnimation : MonsterAnimation
 {
-    public enum AniType
+    private enum EliteMobAniType
     {
-        IDLE = 0,
-        WALK,
-        RUN,
-        INJURED,
-        DEAD,
-        ATTACK,
-        SKILL
+        SKILL_1 = 6
     }
 
-    protected override void SwitchIdle(Animator animator)
-    {
-        animator.SetInteger("ani_id", (int)AniType.IDLE);
-    }
-
-    protected override void SwitchWalk(Animator animator)
-    {
-        /* Need Implementation */
-        throw new System.NotImplementedException();
-    }
-
-    protected override void SwitchRun(Animator animator)
-    {
-        /* Need Implementation */
-        throw new System.NotImplementedException();
-    }
-
-    protected override void SwitchAttack(Animator animator)
-    {
-        /* Need Implementation */
-        throw new System.NotImplementedException();
-    }
-
-    protected override void SwitchInjured(Animator animator, float prevHP)
-    {
-        if (animator.GetComponent<Monster>().hp < prevHP && animator.GetComponent<Monster>().hp > 0)
-            animator.SetInteger("ani_id", (int)AniType.INJURED);
-    }
-
-    protected override void SwitchDead(Animator animator)
-    {
-        if (animator.GetComponent<Monster>().hp <= 0)
-            animator.SetInteger("ani_id", (int)AniType.DEAD);
-    }
-
-    protected void SwitchSkill(Animator animator)
+    protected void Skill_Condition(Animator animator)
     {
         /* Need Implementation */
     }
