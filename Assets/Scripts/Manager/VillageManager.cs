@@ -10,34 +10,27 @@ public class VillageManager : MonoBehaviour
     private string villagePath;
     private string villageNPCPath;
     private string villagePlayerPath;
-    private const float VILLAGE_TO_FOREST_MIN_X = 16f;
-    private const float VILLAGE_TO_FOREST_MAX_X = 17f;
-    private const float VILLAGE_TO_FOREST_MIN_Z = -0.76f;
-    private const float VILLAGE_TO_FOREST_MAX_Z = 2.067f;
+    
 
     private void Awake()
     {
         villagePath = Application.dataPath + "/Resources/Tables/Village.csv";
         villageNPCPath = Application.dataPath + "/Resources/Tables/VillageNPCPosition.csv";
         villagePlayerPath = Application.dataPath + "/Resources/Tables/VillagePlayerPosition.csv";
-    }
-
-    private void Start()
-    {
-        CreateScene(villagePath);
-        CreatePlayer(villagePlayerPath);
-        CreateNPC(villageNPCPath);
 
         SceneInfoManager.currentScene = SceneType.Village;
     }
 
-    private void Update()
+    private void Start()
     {
-        if (GameManager.instance.controller.player.transform.position.x > VILLAGE_TO_FOREST_MIN_X && GameManager.instance.controller.player.transform.position.x < VILLAGE_TO_FOREST_MAX_X &&
-            GameManager.instance.controller.player.transform.position.z > VILLAGE_TO_FOREST_MIN_Z && GameManager.instance.controller.player.transform.position.z < VILLAGE_TO_FOREST_MAX_Z)
-            StartCoroutine(LoadSceneAsync(SceneType.Forest));
-    }
+        NavMeshManager.instance.CreateNavMesh(SceneInfoManager.currentScene);
 
+        CreateScene(villagePath);
+        CreatePlayer(villagePlayerPath);
+        CreateNPC(villageNPCPath);
+
+        StartCoroutine(LoadSceneAsync(SceneType.Forest));
+    }
     private void CreatePlayer(string filePath)
     {
         using (StreamReader sr = new StreamReader(filePath))
@@ -132,10 +125,6 @@ public class VillageManager : MonoBehaviour
 
                 string objName = datas[0];
 
-                // 1. 공백 라인은 읽지않음
-                if (objName == "")
-                    continue;
-
                 // 2. 리소스 폴더 구분
                 if (objName == "Particle" || objName == "Props" || objName == "Vegetation" || objName == "Rocks" || objName == "Terrain" || objName == "Plane")
                 {
@@ -168,7 +157,7 @@ public class VillageManager : MonoBehaviour
                 obj.transform.rotation = Quaternion.Euler(objAngle);
                 obj.transform.localScale = objScale;
 
-                // 6. 부모 오브젝트에 적용
+                // 6. 더미 부모 게임오브젝트에 적용
                 obj.transform.SetParent(parent.transform);
             }
 
@@ -227,6 +216,23 @@ public class VillageManager : MonoBehaviour
     private IEnumerator LoadSceneAsync(SceneType loadScene)
     {
         SceneInfoManager.beforeScene = SceneInfoManager.currentScene;
-        yield return SceneManager.LoadSceneAsync((int)loadScene);
+        WaitForSeconds wt = new WaitForSeconds(SceneInfoManager.SCENE_ROAD_DURATION);
+
+        while (true)
+        {
+            yield return wt;
+
+            if (GameManager.instance.controller.player.transform.position.x > SceneInfoManager.VILLAGE_TO_FOREST_MIN_X &&
+                GameManager.instance.controller.player.transform.position.x < SceneInfoManager.VILLAGE_TO_FOREST_MAX_X &&
+                GameManager.instance.controller.player.transform.position.z > SceneInfoManager.VILLAGE_TO_FOREST_MIN_Z &&
+                GameManager.instance.controller.player.transform.position.z < SceneInfoManager.VILLAGE_TO_FOREST_MAX_Z)
+                    SceneManager.LoadScene((int)loadScene);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Remove NavMesh Garbage
+        NavMesh.RemoveAllNavMeshData();
     }
 }

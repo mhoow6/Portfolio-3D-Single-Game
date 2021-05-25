@@ -10,32 +10,26 @@ public class FieldManager : MonoBehaviour
     private string forestPath;
     private string forestMonsterPath;
     private string forestPlayerPath;
-    private const float FOREST_TO_VILLAGE_X = -76.231f;
-    private const float FOREST_TO_VILLAGE_MIN_Z = -5.25178f;
-    private const float FOREST_TO_VILLAGE_MAX_Z = -2.95f;
+    
 
     private void Awake()
     {
         forestPath = Application.dataPath + "/Resources/Tables/Forest.csv";
         forestMonsterPath = Application.dataPath + "/Resources/Tables/ForestMonsterPosition.csv";
         forestPlayerPath = Application.dataPath + "/Resources/Tables/ForestPlayerPosition.csv";
-    }
-
-    private void Start()
-    {
-        CreateScene(forestPath);
-        CreatePlayer(forestPlayerPath);
-        CreateMonster(forestMonsterPath);
 
         SceneInfoManager.currentScene = SceneType.Forest;
     }
 
-    private void Update()
+    private void Start()
     {
-        if (GameManager.instance.controller.player.transform.position.x < FOREST_TO_VILLAGE_X &&
-            GameManager.instance.controller.player.transform.position.z > FOREST_TO_VILLAGE_MIN_Z &&
-            GameManager.instance.controller.player.transform.position.z < FOREST_TO_VILLAGE_MAX_Z)
-            StartCoroutine(LoadSceneAsync(SceneType.Village));
+        NavMeshManager.instance.CreateNavMesh(SceneInfoManager.currentScene);
+
+        CreateScene(forestPath);
+        CreatePlayer(forestPlayerPath);
+        CreateMonster(forestMonsterPath);
+
+        StartCoroutine(LoadSceneAsync(SceneType.Village));
     }
 
     private void CreateMonster(string fileName)
@@ -66,14 +60,20 @@ public class FieldManager : MonoBehaviour
 
                 GameObject _obj = Resources.Load<GameObject>("Character/Monster/" + mobName);
                 GameObject obj = Instantiate(_obj);
-                Monster monster = Monster.AddMonsterComponent(obj, id); monster.index = index;
+                Monster monster = Monster.AddMonsterComponent(obj, id);
+
+                // Add Data from table
+                monster.index = index;
                 monster.id = id;
                 monster.name = mobName;
                 monster.transform.position = Utility.RayToDown(new Vector3(xPos, yPos, zPos)); // 떠 있는 현상 방지
                 monster.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
                 monster.transform.localScale = new Vector3(xScale, yScale, zScale);
-                GameManager.instance.monsters.Add(monster);
 
+                // Add NavMeshAgent
+                monster.agent = monster.gameObject.AddComponent<NavMeshAgent>();
+
+                GameManager.instance.monsters.Add(monster);
                 monster.transform.SetParent(parent.transform);
             }
         }
@@ -167,10 +167,6 @@ public class FieldManager : MonoBehaviour
 
                 string objName = datas[0];
 
-                // 1. 공백 라인은 읽지않음
-                if (objName == "")
-                    continue;
-
                 // 2. 리소스 폴더 구분
                 if (objName == "Particle" || objName == "Props" || objName == "Vegetation" || objName == "Rocks" || objName == "Terrain" || objName == "Plane")
                 {
@@ -214,6 +210,22 @@ public class FieldManager : MonoBehaviour
     private IEnumerator LoadSceneAsync(SceneType loadScene)
     {
         SceneInfoManager.beforeScene = SceneInfoManager.currentScene;
-        yield return SceneManager.LoadSceneAsync((int)loadScene);
+        WaitForSeconds wt = new WaitForSeconds(SceneInfoManager.SCENE_ROAD_DURATION);
+
+        while (true)
+        {
+            yield return wt;
+
+            if (GameManager.instance.controller.player.transform.position.x < SceneInfoManager.FOREST_TO_VILLAGE_MIN_X &&
+                GameManager.instance.controller.player.transform.position.z > SceneInfoManager.FOREST_TO_VILLAGE_MIN_Z &&
+                GameManager.instance.controller.player.transform.position.z < SceneInfoManager.FOREST_TO_VILLAGE_MAX_Z)
+                    SceneManager.LoadScene((int)loadScene);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Remove NavMesh Garbage
+        NavMesh.RemoveAllNavMeshData();
     }
 }
