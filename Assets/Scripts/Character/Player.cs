@@ -73,7 +73,7 @@ public class Player : Character
         equip_weapon_id = PlayerInfoTableManager.playerInfo.equip_weapon_id;
         attack_angle = PlayerInfoTableManager.playerInfo.attack_01_angle;
         attack_damage = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_damage;
-        attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
+        attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_distance;
 
         currentHp = hp;
         currentMp = mp;
