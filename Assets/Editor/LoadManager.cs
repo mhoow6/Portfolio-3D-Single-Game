@@ -131,7 +131,7 @@ public static class LoadManager
                 GameObject obj = GameObject.Instantiate(_obj);
                 Monster monster = Monster.AddMonsterComponent(obj, id);
 
-                monster.index = index;
+                // monster.index = index;
                 monster.id = id;
                 monster.name = mobName;
 
