@@ -23,6 +23,7 @@ public struct MonsterInfo
     public float skill_3_angle;
     public float walk_speed;
     public float run_speed;
+    public float detect_range;
 }
 
 public static class MonsterInfoTableManager
@@ -60,7 +61,8 @@ public static class MonsterInfoTableManager
                 mobInfo.skill_3_distance = float.Parse(datas[14]);
                 mobInfo.skill_3_angle = float.Parse(datas[15]);
                 mobInfo.walk_speed = float.Parse(datas[16]);
-                mobInfo.run_speed = float.Parse(datas[16]);
+                mobInfo.run_speed = float.Parse(datas[17]);
+                mobInfo.detect_range = float.Parse(datas[18]);
 
                 mobInfoList.Add(mobInfo);
             }
@@ -80,14 +82,14 @@ public static class MonsterInfoTableManager
         throw new System.NotSupportedException(mobID + " 에 해당하는 몬스터는 없습니다.");
     }
 
-    public static ushort GetMonsterIDFromName(string mobName)
+    public static byte GetMonsterTypeFromMobID(ushort mobID)
     {
-        foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
+        foreach (MonsterInfo mobinfo in mobInfoList)
         {
-            if (mobName == mobinfo.monster_name)
-                return mobinfo.id;
+            if (mobID == mobinfo.id)
+                return mobinfo.monster_type;
         }
 
-        throw new System.NotSupportedException("몬스터중에" + mobName + " 은 없습니다.");
+        throw new System.NotSupportedException(mobID + " 에 해당하는 몬스터는 없습니다.");
     }
 }
