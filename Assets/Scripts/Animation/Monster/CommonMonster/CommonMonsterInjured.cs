@@ -6,17 +6,23 @@ public class CommonMonsterInjured : CommonMonsterAnimation
 {
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        prevHP = animator.GetComponent<Monster>().hp;
-        self = animator.GetComponent<Monster>();
+        self = animator.GetComponent<CommonMonster>();
+        self = GameManager.instance.monsters.Find(mob => mob.index == self.index);
+        prevHP = self.hp;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        IdleCondition(animator, self);
-        WalkCondition(animator, self);
-        RunCondition(animator, self);
-        InjuredCondition(animator, prevHP, self);
-        DeadCondition(animator, self);
-        AttackCondition(animator, self);
+        InjuredCondition(animator, self, prevHP);
+        
+        if (self.hp == prevHP)
+        {
+            IdleCondition(animator, self);
+            WalkCondition(animator, self);
+            RunCondition(animator, self);
+            DeadCondition(animator, self);
+            AttackCondition(animator, self);
+        }
+            
     }
 }
