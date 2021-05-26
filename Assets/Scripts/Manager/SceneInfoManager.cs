@@ -13,7 +13,6 @@ public static class SceneInfoManager
 {
     public static SceneType beforeScene;
     public static SceneType currentScene;
-    public static bool isTableManagerAwakeOnce;
     public static float SCENE_ROAD_DURATION = 0.5f;
     public static float FOREST_TO_VILLAGE_MIN_X = -76.231f;
     public static float FOREST_TO_VILLAGE_MIN_Z = -5.25178f;

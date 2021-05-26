@@ -225,7 +225,6 @@ public class FieldManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Remove NavMesh Garbage
         NavMesh.RemoveAllNavMeshData();
     }
 }

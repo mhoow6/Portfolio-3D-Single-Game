@@ -232,7 +232,6 @@ public class VillageManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Remove NavMesh Garbage
         NavMesh.RemoveAllNavMeshData();
     }
 }
