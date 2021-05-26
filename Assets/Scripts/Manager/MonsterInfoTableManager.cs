@@ -24,6 +24,8 @@ public struct MonsterInfo
     public float walk_speed;
     public float run_speed;
     public float detect_range;
+    public int agent_priority;
+    public float agent_radius;
 }
 
 public static class MonsterInfoTableManager
@@ -63,6 +65,8 @@ public static class MonsterInfoTableManager
                 mobInfo.walk_speed = float.Parse(datas[16]);
                 mobInfo.run_speed = float.Parse(datas[17]);
                 mobInfo.detect_range = float.Parse(datas[18]);
+                mobInfo.agent_priority = int.Parse(datas[19]);
+                mobInfo.agent_radius = float.Parse(datas[20]);
 
                 mobInfoList.Add(mobInfo);
             }
