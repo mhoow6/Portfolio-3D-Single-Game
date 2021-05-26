@@ -83,7 +83,7 @@ public class Player : Character
 
         isCombatMode = false;
 
-        SpRecoveryDuration = 0.75f;
+        SpRecoveryDuration = 0.5f;
         SkillDuration = 1f;
 
         SpRecoveryPoint = 3f;
