@@ -7,8 +7,10 @@ public class PlayerAnimation : StateMachineBehaviour
     public const float animationTransitionTime = 0.25f;
     public const float interruptAvailableTime = 0.4f;
     public const float attackClipSpeed = 0.8f;
-    public const float combatAttackClipSpeed = 0.65f;
-    public float currentAnimationTime;
+    public const float combatAttackClipSpeed = 0.75f;
+
+    [SerializeField]
+    protected float currentAnimationTime;
 
     public enum AniType {
         IDLE=0,
