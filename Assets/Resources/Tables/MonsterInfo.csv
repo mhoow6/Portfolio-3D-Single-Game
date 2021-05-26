@@ -1,8 +1,8 @@
-id,monster_name,monster_type,hp,attack_damage,attack_distance,attack_angle,skill_1_damage,skill_1_distance,skill_1_angle,skill_2_damage,skill_2_distance,skill_2_angle,skill_3_damage,skill_3_distance,skill_3_angle,walk_speed,run_speed,detect_range
-1000,Polygonal_Metalon_Purple,1,150,10,2,60,0,0,0,0,0,0,0,0,0,2,4,20
-1001,Polygonal_Metalon_Green,1,150,10,2,60,0,0,0,0,0,0,0,0,0,2,4,20
-1002,Polygonal_Metalon_Red,1,150,10,2,60,0,0,0,0,0,0,0,0,0,2,4,20
-1003,Character_BR_BigOrk_01,2,250,20,4,60,40,5,80,0,0,0,0,0,0,2,3,30
-1004,Character_BR_BigOrk_02,2,250,20,4,60,40,5,80,0,0,0,0,0,0,2,3,30
-1005,Character_BR_PigButcher_01,1,100,10,2,60,0,0,0,0,0,0,0,0,0,2,4,20
-1006,Character_BR_FortGolem_01,3,1000,25,4,60,30,4,60,50,6,60,75,8,80,2,4,40
+id,monster_name,monster_type,hp,attack_damage,attack_distance,attack_angle,skill_1_damage,skill_1_distance,skill_1_angle,skill_2_damage,skill_2_distance,skill_2_angle,skill_3_damage,skill_3_distance,skill_3_angle,walk_speed,run_speed,detect_range,agent_priority,agent_radius
+1000,Polygonal_Metalon_Purple,1,150,10,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1
+1001,Polygonal_Metalon_Green,1,150,10,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1
+1002,Polygonal_Metalon_Red,1,150,10,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1
+1003,Character_BR_BigOrk_01,2,250,20,4,60,40,6,80,0,0,0,0,0,0,2,4.5,20,48,0.5
+1004,Character_BR_BigOrk_02,2,250,20,4,60,40,6,80,0,0,0,0,0,0,2,4.5,20,48,0.5
+1005,Character_BR_PigButcher_01,1,80,10,2,60,0,0,0,0,0,0,0,0,0,3,5,20,49,0.5
+1006,Character_BR_FortGolem_01,3,1000,25,4,60,30,6,60,50,8,60,75,10,80,2,4,20,47,0.5
