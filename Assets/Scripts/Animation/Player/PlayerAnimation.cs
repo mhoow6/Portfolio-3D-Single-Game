@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PlayerAnimation : StateMachineBehaviour
 {
-    public const float animationTransitionTime = 0.25f;
-    public const float interruptAvailableTime = 0.4f;
-    public const float attackClipSpeed = 0.8f;
-    public const float combatAttackClipSpeed = 0.75f;
+    protected const float animationTransitionTime = 0.25f;
+    protected const float interruptAvailableTime = 0.4f;
+    protected const float attackClipSpeed = 0.8f;
+    protected const float combatAttackClipSpeed = 0.75f;
 
     [SerializeField]
     protected float currentAnimationTime;
@@ -50,7 +50,7 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void RunCondition(Animator animator)
     {
         if (GameManager.instance.controller.isPlayerWantToMove && Input.GetKey(KeyCode.LeftShift) &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.run_sp)
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.run_sp)
                 animator.SetInteger("ani_id", (int)AniType.RUN); 
     }
 
@@ -63,14 +63,14 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void Attack_01_Condition(Animator animator)
     {
         if (Input.GetAxisRaw("Fire1") != 0 &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.attack_sp)
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.ATTACK_01);  
     }
 
     protected void Attack_02_Condition(Animator animator)
     {
         if (Input.GetAxisRaw("Fire1") != 0 &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.attack_sp)
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.ATTACK_02);
     }
 
@@ -93,7 +93,7 @@ public class PlayerAnimation : StateMachineBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) &&
             !GameManager.instance.controller.player.isCombatMode &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.roll_sp)
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.roll_sp)
                 animator.SetInteger("ani_id", (int)AniType.ROLL); 
     }
 
@@ -122,7 +122,7 @@ public class PlayerAnimation : StateMachineBehaviour
     {
         if (GameManager.instance.controller.player.isCombatMode &&
             Input.GetAxisRaw("Fire1") != 0 &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_attack_sp)
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_01);
     }
 
@@ -130,7 +130,7 @@ public class PlayerAnimation : StateMachineBehaviour
     {
         if (GameManager.instance.controller.player.isCombatMode &&
             Input.GetAxisRaw("Fire1") != 0 &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_attack_sp)
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_02);
     }
 
@@ -138,7 +138,7 @@ public class PlayerAnimation : StateMachineBehaviour
     {
         if (GameManager.instance.controller.player.isCombatMode &&
             Input.GetAxisRaw("Fire1") != 0 &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_attack_sp)
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_03);
     }
 
@@ -146,8 +146,8 @@ public class PlayerAnimation : StateMachineBehaviour
     {
         if (GameManager.instance.controller.player.isCombatMode &&
             Input.GetKeyDown(KeyCode.E) &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_skill_01_sp &&
-            GameManager.instance.controller.player.currentMp >= GameManager.instance.controller.player.combat_skill_01_mp &&
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.skill_01_sp &&
+            GameManager.instance.controller.player.currentMp >= PlayerInfoTableManager.playerInfo.skill_01_mp &&
             GameManager.instance.controller.player.current_combat_skill_01_cooldown == 0)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_SKILL_01);
     }
@@ -156,8 +156,8 @@ public class PlayerAnimation : StateMachineBehaviour
     {
         if (GameManager.instance.controller.player.isCombatMode &&
             Input.GetKeyDown(KeyCode.Q) &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.combat_skill_02_sp &&
-            GameManager.instance.controller.player.currentMp >= GameManager.instance.controller.player.combat_skill_02_mp &&
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.skill_02_sp &&
+            GameManager.instance.controller.player.currentMp >= PlayerInfoTableManager.playerInfo.skill_02_mp &&
             GameManager.instance.controller.player.current_combat_skill_02_cooldown == 0)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_SKILL_02);
     }
@@ -166,7 +166,7 @@ public class PlayerAnimation : StateMachineBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) &&
             GameManager.instance.controller.player.isCombatMode &&
-            GameManager.instance.controller.player.currentSp >= GameManager.instance.controller.player.roll_sp)
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.roll_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ROLL);
     }
 }

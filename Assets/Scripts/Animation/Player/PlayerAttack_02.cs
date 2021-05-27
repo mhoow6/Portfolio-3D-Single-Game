@@ -6,14 +6,14 @@ public class PlayerAttack_02 : PlayerAnimation
 {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        GameManager.instance.controller.immobile = true;
-        GameManager.instance.controller.player.currentSp -= GameManager.instance.controller.player.attack_sp;
-        GameManager.instance.controller.player.isPlayerNeedSP = false;
+        GameManager.instance.controller.player.currentSp -= PlayerInfoTableManager.playerInfo.attack_sp;
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        // Animation Timer Setup
+        GameManager.instance.controller.immobile = true;
+        GameManager.instance.controller.player.isPlayerNeedSP = false;
+
         if (currentAnimationTime < (1 - animationTransitionTime))
             currentAnimationTime += Time.deltaTime * attackClipSpeed;
 
@@ -28,13 +28,12 @@ public class PlayerAttack_02 : PlayerAnimation
         WalkCondition(animator);
         RunCondition(animator);
         DeadCondition(animator);
-        
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        GameManager.instance.controller.immobile = false;
         GameManager.instance.controller.player.isPlayerNeedSP = true;
+        GameManager.instance.controller.immobile = false;
         currentAnimationTime = 0;
     }
 }

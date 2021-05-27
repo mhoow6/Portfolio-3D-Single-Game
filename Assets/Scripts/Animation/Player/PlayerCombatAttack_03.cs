@@ -6,13 +6,14 @@ public class PlayerCombatAttack_03 : PlayerAnimation
 {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        GameManager.instance.controller.immobile = true;
-        GameManager.instance.controller.player.currentSp -= GameManager.instance.controller.player.combat_attack_sp;
-        GameManager.instance.controller.player.isPlayerNeedSP = false;
+        GameManager.instance.controller.player.currentSp -= PlayerInfoTableManager.playerInfo.combat_attack_sp;
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        GameManager.instance.controller.immobile = true;
+        GameManager.instance.controller.player.isPlayerNeedSP = false;
+
         if (currentAnimationTime < (1 - animationTransitionTime))
             currentAnimationTime += Time.deltaTime * combatAttackClipSpeed;
 
@@ -23,7 +24,7 @@ public class PlayerCombatAttack_03 : PlayerAnimation
             CombatModeSkill_02_Condition(animator);
             return;
         }
-            
+
         CombatModeWalkCondition(animator);
         CombatModeIdleCondition(animator);
         CombatModeDeadCondition(animator);
@@ -31,8 +32,8 @@ public class PlayerCombatAttack_03 : PlayerAnimation
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        GameManager.instance.controller.immobile = false;
         GameManager.instance.controller.player.isPlayerNeedSP = true;
+        GameManager.instance.controller.immobile = false;
         currentAnimationTime = 0;
     }
 }

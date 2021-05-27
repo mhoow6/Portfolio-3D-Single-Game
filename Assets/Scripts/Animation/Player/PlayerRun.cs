@@ -8,6 +8,7 @@ public class PlayerRun : PlayerAnimation
     {
         GameManager.instance.controller.player.isPlayerNeedSP = false;
         GameManager.instance.controller.isPlayerWantToRun = true;
+        GameManager.instance.controller.immobile = false;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -15,8 +16,8 @@ public class PlayerRun : PlayerAnimation
         if (GameManager.instance.controller.player.currentSp >= 0)
             GameManager.instance.controller.player.currentSp = Mathf.Lerp(
                 GameManager.instance.controller.player.currentSp,
-                GameManager.instance.controller.player.currentSp - GameManager.instance.controller.player.run_sp,
-                Time.deltaTime * GameManager.instance.controller.player.runningSpReductionRate);  
+                GameManager.instance.controller.player.currentSp - PlayerInfoTableManager.playerInfo.run_sp,
+                Time.deltaTime * PlayerInfoTableManager.playerInfo.running_sp_reduction_rate);  
         else
         {
             GameManager.instance.controller.player.currentSp = 0;
