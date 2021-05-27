@@ -15,6 +15,13 @@ public class EliteMonsterAnimation : MonsterAnimation
         SKILL_01
     }
 
+    protected const float animationTransitionTime = 0.25f;
+    protected const float attackClipSpeed = 0.7f;
+    protected const float skillClipSpeed = 0.7f;
+
+    [SerializeField]
+    protected float currentAnimationTime;
+
     protected override void IdleCondition(Animator animator, Monster monster)
     {
         if (monster.thinking_param == (int)AniType.IDLE)

@@ -14,6 +14,12 @@ public class CommonMonsterAnimation : MonsterAnimation
         ATTACK
     }
 
+    protected const float animationTransitionTime = 0.25f;
+    protected const float attackClipSpeed = 0.8f;
+
+    [SerializeField]
+    protected float currentAnimationTime;
+
     protected override void IdleCondition(Animator animator, Monster monster)
     {
         if (monster.thinking_param == (int)AniType.IDLE)
