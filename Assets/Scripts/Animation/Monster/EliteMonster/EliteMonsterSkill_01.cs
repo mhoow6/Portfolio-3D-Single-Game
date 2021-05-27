@@ -7,23 +7,25 @@ public class EliteMonsterSkill_01 : EliteMonsterAnimation
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         self = animator.GetComponent<EliteMonster>();
-        self = GameManager.instance.monsters.Find(mob => mob.index == self.index);
+        self.isMonsterAttackDone = false;
         prevHP = self.hp;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (currentAnimationTime < (1 - animationTransitionTime))
+            currentAnimationTime += Time.deltaTime * skillClipSpeed;
+
+        if (currentAnimationTime >= (1 - animationTransitionTime))
+        {
+            self.isMonsterAttackDone = true;
+            currentAnimationTime = 0;
+        }
+
         IdleCondition(animator, self);
         WalkCondition(animator, self);
         RunCondition(animator, self);
         InjuredCondition(animator, self, prevHP);
         DeadCondition(animator, self);
-
-        if (self.hp == prevHP)
-        {
-            AttackCondition(animator, self);
-            Skill_01_Condition(animator, self);
-        }
-            
     }
 }

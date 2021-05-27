@@ -7,7 +7,6 @@ public class EliteMonsterIdle : EliteMonsterAnimation
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         self = animator.GetComponent<EliteMonster>();
-        self = GameManager.instance.monsters.Find(mob => mob.index == self.index);
         prevHP = self.hp;
     }
 

@@ -7,7 +7,6 @@ public class EliteMonsterRun : EliteMonsterAnimation
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         self = animator.GetComponent<EliteMonster>();
-        self = GameManager.instance.monsters.Find(mob => mob.index == self.index);
         self.agent.speed = self.run_speed;
         self.agent.acceleration = self.run_speed;
 
