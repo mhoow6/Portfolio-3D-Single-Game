@@ -12,9 +12,6 @@ public class NavMeshManager : MonoBehaviour
 
     NavMeshData navMesh;
     string navMeshDirectory;
-    string navMeshData_Test = "TestNavMesh";
-    string navMeshData_Village = "VillageNavMesh";
-    string navMeshData_Forest = "ForestNavMesh";
 
     private void Awake()
     {
