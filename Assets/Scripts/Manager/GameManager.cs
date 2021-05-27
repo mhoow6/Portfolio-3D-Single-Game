@@ -19,10 +19,16 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
     }
+
+    private void Start()
+    {
+        CursorLocking();
+    }
     private void Update()
     {
         if (playerHP != null)
             UIPlayerStatusUpdate();
+
     }
 
     private void UIPlayerStatusUpdate()
@@ -31,5 +37,11 @@ public class GameManager : MonoBehaviour
         playerMP.value = controller.player.currentMp / controller.player.mp;
         playerSP.value = controller.player.currentSp / controller.player.sp;
         playerLevel.text = controller.player.level.ToString();
+    }
+
+    void CursorLocking()
+    {
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }
