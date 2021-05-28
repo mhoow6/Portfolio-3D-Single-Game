@@ -112,12 +112,14 @@ public class FieldManager : MonoBehaviour
             playerScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
             playerScript.transform.localScale = new Vector3(xScale, yScale, zScale);
 
-            // Camera Load
+            // CameraArm Load
             CustomCamera cameraScript = cameraArm.AddComponent<CustomCamera>();
             cameraScript.player = playerScript;
             cameraScript.transform.position = playerScript.transform.position + cameraScript.offset;
             cameraScript.transform.rotation = playerScript.transform.rotation;
-            Camera.main.transform.position = cameraScript.transform.position + cameraScript.cameraDistance; // globalPosition x,y,z -> locaPosition z,y,x
+
+            // Camera Load
+            Camera.main.transform.position = cameraScript.transform.position;
             Camera.main.transform.rotation = cameraScript.transform.rotation;
 
             // Minimap Icon Load
@@ -144,8 +146,9 @@ public class FieldManager : MonoBehaviour
             Camera.main.transform.SetParent(cameraScript.transform);
             minimapIcon.transform.SetParent(playerScript.transform);
 
-            // local Rotation Setup
+            // local Transform Setup
             minimapIcon.transform.localRotation = Quaternion.Euler(new Vector3(90f, 0f, 180f));
+            Camera.main.transform.localPosition = Camera.main.transform.localPosition + cameraScript.cameraDistance;
         }
 
         Debug.Log("Player Load Completed.");

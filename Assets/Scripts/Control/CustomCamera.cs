@@ -13,14 +13,15 @@ public class CustomCamera : MonoBehaviour
         }
     }
 
+    // globalPosition x,y,z -> locaPosition z,y,x
     public Vector3 cameraDistance
     {
         get
         {
             if (player.transform.forward.x >= 0)
-                return new Vector3(-3.54f, 0, 0);
+                return new Vector3(0, 0, -3.54f);
             else
-                return new Vector3(3.54f, 0, 0);
+                return new Vector3(0, 0, 3.54f);
         }
     }
 

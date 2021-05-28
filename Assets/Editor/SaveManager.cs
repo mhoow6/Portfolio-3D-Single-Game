@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEditor;
+using System.Text;
 
 public static class SaveManager
 {
@@ -42,96 +43,96 @@ public static class SaveManager
         string path = string.Empty;
         path = EditorUtility.SaveFilePanel("Save NPC", path, "npc", "csv");
         SaveNPCPosition(path);
+
+        Debug.Log("NPC Position Save Completed.");
     }
 
+
+    // 태그 이름을 매개변수로 받아 합칠 수 있음
     private static void SaveMonsterPosition(string filePath)
     {
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
+        string data = string.Empty;
 
-        using (StreamWriter sw = new StreamWriter(filePath))
+        data = "index,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale";
+        data += "\n";
+
+        for (int i = 0; i < monsters.Length; i++)
         {
-            sw.WriteLine("index,id,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
-
-            for(int i = 0; i < monsters.Length; i++)
-            {
-                sw.WriteLine(
-                    i.ToString() + "," +
-                    GetMonsterIDFromName(EraseBracketInName(monsters[i].name)) + "," +
-                    monsters[i].transform.position.x + "," +
-                    monsters[i].transform.position.y + "," +
-                    monsters[i].transform.position.z + "," +
-                    monsters[i].transform.rotation.eulerAngles.x + "," +
-                    monsters[i].transform.rotation.eulerAngles.y + "," +
-                    monsters[i].transform.rotation.eulerAngles.z + "," +
-                    monsters[i].transform.localScale.x + "," +
-                    monsters[i].transform.localScale.y + "," +
-                    monsters[i].transform.localScale.z
-                    );
-            }
-
-            sw.Close();
+            data +=
+            i.ToString() + "," +
+            GetMonsterIDFromName(EraseBracketInName(monsters[i].name)) + "," +
+            monsters[i].transform.position.x + "," +
+            monsters[i].transform.position.y + "," +
+            monsters[i].transform.position.z + "," +
+            monsters[i].transform.rotation.eulerAngles.x + "," +
+            monsters[i].transform.rotation.eulerAngles.y + "," +
+            monsters[i].transform.rotation.eulerAngles.z + "," +
+            monsters[i].transform.localScale.x + "," +
+            monsters[i].transform.localScale.y + "," +
+            monsters[i].transform.localScale.z;          
         }
+
+        byte[] buffer = Encoding.UTF8.GetBytes(data);
+        File.WriteAllBytes(filePath, buffer);
     }
 
     private static void SavePlayerPosition(string filePath)
     {
         GameObject[] player = GameObject.FindGameObjectsWithTag("Player");
+        string data = string.Empty;
 
-        using (StreamWriter sw = new StreamWriter(filePath))
+        data = "index,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale";
+        data += "\n";
+
+        for (int i = 0; i < player.Length; i++)
         {
-            sw.WriteLine("index,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
-
-            for (int i = 0; i < player.Length; i++)
-            {
-                sw.WriteLine(
-                    i + "," +
-                    player[i].transform.position.x + "," +
-                    player[i].transform.position.y + "," +
-                    player[i].transform.position.z + "," +
-                    player[i].transform.rotation.eulerAngles.x + "," +
-                    player[i].transform.rotation.eulerAngles.y + "," +
-                    player[i].transform.rotation.eulerAngles.z + "," +
-                    player[i].transform.localScale.x + "," +
-                    player[i].transform.localScale.y + "," +
-                    player[i].transform.localScale.z
-                    );
-            }
-            
-
-            sw.Close();
+            data += i + "," +
+                player[i].transform.position.x + "," +
+                player[i].transform.position.y + "," +
+                player[i].transform.position.z + "," +
+                player[i].transform.rotation.eulerAngles.x + "," +
+                player[i].transform.rotation.eulerAngles.y + "," +
+                player[i].transform.rotation.eulerAngles.z + "," +
+                player[i].transform.localScale.x + "," +
+                player[i].transform.localScale.y + "," +
+                player[i].transform.localScale.z;
+            data += "\n";
         }
+            
+        byte[] buffer = Encoding.UTF8.GetBytes(data);
+        File.WriteAllBytes(filePath, buffer);
     }
 
     private static void SaveNPCPosition(string filePath)
     {
-        GameObject[] npcs = GameObject.FindGameObjectsWithTag("NPC"); 
+        GameObject[] npcs = GameObject.FindGameObjectsWithTag("NPC");
+        string data = string.Empty;
 
-        using (StreamWriter sw = new StreamWriter(filePath))
+        data = "index,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale";
+        data += "\n";
+
+        for (int i = 0; i < npcs.Length; i++)
         {
-            sw.WriteLine("index,id,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
-
-            for(int i = 0; i < npcs.Length; i++)
-            {
-                sw.WriteLine(
-                    i.ToString() + "," +
-                    GetNPCIDFromName(npcs[i].name) + "," +
-                    npcs[i].transform.position.x + "," +
-                    npcs[i].transform.position.y + "," +
-                    npcs[i].transform.position.z + "," +
-                    npcs[i].transform.rotation.eulerAngles.x + "," +
-                    npcs[i].transform.rotation.eulerAngles.y + "," +
-                    npcs[i].transform.rotation.eulerAngles.z + "," +
-                    npcs[i].transform.localScale.x + "," +
-                    npcs[i].transform.localScale.y + "," +
-                    npcs[i].transform.localScale.z
-                );
-            }
-
-            sw.Close();
+            data +=
+            i.ToString() + "," +
+            GetNPCIDFromName(npcs[i].name) + "," +
+            npcs[i].transform.position.x + "," +
+            npcs[i].transform.position.y + "," +
+            npcs[i].transform.position.z + "," +
+            npcs[i].transform.rotation.eulerAngles.x + "," +
+            npcs[i].transform.rotation.eulerAngles.y + "," +
+            npcs[i].transform.rotation.eulerAngles.z + "," +
+            npcs[i].transform.localScale.x + "," +
+            npcs[i].transform.localScale.y + "," +
+            npcs[i].transform.localScale.z;
+            data += "\n";
         }
 
-        Debug.Log("NPC Position Save Completed.");
+        byte[] buffer = Encoding.UTF8.GetBytes(data);
+        File.WriteAllBytes(filePath, buffer);
     }
+    // 태그 이름을 매개변수로 받아 합칠 수 있음
 
     private static void SaveScene(string filePath)
     {
@@ -237,7 +238,6 @@ public static class SaveManager
         Debug.Log("Scene Save Completed.");
     }
 
-    // 반복
     private static ushort GetMonsterIDFromName(string mobName)
     {
         string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
@@ -267,7 +267,6 @@ public static class SaveManager
 
         throw new System.NotSupportedException("몬스터 중에 " + npcName + " 은 없습니다.");
     }
-    // 반복
 
     private static string EraseBracketInName(string mobName)
     {
