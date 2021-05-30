@@ -5,6 +5,8 @@ using System.IO;
 
 public class TableManager : MonoBehaviour
 {
+    public static TableManager instance;
+
     private string weaponPath;
     private string playerPath;
     private string monsterPath;
@@ -12,15 +14,36 @@ public class TableManager : MonoBehaviour
 
     private void Awake()
     {
-        weaponPath = Application.dataPath + "/Resources/Tables/WeaponInfo.csv";
-        playerPath = Application.dataPath + "/Resources/Tables/PlayerInfo.csv";
-        monsterPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
-        npcPath = Application.dataPath + "/Resources/Tables/NPCInfo.csv";
+        instance = this;
+
+        weaponPath = "Tables/WeaponInfo";
+        playerPath = "Tables/PlayerInfo";
+        monsterPath = "Tables/MonsterInfo";
+        npcPath = "Tables/NPCInfo";
 
         WeaponInfoTableManager.LoadTable(weaponPath);
         PlayerInfoTableManager.LoadTable(playerPath);
         MonsterInfoTableManager.LoadTable(monsterPath);
         NPCInfoTableManager.LoadTable(npcPath);
+    }
+
+    public List<string> GetLinesFromTable(string filePath)
+    {
+        TextAsset txtAsset = Resources.Load<TextAsset>(filePath);
+
+        char[] option = { '\r', '\n' };
+        string[] _lines = txtAsset.text.Split(option);
+        List<string> lines = new List<string>();
+
+        foreach (string line in _lines)
+        {
+            if (string.IsNullOrEmpty(line))
+                continue;
+
+            lines.Add(line);
+        }
+
+        return lines;
     }
 
 }

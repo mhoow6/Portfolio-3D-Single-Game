@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 using UnityEngine.SceneManagement;
 using UnityEngine.AI;
-using System.Text;
 
 
 public class VillageManager : MapManager

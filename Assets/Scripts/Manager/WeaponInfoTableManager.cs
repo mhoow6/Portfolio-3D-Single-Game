@@ -16,29 +16,23 @@ public static class WeaponInfoTableManager
 {
     public static List<WeaponInfo> weaponInfoList = new List<WeaponInfo>();
 
-    public static void LoadTable(string fileName)
+    public static void LoadTable(string filePath)
     {
-        using (StreamReader sr = new StreamReader(fileName))
+        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+
+        for (int i = 1; i < lines.Count; i++)
         {
-            string line = string.Empty;
+            string[] datas = lines[i].Split(',');
 
-            sr.ReadLine(); // 첫 레코드 제외
+            WeaponInfo weaponInfo;
 
-            while ((line = sr.ReadLine()) != null)
-            {
-                string[] datas = line.Split(',');
+            weaponInfo.id = ushort.Parse(datas[0]);
+            weaponInfo.weapon_name = datas[1];
+            weaponInfo.basic_damage = float.Parse(datas[2]);
+            weaponInfo.basic_distance = float.Parse(datas[3]);
+            weaponInfo.max_reinforce = byte.Parse(datas[4]);
 
-                WeaponInfo weaponInfo;
-
-                weaponInfo.id = ushort.Parse(datas[0]);
-                weaponInfo.weapon_name = datas[1];
-                weaponInfo.basic_damage = float.Parse(datas[2]);
-                weaponInfo.basic_distance = float.Parse(datas[3]);
-                weaponInfo.max_reinforce = byte.Parse(datas[4]);
-
-                weaponInfoList.Add(weaponInfo);
-            }
-            sr.Close();
+            weaponInfoList.Add(weaponInfo);
         }
     }
 
