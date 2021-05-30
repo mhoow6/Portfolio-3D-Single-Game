@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        CursorLocking();
+        // CursorLocking();
     }
     private void Update()
     {
