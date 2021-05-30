@@ -62,14 +62,14 @@ public class PlayerAnimation : StateMachineBehaviour
 
     protected void Attack_01_Condition(Animator animator)
     {
-        if (Input.GetAxisRaw("Fire1") != 0 &&
+        if (Input.GetKey(KeyCode.LeftControl) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.ATTACK_01);  
     }
 
     protected void Attack_02_Condition(Animator animator)
     {
-        if (Input.GetAxisRaw("Fire1") != 0 &&
+        if (Input.GetKey(KeyCode.LeftControl) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.ATTACK_02);
     }
@@ -121,7 +121,7 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void CombatModeAttack_01_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            Input.GetAxisRaw("Fire1") != 0 &&
+            Input.GetKey(KeyCode.LeftControl) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_01);
     }
@@ -129,7 +129,7 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void CombatModeAttack_02_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            Input.GetAxisRaw("Fire1") != 0 &&
+            Input.GetKey(KeyCode.LeftControl) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_02);
     }
@@ -137,7 +137,7 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void CombatModeAttack_03_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            Input.GetAxisRaw("Fire1") != 0 &&
+            Input.GetKey(KeyCode.LeftControl) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_03);
     }
