@@ -25,6 +25,20 @@ public class CustomCamera : MonoBehaviour
         }
     }
 
+    public Vector2 _moveDelta
+    {
+        get
+        {
+            return moveDelta;
+        }
+        
+        set
+        {
+            moveDelta = value;
+        }
+    }
+
+    private Vector2 moveDelta;
     private float zoom;
     private float zoomResult;
     private float zoomMin;
@@ -50,17 +64,21 @@ public class CustomCamera : MonoBehaviour
 
     private void LookAround()
     {
-        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        if (Application.platform != RuntimePlatform.Android)
+            moveDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        else
+            moveDelta = _moveDelta;
+
         Vector3 camAngle = transform.rotation.eulerAngles;
 
-        float x = camAngle.x - mouseDelta.y;
+        float x = camAngle.x - moveDelta.y;
 
         if (x < 180f)
             x = Mathf.Clamp(x, -1f, 70f);
         if (x > 180f)
             x = Mathf.Clamp(x, 335f, 361f);
 
-        transform.rotation = Quaternion.Euler(x, camAngle.y + mouseDelta.x, camAngle.z);
+        transform.rotation = Quaternion.Euler(x, camAngle.y + moveDelta.x, camAngle.z);
     }
 
     private void FollowPlayer()

@@ -4,17 +4,29 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Transform cameraArm;
+    public CustomCamera cameraArm;
     public Player player;
     public bool immobile;
     public bool isPlayerWantToMove;
     public bool isPlayerWantToRun;
     public bool isPlayerWantToRoll;
-    
+
+    public Vector2 _moveInput
+    {
+        get
+        {
+            return moveInput;
+        }
+
+        set
+        {
+            moveInput = value;
+        }
+    }
+
     private Vector2 moveInput;
     private Vector3 cameraForward;
     private Vector3 cameraRight;
-    //private Vector3 moveVector;
 
     [SerializeField]
     private float moveSpeed;
@@ -38,7 +50,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        if (Application.platform != RuntimePlatform.Android)
+            moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        else
+            moveInput = _moveInput;
 
         if (moveInput.magnitude != 0)
             isPlayerWantToMove = true;
@@ -56,8 +71,8 @@ public class PlayerController : MonoBehaviour
         if (player.isCombatMode)
             moveSpeed = PlayerInfoTableManager.playerInfo.combat_walk_speed;
 
-        cameraForward = new Vector3(cameraArm.forward.x, 0f, cameraArm.forward.z).normalized;
-        cameraRight = new Vector3(cameraArm.right.x, 0f, cameraArm.right.z).normalized;
+        cameraForward = new Vector3(cameraArm.transform.forward.x, 0f, cameraArm.transform.forward.z).normalized;
+        cameraRight = new Vector3(cameraArm.transform.right.x, 0f, cameraArm.transform.right.z).normalized;
         moveVector = cameraForward * moveInput.y + cameraRight * moveInput.x;
 
         if (moveVector.magnitude != 0)

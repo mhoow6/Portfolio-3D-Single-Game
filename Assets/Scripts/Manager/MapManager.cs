@@ -2,15 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using System.IO;
-using System.Text;
-using UnityEngine.SceneManagement;
 
 public class MapManager : MonoBehaviour
 {
     public void CreatePlayer(string filePath)
     {
-        List<string> lines = GetLinesFromPositionTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
 
         GameObject parent = new GameObject("Player");
         GameObject cameraArm = new GameObject("cameraArm");
@@ -38,17 +35,20 @@ public class MapManager : MonoBehaviour
             GameObject player = GameObject.Instantiate(_player);
             Player playerScript = player.AddComponent<Player>();
             playerScript.name = "Player";
-            playerScript.transform.position = Utility.RayToDown(new Vector3(xPos, yPos, zPos));
+            playerScript.transform.position = new Vector3(xPos, yPos, zPos);
             playerScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
             playerScript.transform.localScale = new Vector3(xScale, yScale, zScale);
 
-            // CameraArm Load
+            // CustomCamera Load
             CustomCamera cameraScript = cameraArm.AddComponent<CustomCamera>();
             cameraScript.player = playerScript;
             cameraScript.transform.position = playerScript.transform.position + cameraScript.offset;
             cameraScript.transform.rotation = playerScript.transform.rotation;
 
-            // Camera Load
+            // Add Moblie Camera
+            cameraScript.gameObject.AddComponent<CustomCameraMoblie>();
+
+            // Main Camera Transform Setup
             Camera.main.transform.position = cameraScript.transform.position;
             Camera.main.transform.rotation = cameraScript.transform.rotation;
 
@@ -62,9 +62,9 @@ public class MapManager : MonoBehaviour
             iconRenderer.color = Color.blue;
 
             // Controller Load
-            PlayerController _controller = parent.AddComponent<PlayerController>();
+            PlayerController _controller = playerScript.gameObject.AddComponent<PlayerController>();
             _controller.player = playerScript;
-            _controller.cameraArm = cameraScript.transform;
+            _controller.cameraArm = cameraScript;
             GameManager.instance.controller = _controller; // Attach at GameManger
 
             // Add NavMeshAgent
@@ -86,7 +86,7 @@ public class MapManager : MonoBehaviour
 
     public void CreateScene(string filePath)
     {
-        List<string> lines = GetLinesFromPositionTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
 
         GameObject parent = null;
         string path = string.Empty;
@@ -138,7 +138,7 @@ public class MapManager : MonoBehaviour
 
     public void CreateNPC(string filePath)
     {
-        List<string> lines = GetLinesFromPositionTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
 
         GameObject parent = new GameObject("NPC");
 
@@ -164,6 +164,7 @@ public class MapManager : MonoBehaviour
             GameObject npc = GameObject.Instantiate(_npc);
             NPC npcScript = npc.AddComponent<NPC>();
 
+            // Set Info From Table
             npcScript.gameObject.name = npcName;
             npcScript.index = index;
             npcScript.id = id;
@@ -171,6 +172,10 @@ public class MapManager : MonoBehaviour
             npcScript.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
             npcScript.transform.localScale = new Vector3(xScale, yScale, zScale);
 
+            // Add NavMeshAgent
+            npcScript.agent = npcScript.gameObject.AddComponent<NavMeshAgent>();
+
+            // Add GameManager
             GameManager.instance.npcs.Add(npcScript);
 
             npcScript.transform.SetParent(parent.transform);
@@ -181,7 +186,7 @@ public class MapManager : MonoBehaviour
 
     public void CreateMonster(string filePath)
     {
-        List<string> lines = GetLinesFromPositionTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
         GameObject parent = new GameObject("Monster");
 
         for (int i = 1; i < lines.Count; i++)
@@ -209,7 +214,7 @@ public class MapManager : MonoBehaviour
             monster.index = index;
             monster.id = id;
             monster.name = mobName;
-            monster.transform.position = Utility.RayToDown(new Vector3(xPos, yPos, zPos)); // 떠 있는 현상 방지
+            monster.transform.position = new Vector3(xPos, yPos, zPos); // 떠 있는 현상 방지
             monster.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
             monster.transform.localScale = new Vector3(xScale, yScale, zScale);
 
@@ -221,24 +226,5 @@ public class MapManager : MonoBehaviour
         }
 
         Debug.Log("Monster Load Completed.");
-    }
-
-    private List<string> GetLinesFromPositionTable(string filePath)
-    {
-        TextAsset txtAsset = Resources.Load<TextAsset>(filePath);
-
-        char[] option = { '\r', '\n' };
-        string[] _lines = txtAsset.text.Split(option);
-        List<string> lines = new List<string>();
-
-        foreach (string line in _lines)
-        {
-            if (string.IsNullOrEmpty(line))
-                continue;
-
-            lines.Add(line);
-        }
-
-        return lines;
     }
 }
