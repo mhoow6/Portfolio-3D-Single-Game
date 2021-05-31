@@ -10,10 +10,6 @@ public class GameManager : MonoBehaviour
     public PlayerController controller;
     public List<Monster> monsters = new List<Monster>();
     public List<NPC> npcs = new List<NPC>();
-    public Slider playerHP;
-    public Slider playerMP;
-    public Slider playerSP;
-    public TMP_Text playerLevel;
 
     private void Awake()
     {
@@ -23,20 +19,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // CursorLocking();
-    }
-    private void Update()
-    {
-        if (playerHP != null)
-            UIPlayerStatusUpdate();
-
-    }
-
-    private void UIPlayerStatusUpdate()
-    {
-        playerHP.value = controller.player.currentHp / controller.player.hp;
-        playerMP.value = controller.player.currentMp / controller.player.mp;
-        playerSP.value = controller.player.currentSp / controller.player.sp;
-        playerLevel.text = controller.player.level.ToString();
     }
 
     void CursorLocking()
