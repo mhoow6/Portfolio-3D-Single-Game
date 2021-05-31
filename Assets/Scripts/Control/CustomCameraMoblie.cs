@@ -17,10 +17,16 @@ public class CustomCameraMoblie : MonoBehaviour
         halfScreenWidth = Screen.width / 2;
     }
 
+    private void Start()
+    {
+        if (Application.platform != RuntimePlatform.Android)
+            this.enabled = false;
+    }
+
+
     private void Update()
     {
-        if (Application.platform == RuntimePlatform.Android)
-            CustomCameraMoblieUpdate();
+        CustomCameraMoblieUpdate();
     }
 
     private void CustomCameraMoblieUpdate()

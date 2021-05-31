@@ -17,9 +17,15 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private Vector2 inputDirection;
     private bool isInput;
 
+    private void Start()
+    {
+        if (Application.platform != RuntimePlatform.Android)
+            this.enabled = false;
+    }
+
     private void Update()
     {
-        if (isInput && Application.platform == RuntimePlatform.Android)
+        if (isInput)
             GameManager.instance.controller._moveInput = inputDirection;
     }
 
