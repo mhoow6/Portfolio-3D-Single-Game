@@ -8,15 +8,16 @@ public class CommonMonsterIdle : CommonMonsterAnimation
     {
         self = animator.GetComponent<CommonMonster>();
         prevHP = self.hp;
+        animationHandler = IdleCondition;
+        animationHandler += WalkCondition;
+        animationHandler += RunCondition;
+        animationHandler += DeadCondition;
+        animationHandler += AttackCondition;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        IdleCondition(animator, self);
-        WalkCondition(animator, self);
-        RunCondition(animator, self);
+        animationHandler(animator, self);
         InjuredCondition(animator, self, prevHP);
-        DeadCondition(animator, self);
-        AttackCondition(animator, self);
     }
 }

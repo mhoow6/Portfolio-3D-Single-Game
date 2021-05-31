@@ -20,6 +20,7 @@ public class CommonMonsterAnimation : MonsterAnimation
     [SerializeField]
     protected float currentAnimationTime;
 
+
     protected override void IdleCondition(Animator animator, Monster monster)
     {
         if (monster.thinking_param == (int)AniType.IDLE)

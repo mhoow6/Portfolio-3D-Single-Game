@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void MonsterAnimationHandler(Animator animator, Monster monster);
+
 public abstract class MonsterAnimation : StateMachineBehaviour
 {
+    protected static MonsterAnimationHandler animationHandler;
     protected Monster self;
     protected float prevHP;
 

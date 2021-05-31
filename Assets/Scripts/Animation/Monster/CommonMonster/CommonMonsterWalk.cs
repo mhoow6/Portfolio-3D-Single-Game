@@ -9,7 +9,6 @@ public class CommonMonsterWalk : CommonMonsterAnimation
         self = animator.GetComponent<CommonMonster>();
         self.agent.speed = self.walk_speed;
         self.agent.acceleration = self.walk_speed;
-
         prevHP = self.hp;
     }
 
@@ -17,12 +16,8 @@ public class CommonMonsterWalk : CommonMonsterAnimation
     {
         self.agent.destination = GameManager.instance.controller.player.transform.position;
 
-        IdleCondition(animator, self);
-        WalkCondition(animator, self);
-        RunCondition(animator, self);
+        animationHandler(animator, self);
         InjuredCondition(animator, self, prevHP);
-        DeadCondition(animator, self);
-        AttackCondition(animator, self);
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

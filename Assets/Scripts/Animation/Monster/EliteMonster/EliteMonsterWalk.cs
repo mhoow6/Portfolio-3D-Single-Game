@@ -9,7 +9,6 @@ public class EliteMonsterWalk : EliteMonsterAnimation
         self = animator.GetComponent<EliteMonster>();
         self.agent.speed = self.walk_speed;
         self.agent.acceleration = self.walk_speed;
-
         prevHP = self.hp;
     }
 
@@ -17,13 +16,8 @@ public class EliteMonsterWalk : EliteMonsterAnimation
     {
         self.agent.destination = GameManager.instance.controller.player.transform.position;
 
-        IdleCondition(animator, self);
-        WalkCondition(animator, self);
-        RunCondition(animator, self);
         InjuredCondition(animator, self, prevHP);
-        DeadCondition(animator, self);
-        AttackCondition(animator, self);
-        Skill_01_Condition(animator, self);
+        animationHandler(animator, self);
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

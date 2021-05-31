@@ -8,16 +8,17 @@ public class EliteMonsterIdle : EliteMonsterAnimation
     {
         self = animator.GetComponent<EliteMonster>();
         prevHP = self.hp;
+        animationHandler = IdleCondition;
+        animationHandler += WalkCondition;
+        animationHandler += RunCondition;
+        animationHandler += DeadCondition;
+        animationHandler += AttackCondition;
+        animationHandler += Skill_01_Condition;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        IdleCondition(animator, self);
-        WalkCondition(animator, self);
-        RunCondition(animator, self);
         InjuredCondition(animator, self, prevHP);
-        DeadCondition(animator, self);
-        AttackCondition(animator, self);
-        Skill_01_Condition(animator, self);
+        animationHandler(animator, self);
     }
 }

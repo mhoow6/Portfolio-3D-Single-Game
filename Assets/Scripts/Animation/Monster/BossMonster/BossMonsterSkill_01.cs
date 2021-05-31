@@ -9,6 +9,10 @@ public class BossMonsterSkill_01 : BossMonsterAnimation
         self = animator.GetComponent<BossMonster>();
         self.isMonsterAttackDone = false;
         prevHP = self.hp;
+        animationHandler -= AttackCondition;
+        animationHandler -= Skill_01_Condition;
+        animationHandler -= Skill_02_Condition;
+        animationHandler -= Skill_03_Condition;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -22,9 +26,14 @@ public class BossMonsterSkill_01 : BossMonsterAnimation
             currentAnimationTime = 0;
         }
 
-        IdleCondition(animator, self);
-        WalkCondition(animator, self);
-        RunCondition(animator, self);
-        DeadCondition(animator, self);
+        animationHandler(animator, self);
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animationHandler += AttackCondition;
+        animationHandler += Skill_01_Condition;
+        animationHandler += Skill_02_Condition;
+        animationHandler += Skill_03_Condition;
     }
 }

@@ -8,17 +8,18 @@ public class BossMonsterIdle : BossMonsterAnimation
     {
         self = animator.GetComponent<BossMonster>();
         prevHP = self.hp;
+        animationHandler = IdleCondition;
+        animationHandler += WalkCondition;
+        animationHandler += RunCondition;
+        animationHandler += DeadCondition;
+        animationHandler += AttackCondition;
+        animationHandler += Skill_01_Condition;
+        animationHandler += Skill_02_Condition;
+        animationHandler += Skill_03_Condition;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        IdleCondition(animator, self);
-        WalkCondition(animator, self);
-        RunCondition(animator, self);
-        DeadCondition(animator, self);
-        AttackCondition(animator, self);
-        Skill_01_Condition(animator, self);
-        Skill_02_Condition(animator, self);
-        Skill_03_Condition(animator, self);
+        animationHandler(animator, self);
     }
 }

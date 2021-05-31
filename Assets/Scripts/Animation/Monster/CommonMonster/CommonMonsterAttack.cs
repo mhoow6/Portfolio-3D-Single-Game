@@ -9,6 +9,7 @@ public class CommonMonsterAttack : CommonMonsterAnimation
         self = animator.GetComponent<CommonMonster>();
         self.isMonsterAttackDone = false;
         prevHP = self.hp;
+        animationHandler -= AttackCondition;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -22,10 +23,12 @@ public class CommonMonsterAttack : CommonMonsterAnimation
             currentAnimationTime = 0;
         }
 
-        IdleCondition(animator, self);
-        WalkCondition(animator, self);
-        RunCondition(animator, self);
-        InjuredCondition(animator, self, prevHP);
-        DeadCondition(animator, self);
+        animationHandler(animator, self);
+        InjuredCondition(animator, self, prevHP); 
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        animationHandler += AttackCondition;
     }
 }
