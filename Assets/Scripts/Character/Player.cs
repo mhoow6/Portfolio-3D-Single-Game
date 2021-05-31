@@ -21,6 +21,7 @@ public class Player : Character
     public bool isPlayerWalk;
     public bool isPlayerUseCombatSkill01;
     public bool isPlayerUseCombatSkill02;
+    public float SkillDuration = 1f;
 
     private GameObject weapon;
     private Transform sheath;
@@ -30,7 +31,6 @@ public class Player : Character
     private Vector3 weaponRHandLocalPos = new Vector3(11.6000004f, 1.89999998f, 0.699999988f);
     private Quaternion weaponRHandLocalRot = Quaternion.Euler(new Vector3(80.5413818f, 22.6469021f, 205.775742f));
     private const float SpRecoveryDuration = 0.5f;
-    private const float SkillDuration = 1f;
     private bool isWeaponInRHand;
 
     private void Awake()
@@ -183,8 +183,8 @@ public class Player : Character
 
         weapon.name = "Weapon";
         weapon.transform.SetParent(sheath);
-        weapon.transform.localPosition = new Vector3(-17.6000004f, 24.7000008f, 18);
-        weapon.transform.localRotation = Quaternion.Euler(new Vector3(288.065979f, 201.414993f, 98.0909805f));
+        weapon.transform.localPosition = weaponSheathLocalPos;
+        weapon.transform.localRotation = weaponSheathLocalRot;
 
         return weapon;
     }
