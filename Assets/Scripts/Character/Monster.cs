@@ -32,9 +32,10 @@ public class Monster : Character
     protected float currentAttackDamage;
     protected float currentAttackDistance;
     protected float currentAttackAngle;
-    protected const float THINKING_DURATION = 1f;
+    protected const float THINKING_DURATION = 0.1f;
     protected const float ANGULAR_SPEED = 999f;
     protected const float MIN_SIGHT_ANGLE = 20f;
+    protected Animator animator;
 
     public virtual void Dead()
     {
@@ -117,6 +118,7 @@ public class CommonMonster : Monster
                 case (int)CommonMonsterAnimation.AniType.IDLE:
                     if (currentDistanceWithPlayer <= detect_range && GameManager.instance.controller.player.currentHp > 0)
                         thinking_param = Random.Range((int)CommonMonsterAnimation.AniType.WALK, (int)CommonMonsterAnimation.AniType.RUN + 1);
+                        
 
                     if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
                         thinking_param = (int)CommonMonsterAnimation.AniType.ATTACK;
