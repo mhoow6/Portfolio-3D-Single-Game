@@ -41,15 +41,19 @@ public class PlayerAnimation : StateMachineBehaviour
             animator.SetInteger("ani_id", (int)AniType.IDLE);
     }
 
+    // .controlSlots.Find(slot => slot.name == "Run").isClicked
     protected void WalkCondition(Animator animator)
     {
-        if (GameManager.instance.controller.isPlayerWantToMove && !Input.GetKey(KeyCode.LeftShift))
+        if (GameManager.instance.controller.isPlayerWantToMove && !Input.GetKey(KeyCode.LeftShift)
+            && !HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "Run").isClicked)
             animator.SetInteger("ani_id", (int)AniType.WALK);
     }
 
     protected void RunCondition(Animator animator)
     {
-        if (GameManager.instance.controller.isPlayerWantToMove && Input.GetKey(KeyCode.LeftShift) &&
+        if (Input.GetKey(KeyCode.LeftShift) ||
+            HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "Run").isClicked &&
+            GameManager.instance.controller.isPlayerWantToMove &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.run_sp)
                 animator.SetInteger("ani_id", (int)AniType.RUN); 
     }
@@ -62,27 +66,29 @@ public class PlayerAnimation : StateMachineBehaviour
 
     protected void Attack_01_Condition(Animator animator)
     {
-        if (Input.GetKey(KeyCode.LeftControl) &&
+        if (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "Attack").isClicked &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.ATTACK_01);  
     }
 
     protected void Attack_02_Condition(Animator animator)
     {
-        if (Input.GetKey(KeyCode.LeftControl) &&
+        if (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "Attack").isClicked &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.ATTACK_02);
     }
 
     protected void SwitchCombatModeCondition(Animator animator)
     {
-        if (GameManager.instance.controller.player.isCombatMode && Input.GetKeyDown(KeyCode.R))
+        if (GameManager.instance.controller.player.isCombatMode &&
+            (Input.GetKeyDown(KeyCode.R) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "CombatMode").isClicked))
         {
             animator.SetInteger("ani_id", (int)AniType.UNARMED);
             return;
         }
 
-        if (!GameManager.instance.controller.player.isCombatMode && Input.GetKeyDown(KeyCode.R))
+        if (!GameManager.instance.controller.player.isCombatMode &&
+            (Input.GetKeyDown(KeyCode.R) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "CombatMode").isClicked))
         {
             animator.SetInteger("ani_id", (int)AniType.ARMED);
             return;
@@ -91,7 +97,7 @@ public class PlayerAnimation : StateMachineBehaviour
 
     protected void RollCondition(Animator animator)
     {
-        if (Input.GetKeyDown(KeyCode.Space) &&
+        if (Input.GetKeyDown(KeyCode.Space) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "Roll").isClicked &&
             !GameManager.instance.controller.player.isCombatMode &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.roll_sp)
                 animator.SetInteger("ani_id", (int)AniType.ROLL); 
@@ -121,7 +127,7 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void CombatModeAttack_01_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            Input.GetKey(KeyCode.LeftControl) &&
+            (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "Attack").isClicked) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_01);
     }
@@ -129,7 +135,7 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void CombatModeAttack_02_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            Input.GetKey(KeyCode.LeftControl) &&
+            (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "Attack").isClicked) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_02);
     }
@@ -137,7 +143,7 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void CombatModeAttack_03_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            Input.GetKey(KeyCode.LeftControl) &&
+            (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "Attack").isClicked) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_03);
     }
@@ -145,7 +151,7 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void CombatModeSkill_01_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            Input.GetKeyDown(KeyCode.E) &&
+            (Input.GetKeyDown(KeyCode.E) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "ESkill").isClicked) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.skill_01_sp &&
             GameManager.instance.controller.player.currentMp >= PlayerInfoTableManager.playerInfo.skill_01_mp &&
             GameManager.instance.controller.player.current_combat_skill_01_cooldown == 0)
@@ -155,7 +161,7 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void CombatModeSkill_02_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            Input.GetKeyDown(KeyCode.Q) &&
+            (Input.GetKeyDown(KeyCode.Q) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "QSkill").isClicked)&&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.skill_02_sp &&
             GameManager.instance.controller.player.currentMp >= PlayerInfoTableManager.playerInfo.skill_02_mp &&
             GameManager.instance.controller.player.current_combat_skill_02_cooldown == 0)
@@ -164,7 +170,7 @@ public class PlayerAnimation : StateMachineBehaviour
 
     protected void CombatModeRollCondition(Animator animator)
     {
-        if (Input.GetKeyDown(KeyCode.Space) &&
+        if (Input.GetKeyDown(KeyCode.Space) || HUDManager.instance.controlSlotManager.controlSlots.Find(slot => slot.name == "Roll").isClicked &&
             GameManager.instance.controller.player.isCombatMode &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.roll_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ROLL);
