@@ -18,7 +18,6 @@ public class Player : Character
     public float current_combat_skill_02_cooldown;
     public bool isPlayerNeedSP;
     public bool isCombatMode;
-    public bool isPlayerWalk;
     public bool isPlayerUseCombatSkill01;
     public bool isPlayerUseCombatSkill02;
     public float SkillDuration = 1f;
@@ -66,8 +65,8 @@ public class Player : Character
         weapon = GetWeaponFromResource(equip_weapon_id);
 
         StartCoroutine(SpRecovery(SpRecoveryDuration));
-        StartCoroutine(CombatSkill01Cooldown(SkillDuration));
-        StartCoroutine(CombatSkill02Cooldown(SkillDuration));
+        StartCoroutine(CombatSkill01Cooldown(SkillDuration * Time.deltaTime));
+        StartCoroutine(CombatSkill02Cooldown(SkillDuration * Time.deltaTime));
     }
 
     public void Attack(int ani_id)
