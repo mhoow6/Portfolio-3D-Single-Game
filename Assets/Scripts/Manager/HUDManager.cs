@@ -7,17 +7,12 @@ using TMPro;
 public class HUDManager : MonoBehaviour
 {
     public static HUDManager instance;
+    public ControlSlotManager controlSlotManager;
 
     public Slider playerHP;
     public Slider playerMP;
     public Slider playerSP;
     public TMP_Text playerLevel;
-
-    public Image skill_01_cooldownGauge;
-    public TMP_Text skill_01_cooldownDuration;
-
-    public Image skill_02_cooldownGauge;
-    public TMP_Text skill_02_cooldownDuration;
 
     private void Awake()
     {
@@ -27,14 +22,6 @@ public class HUDManager : MonoBehaviour
     private void Update()
     {
         PlayerStatusUpdate();
-
-        CoolDownUpdate(
-            GameManager.instance.controller.player.current_combat_skill_01_cooldown,
-            PlayerInfoTableManager.playerInfo.skill_01_cooldown,
-            GameManager.instance.controller.player.isPlayerUseCombatSkill01,
-            skill_01_cooldownGauge,
-            skill_01_cooldownDuration
-            );
     }
 
 
@@ -49,25 +36,5 @@ public class HUDManager : MonoBehaviour
         playerLevel.text = GameManager.instance.controller.player.level.ToString();
     }
 
-    private void CoolDownUpdate(float currentCooldown, float originCooldown, bool flag, Image gauge, TMP_Text textCooldown)
-    {
-        if (flag)
-        {
-            if (currentCooldown != 0)
-            {
-                gauge.gameObject.SetActive(true);
-                textCooldown.gameObject.SetActive(true);
-                gauge.fillAmount = currentCooldown / originCooldown;
-                textCooldown.text = currentCooldown.ToString();
-            }
-
-            if (currentCooldown == 0)
-            {
-                gauge.gameObject.SetActive(false);
-                textCooldown.gameObject.SetActive(false);
-            }
-        }
-        else
-            return;
-    }
+    
 }
