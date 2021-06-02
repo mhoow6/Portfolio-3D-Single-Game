@@ -30,6 +30,7 @@ public class Player : Character
     private Vector3 weaponRHandLocalPos = new Vector3(11.6000004f, 1.89999998f, 0.699999988f);
     private Quaternion weaponRHandLocalRot = Quaternion.Euler(new Vector3(80.5413818f, 22.6469021f, 205.775742f));
     private const float SpRecoveryDuration = 0.5f;
+    private const float MOB_ENDURANCE_BREAK = 0.05F;
     private bool isWeaponInRHand;
 
     private void Awake()
@@ -120,6 +121,7 @@ public class Player : Character
                 (transform.forward,
                 (mob.transform.position - transform.position).normalized)
                 ) * Mathf.Rad2Deg;
+            float RequiredToIncreaseStackDamage = MonsterInfoTableManager.GetMonsterOriginHpFromID(mob.id) * MOB_ENDURANCE_BREAK;
 
             if (mob != null &&
                 mob.gameObject.activeSelf == true &&
@@ -127,6 +129,9 @@ public class Player : Character
                 PlayerAndMonster_Angle <= attack_angle)
             {
                 mob.hp -= attack_damage;
+
+                if (mob.endurance_stack != mob.endurance)
+                    mob.endurance_stack += EnduranceStackCalculator(attack_damage, RequiredToIncreaseStackDamage);
             }
         }
     }
@@ -242,5 +247,10 @@ public class Player : Character
     private float IncreaseDamageByLevel(float currentDamage, byte level)
     {
         return currentDamage + (level*(level+1));
+    }
+
+    private byte EnduranceStackCalculator(float currentDamage, float RequiredToIncreaseStackDamage)
+    {
+        return (byte)(currentDamage / RequiredToIncreaseStackDamage);
     }
 }
