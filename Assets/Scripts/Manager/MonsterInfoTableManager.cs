@@ -26,6 +26,7 @@ public struct MonsterInfo
     public float detect_range;
     public int agent_priority;
     public float agent_radius;
+    public byte endurance;
 }
 
 public static class MonsterInfoTableManager
@@ -63,6 +64,7 @@ public static class MonsterInfoTableManager
             mobInfo.detect_range = float.Parse(datas[18]);
             mobInfo.agent_priority = int.Parse(datas[19]);
             mobInfo.agent_radius = float.Parse(datas[20]);
+            mobInfo.endurance = byte.Parse(datas[21]);
 
             mobInfoList.Add(mobInfo);
         }
@@ -86,6 +88,17 @@ public static class MonsterInfoTableManager
         {
             if (mobID == mobinfo.id)
                 return mobinfo.monster_type;
+        }
+
+        throw new System.NotSupportedException(mobID + " 에 해당하는 몬스터는 없습니다.");
+    }
+
+    public static float GetMonsterOriginHpFromID(ushort mobID)
+    {
+        foreach (MonsterInfo mobinfo in mobInfoList)
+        {
+            if (mobID == mobinfo.id)
+                return mobinfo.hp;
         }
 
         throw new System.NotSupportedException(mobID + " 에 해당하는 몬스터는 없습니다.");
