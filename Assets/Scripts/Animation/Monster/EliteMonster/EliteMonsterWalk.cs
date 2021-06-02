@@ -9,14 +9,12 @@ public class EliteMonsterWalk : EliteMonsterAnimation
         self = animator.GetComponent<EliteMonster>();
         self.agent.speed = self.walk_speed;
         self.agent.acceleration = self.walk_speed;
-        prevHP = self.hp;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         self.agent.destination = GameManager.instance.controller.player.transform.position;
 
-        InjuredCondition(animator, self, prevHP);
         animationHandler(animator, self);
     }
 

@@ -28,7 +28,7 @@ public class PigAttack : CommonMonsterAnimation
         IdleCondition(animator, self);
         WalkCondition(animator, self);
         RunCondition(animator, self);
-        InjuredCondition(animator, self, prevHP);
+        InjuredCondition(animator, self);
         DeadCondition(animator, self);
     }
 }

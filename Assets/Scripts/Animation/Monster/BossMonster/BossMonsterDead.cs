@@ -8,10 +8,7 @@ public class BossMonsterDead : BossMonsterAnimation
     {
         self = animator.GetComponent<BossMonster>();
         self.Dead();
-    }
-
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
         self.hp = 0;
+        self.endurance_stack = 0;
     }
 }

@@ -6,17 +6,17 @@ public class EliteMonsterAttack : EliteMonsterAnimation
 {
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self = animator.GetComponent<EliteMonster>();
+        self = animator.GetComponent<CommonMonster>();
         self.isMonsterAttackDone = false;
-        prevHP = self.hp;
-        animationHandler -= AttackCondition;
-        animationHandler -= Skill_01_Condition;
+        animationHandler = IdleCondition;
+        animationHandler += InjuredCondition;
+        animationHandler += DeadCondition;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (currentAnimationTime < (1 - animationTransitionTime))
-            currentAnimationTime += Time.deltaTime * attackClipSpeed;
+            currentAnimationTime += stateInfo.normalizedTime;
 
         if (currentAnimationTime >= (1 - animationTransitionTime))
         {
@@ -24,13 +24,6 @@ public class EliteMonsterAttack : EliteMonsterAnimation
             currentAnimationTime = 0;
         }
 
-        InjuredCondition(animator, self, prevHP);
         animationHandler(animator, self);
-    }
-
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        animationHandler += AttackCondition;
-        animationHandler += Skill_01_Condition;
     }
 }

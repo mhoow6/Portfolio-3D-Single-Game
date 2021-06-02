@@ -9,15 +9,12 @@ public class CommonMonsterWalk : CommonMonsterAnimation
         self = animator.GetComponent<CommonMonster>();
         self.agent.speed = self.walk_speed;
         self.agent.acceleration = self.walk_speed;
-        prevHP = self.hp;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         self.agent.destination = GameManager.instance.controller.player.transform.position;
-
         animationHandler(animator, self);
-        InjuredCondition(animator, self, prevHP);
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

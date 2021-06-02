@@ -6,19 +6,17 @@ public class BossMonsterSkill_02 : BossMonsterAnimation
 {
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self = animator.GetComponent<BossMonster>();
+        self = animator.GetComponent<EliteMonster>();
         self.isMonsterAttackDone = false;
-        prevHP = self.hp;
-        animationHandler -= AttackCondition;
-        animationHandler -= Skill_01_Condition;
-        animationHandler -= Skill_02_Condition;
-        animationHandler -= Skill_03_Condition;
+        animationHandler = IdleCondition;
+        animationHandler += InjuredCondition;
+        animationHandler += DeadCondition;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (currentAnimationTime < (1 - animationTransitionTime))
-            currentAnimationTime += Time.deltaTime * skill_02_ClipSpeed;
+            currentAnimationTime += stateInfo.normalizedTime;
 
         if (currentAnimationTime >= (1 - animationTransitionTime))
         {
@@ -27,13 +25,5 @@ public class BossMonsterSkill_02 : BossMonsterAnimation
         }
 
         animationHandler(animator, self);
-    }
-
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        animationHandler += AttackCondition;
-        animationHandler += Skill_01_Condition;
-        animationHandler += Skill_02_Condition;
-        animationHandler += Skill_03_Condition;
     }
 }

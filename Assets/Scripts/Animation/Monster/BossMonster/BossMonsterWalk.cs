@@ -9,8 +9,6 @@ public class BossMonsterWalk : BossMonsterAnimation
         self = animator.GetComponent<BossMonster>();
         self.agent.speed = self.walk_speed;
         self.agent.acceleration = self.walk_speed;
-
-        prevHP = self.hp;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

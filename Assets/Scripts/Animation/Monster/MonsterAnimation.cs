@@ -4,21 +4,68 @@ using UnityEngine;
 
 public delegate void MonsterAnimationHandler(Animator animator, Monster monster);
 
-public abstract class MonsterAnimation : StateMachineBehaviour
+public class MonsterAnimation : StateMachineBehaviour
 {
+    public enum AniType
+    {
+        IDLE = 0,
+        WALK,
+        RUN,
+        INJURED,
+        DEAD,
+        ATTACK,
+        SKILL_01,
+        SKILL_02,
+        SKILL_03
+    }
+
     protected static MonsterAnimationHandler animationHandler;
     protected Monster self;
     protected float prevHP;
+    protected const float animationBackTime = 0.1f;
 
-    protected abstract void IdleCondition(Animator animator, Monster monster);
+    protected virtual void IdleCondition(Animator animator, Monster monster)
+    {
+        if (monster.thinking_param == (int)AniType.IDLE)
+            animator.SetInteger("ani_id", (int)AniType.IDLE);
+    }
 
-    protected abstract void WalkCondition(Animator animator, Monster monster);
+    protected virtual void WalkCondition(Animator animator, Monster monster)
+    {
+        if (monster.thinking_param == (int)AniType.WALK)
+            animator.SetInteger("ani_id", (int)AniType.WALK);
+    }
 
-    protected abstract void RunCondition(Animator animator, Monster monster);
+    protected virtual void RunCondition(Animator animator, Monster monster)
+    {
+        if (monster.thinking_param == (int)AniType.RUN)
+            animator.SetInteger("ani_id", (int)AniType.RUN);
+    }
 
-    protected abstract void InjuredCondition(Animator animator, Monster monster, float prevHP);
+    protected virtual void InjuredCondition(Animator animator, Monster monster)
+    {
+        if (monster.endurance_stack >= monster.endurance && monster.hp > 0)
+            animator.SetInteger("ani_id", (int)AniType.INJURED);
+    }
 
-    protected abstract void DeadCondition(Animator animator, Monster monster);
+    protected virtual void DeadCondition(Animator animator, Monster monster)
+    {
+        if (monster.hp <= 0)
+            animator.SetInteger("ani_id", (int)AniType.DEAD);
+    }
 
-    protected abstract void AttackCondition(Animator animator, Monster monster);
+    protected virtual void AttackCondition(Animator animator, Monster monster)
+    {
+        if (monster.thinking_param == (int)AniType.ATTACK)
+            animator.SetInteger("ani_id", (int)AniType.ATTACK);
+    }
+
+    protected virtual void DamagedCondition(Animator animator, Monster monster, ref float prevHP, ref float currentAnimationTime, float animationBackTime)
+    {
+        if (monster.hp < prevHP)
+        {
+            prevHP = monster.hp;
+            animator.Play(0, 0, currentAnimationTime - animationBackTime);
+        }
+    }
 }

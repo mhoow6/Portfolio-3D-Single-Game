@@ -9,8 +9,6 @@ public class BossMonsterRun : BossMonsterAnimation
         self = animator.GetComponent<BossMonster>();
         self.agent.speed = self.run_speed;
         self.agent.acceleration = self.run_speed;
-
-        prevHP = self.hp;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
