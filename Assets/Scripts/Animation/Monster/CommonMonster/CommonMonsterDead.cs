@@ -11,4 +11,10 @@ public class CommonMonsterDead : CommonMonsterAnimation
         self.hp = 0;
         self.endurance_stack = 0;
     }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        self.hp = 0;
+        self.endurance_stack = 0;
+    }
 }

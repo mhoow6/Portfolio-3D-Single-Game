@@ -8,15 +8,20 @@ public class CommonMonsterInjured : CommonMonsterAnimation
     {
         self = animator.GetComponent<CommonMonster>();
         self.endurance_stack = 0;
+        prevHP = self.hp;
         animationHandler = IdleCondition;
-        animationHandler += WalkCondition;
-        animationHandler += RunCondition;
         animationHandler += InjuredCondition;
-        animationHandler += AttackCondition;
+        animationHandler += DeadCondition;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         animationHandler(animator, self);
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        self.thinking_param = (int)AniType.IDLE;
+        self.isStuned = true;
     }
 }
