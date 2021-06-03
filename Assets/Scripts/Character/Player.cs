@@ -30,7 +30,7 @@ public class Player : Character
     private Vector3 weaponRHandLocalPos = new Vector3(11.6000004f, 1.89999998f, 0.699999988f);
     private Quaternion weaponRHandLocalRot = Quaternion.Euler(new Vector3(80.5413818f, 22.6469021f, 205.775742f));
     private const float SpRecoveryDuration = 0.5f;
-    private const float MOB_ENDURANCE_BREAK = 0.05F;
+    private const float REQUIRED_MOB_ENDURANCE_BREAK = 0.03F;
     private bool isWeaponInRHand;
 
     private void Awake()
@@ -121,7 +121,7 @@ public class Player : Character
                 (transform.forward,
                 (mob.transform.position - transform.position).normalized)
                 ) * Mathf.Rad2Deg;
-            float RequiredToIncreaseStackDamage = MonsterInfoTableManager.GetMonsterOriginHpFromID(mob.id) * MOB_ENDURANCE_BREAK;
+            float RequiredToIncreaseStackDamage = MonsterInfoTableManager.GetMonsterOriginHpFromID(mob.id) * REQUIRED_MOB_ENDURANCE_BREAK;
 
             if (mob != null &&
                 mob.gameObject.activeSelf == true &&
@@ -130,7 +130,7 @@ public class Player : Character
             {
                 mob.hp -= attack_damage;
 
-                if (mob.endurance_stack != mob.endurance)
+                if (!mob.isStuned)
                     mob.endurance_stack += EnduranceStackCalculator(attack_damage, RequiredToIncreaseStackDamage);
             }
         }
