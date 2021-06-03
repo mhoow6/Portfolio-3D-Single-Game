@@ -7,7 +7,7 @@ using TMPro;
 public class HUDManager : MonoBehaviour
 {
     public static HUDManager instance;
-    public ControlSlotManager controlSlotManager;
+    public CombatManager combat;
 
     public Slider playerHP;
     public Slider playerMP;

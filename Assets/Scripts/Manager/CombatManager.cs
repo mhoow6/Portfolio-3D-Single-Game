@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class ControlSlotManager : MonoBehaviour
+public class CombatManager : MonoBehaviour
 {
     public List<ControlSlot> controlSlots = new List<ControlSlot>();
 
