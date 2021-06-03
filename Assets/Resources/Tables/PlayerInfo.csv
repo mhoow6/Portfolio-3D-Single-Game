@@ -1,2 +1,2 @@
 level,hp,mp,sp,attack_01_angle,attack_02_angle,attack_sp,combat_attack_01_angle,combat_attack_02_angle,combat_attack_03_angle,combat_attack_sp,skill_01_angle,skill_01_mp,skill_01_sp,skill_01_cooldown,skill_01_damage,skill_01_distance,skill_02_angle,skill_02_mp,skill_02_sp,skill_02_cooldown,skill_02_damage,skill_02_distance,walk_speed,run_speed,run_sp,combat_walk_speed,roll_distance,roll_sp,basic_weapon_id,equip_weapon_id,sp_recovery_point,running_sp_reduction_rate
-1,200,100,100,50,50,10,60,60,60,15,80,20,20,6,80,5,80,40,40,20,120,8,2,4,2,1.5,2,15,3000,3001,6,5
+1,500,100,100,50,50,10,60,60,60,15,80,20,20,6,80,5,80,40,40,20,120,8,2,4,2,1.5,2,15,3000,3001,6,5

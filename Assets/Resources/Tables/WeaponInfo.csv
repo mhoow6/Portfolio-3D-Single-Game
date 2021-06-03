@@ -1,5 +1,5 @@
 id,weapon_name,basic_damage,basic_distance,max_reinforce
-3000,barehand,20,2,5
-3001,SM_Wep_Broadsword_01,40,3,5
-3002,SM_Wep_Zweihander_01,50,4,5
-3003,SM_Wep_FortGolem_01,80,3,5
+3000,barehand,10,2,5
+3001,SM_Wep_Broadsword_01,20,3,5
+3002,SM_Wep_Zweihander_01,30,4,5
+3003,SM_Wep_FortGolem_01,40,3,5
