@@ -13,7 +13,7 @@ public class EliteMonsterAnimation : MonsterAnimation
 
     protected void Skill_01_Condition(Animator animator, Monster monster)
     {
-        if (monster.thinking_param == (int)AniType.SKILL_01)
+        if (monster.thinking_param == (int)AniType.SKILL_01 && monster.hp > 0)
             animator.SetInteger("ani_id", (int)AniType.SKILL_01);
     }
 }

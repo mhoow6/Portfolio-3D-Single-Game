@@ -19,26 +19,27 @@ public class MonsterAnimation : StateMachineBehaviour
         SKILL_03
     }
 
-    protected static MonsterAnimationHandler animationHandler;
+    protected MonsterAnimationHandler animationHandler;
     protected Monster self;
     protected float prevHP;
     protected const float animationBackTime = 0.1f;
+    
 
     protected virtual void IdleCondition(Animator animator, Monster monster)
     {
-        if (monster.thinking_param == (int)AniType.IDLE)
+        if (monster.thinking_param == (int)AniType.IDLE && monster.hp > 0)
             animator.SetInteger("ani_id", (int)AniType.IDLE);
     }
 
     protected virtual void WalkCondition(Animator animator, Monster monster)
     {
-        if (monster.thinking_param == (int)AniType.WALK)
+        if (monster.thinking_param == (int)AniType.WALK && monster.hp > 0)
             animator.SetInteger("ani_id", (int)AniType.WALK);
     }
 
     protected virtual void RunCondition(Animator animator, Monster monster)
     {
-        if (monster.thinking_param == (int)AniType.RUN)
+        if (monster.thinking_param == (int)AniType.RUN && monster.hp > 0)
             animator.SetInteger("ani_id", (int)AniType.RUN);
     }
 
@@ -56,13 +57,13 @@ public class MonsterAnimation : StateMachineBehaviour
 
     protected virtual void AttackCondition(Animator animator, Monster monster)
     {
-        if (monster.thinking_param == (int)AniType.ATTACK)
+        if (monster.thinking_param == (int)AniType.ATTACK && monster.hp > 0)
             animator.SetInteger("ani_id", (int)AniType.ATTACK);
     }
 
     protected virtual void DamagedCondition(Animator animator, Monster monster, ref float prevHP, ref float currentAnimationTime, float animationBackTime)
     {
-        if (monster.hp < prevHP)
+        if (monster.hp < prevHP && monster.hp > 0)
         {
             prevHP = monster.hp;
             animator.Play(0, 0, currentAnimationTime - animationBackTime);
