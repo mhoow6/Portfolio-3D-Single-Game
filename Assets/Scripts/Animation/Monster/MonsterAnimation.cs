@@ -21,6 +21,8 @@ public class MonsterAnimation : StateMachineBehaviour
 
     protected MonsterAnimationHandler animationHandler;
     protected Monster self;
+
+    [SerializeField]
     protected float prevHP;
     protected const float animationBackTime = 0.1f;
     
@@ -61,12 +63,12 @@ public class MonsterAnimation : StateMachineBehaviour
             animator.SetInteger("ani_id", (int)AniType.ATTACK);
     }
 
-    protected virtual void DamagedCondition(Animator animator, Monster monster, ref float prevHP, ref float currentAnimationTime, float animationBackTime)
+    protected virtual void DamagedCondition(Animator animator, Monster monster, ref float prevHP, ref float currentAnimationTime, float animationBackTime, string currentAnimationState)
     {
-        if (monster.hp < prevHP && monster.hp > 0)
+        if (monster.hp < prevHP && monster.hp > 0 && monster.endurance_stack < monster.endurance)
         {
             prevHP = monster.hp;
-            animator.Play(0, 0, currentAnimationTime - animationBackTime);
+            animator.Play(currentAnimationState, 0, currentAnimationTime - animationBackTime);
         }
     }
 }

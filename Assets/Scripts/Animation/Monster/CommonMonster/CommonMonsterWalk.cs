@@ -21,7 +21,7 @@ public class CommonMonsterWalk : CommonMonsterAnimation
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         currentAnimationTime = stateInfo.normalizedTime % 2;
-        DamagedCondition(animator, self, ref prevHP, ref currentAnimationTime, animationBackTime);
+        DamagedCondition(animator, self, ref prevHP, ref currentAnimationTime, animationBackTime, "Base Layer.Walk1");
 
         if (self.agent.enabled == true)
             self.agent.destination = GameManager.instance.controller.player.transform.position;

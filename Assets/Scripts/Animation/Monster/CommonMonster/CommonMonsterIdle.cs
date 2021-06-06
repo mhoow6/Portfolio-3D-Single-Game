@@ -19,7 +19,7 @@ public class CommonMonsterIdle : CommonMonsterAnimation
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         currentAnimationTime = stateInfo.normalizedTime % 2;
-        DamagedCondition(animator, self, ref prevHP, ref currentAnimationTime, animationBackTime);
+        DamagedCondition(animator, self, ref prevHP, ref currentAnimationTime, animationBackTime, "Base Layer.Idle0");
 
         animationHandler(animator, self);
     }
