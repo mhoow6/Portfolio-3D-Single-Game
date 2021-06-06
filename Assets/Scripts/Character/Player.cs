@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : Character
 {
+    public ItemInfo[] inventory;
     public byte level;
     public float hp;
     public float mp;
@@ -60,6 +61,7 @@ public class Player : Character
         attack_angle = PlayerInfoTableManager.playerInfo.attack_01_angle;
         attack_damage = IncreaseDamageByLevel(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_damage, level);
         attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_distance;
+        inventory = PlayerInventoryTableManager.GetPlayerInventoryFromTable();
 
         sheath = GetNodeObject("Spine_03");
         righthand = GetNodeObject("Hand_R");

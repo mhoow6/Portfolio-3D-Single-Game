@@ -8,6 +8,8 @@ public class HUDManager : MonoBehaviour
 {
     public static HUDManager instance;
     public CombatManager combat;
+    public InventoryManager inventory;
+    public MenuManager menu;
 
     public Slider playerHP;
     public Slider playerMP;

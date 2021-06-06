@@ -11,6 +11,7 @@ public class TableManager : MonoBehaviour
     private string playerPath;
     private string monsterPath;
     private string npcPath;
+    private string playerInventoryPath;
 
     private void Awake()
     {
@@ -20,9 +21,11 @@ public class TableManager : MonoBehaviour
         playerPath = "Tables/PlayerInfo";
         monsterPath = "Tables/MonsterInfo";
         npcPath = "Tables/NPCInfo";
+        playerInventoryPath = "Tables/PlayerInventory";
 
         WeaponInfoTableManager.LoadTable(weaponPath);
         PlayerInfoTableManager.LoadTable(playerPath);
+        PlayerInventoryTableManager.LoadTable(playerInventoryPath);
         MonsterInfoTableManager.LoadTable(monsterPath);
         NPCInfoTableManager.LoadTable(npcPath);
     }
