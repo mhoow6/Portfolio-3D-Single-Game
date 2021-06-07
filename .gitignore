@@ -46,6 +46,8 @@ Assets/Resources/Sprite/
 *.vsconfig
 *.txt
 *.renderTexture
+*.prefab
+*.png
 
 # Ignore UnitTest
 Assets/Scripts/UnitTest/
