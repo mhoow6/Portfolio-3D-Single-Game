@@ -50,10 +50,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Application.platform != RuntimePlatform.Android)
-            moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        else
-            moveInput = _moveInput;
+        moveInput = InputManager.instance.moveInput;
 
         if (moveInput.magnitude != 0)
             isPlayerWantToMove = true;
