@@ -11,6 +11,7 @@ public class ItemSlot : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     public Image itemGradeFrame;
     public TMP_Text itemCount;
     public byte item_type;
+    public int originIndex;
 
     private const float ALPHA_80 = 0.3137255f;
     private Color originItemColor;
@@ -26,6 +27,12 @@ public class ItemSlot : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     {
         itemIcon.rectTransform.position = eventData.position;
         AlphaChange(dragItemColor);
+
+        // Grid Layout Rule OFF
+        HUDManager.instance.inventory.itemContent.layoutGroup.enabled = false;
+
+        // Make this First Layout
+        this.transform.SetAsLastSibling();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -39,58 +46,38 @@ public class ItemSlot : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         itemIcon.rectTransform.anchoredPosition = Vector2.zero;
         AlphaChange(originItemColor);
 
-        // Swap
-        if (eventData.pointerCurrentRaycast.gameObject.name.Substring(0, 4) == "Item")
+        // Grid Layout Rule ON
+        HUDManager.instance.inventory.itemContent.layoutGroup.enabled = true;
+
+        // Slot Swap
+        if (eventData.pointerCurrentRaycast.gameObject.name.Substring(0, 4) == "Item" && itemIcon.sprite != null &&
+            eventData.pointerCurrentRaycast.gameObject.name != this.gameObject.name)
         {
-            Debug.Log("Item Confirmed.");
-            if (eventData.pointerCurrentRaycast.gameObject.name != this.gameObject.name)
-            {
-                GameObject targetObject = eventData.pointerCurrentRaycast.gameObject;
-                ItemSlot targetItemSlot = HUDManager.instance.inventory.items.Find(item => item.gameObject == targetObject);
+            GameObject targetObject = eventData.pointerCurrentRaycast.gameObject;
+            ItemSlot targetItemSlot = HUDManager.instance.inventory.itemContent.items.Find(item => item.gameObject == targetObject);
 
-                // Temp
-                ItemSlot temp = Instantiate(this); // 정말 필요할까..?
-                temp.gameObject.SetActive(false);
+            // Slibing Index Change
+            int targetSibingIndex = targetItemSlot.transform.GetSiblingIndex();
+            targetItemSlot.transform.SetSiblingIndex(originIndex);
+            this.transform.SetSiblingIndex(targetSibingIndex);
 
-                // Data Swap
-                this.itemIcon.sprite = targetItemSlot.itemIcon.sprite;
-                this.itemGradeFrame.sprite = targetItemSlot.itemGradeFrame.sprite;
-                this.itemCount.text = targetItemSlot.itemCount.text;
-                this.item_type = targetItemSlot.item_type;
+            // Change Slot in Item Slots
+            ItemSlot tempItemSlot = targetItemSlot;
+            HUDManager.instance.inventory.itemContent.items[targetItemSlot.originIndex] = this;
+            HUDManager.instance.inventory.itemContent.items[originIndex] = tempItemSlot;
 
-                targetItemSlot.itemIcon.sprite = temp.itemIcon.sprite;
-                targetItemSlot.itemGradeFrame.sprite = temp.itemGradeFrame.sprite;
-                targetItemSlot.itemCount.text = temp.itemCount.text;
-                targetItemSlot.item_type = temp.item_type;
+            // Origin Index Change
+            int targetOriginIndex = targetItemSlot.originIndex;
+            targetItemSlot.originIndex = originIndex;
+            this.originIndex = targetOriginIndex;
 
-                Destroy(temp.gameObject); // 정말 필요할까..?
-
-                // Both Item Type Check
-                if (this.item_type == (byte)ItemType.EQUIPMENT || this.item_type == (byte)ItemType.NONE)
-                    this.itemCount.gameObject.SetActive(false);
-                else
-                    this.itemCount.gameObject.SetActive(true);
-                if (targetItemSlot.item_type == (byte)ItemType.EQUIPMENT || targetItemSlot.item_type == (byte)ItemType.NONE)
-                    targetItemSlot.itemCount.gameObject.SetActive(false);
-                else
-                    targetItemSlot.itemCount.gameObject.SetActive(true);
-
-                // After Swap With Empty Slot
-                if (this.itemIcon.sprite == null)
-                {
-                    this.itemIcon.enabled = false;
-                    targetItemSlot.itemIcon.enabled = true;
-                }
-                    
-                
-                Debug.Log("Swap Completed.");
-            }
+            Debug.Log("Swap Completed.");
         }
 
-        // Delete
+        // Item Into Delete
         if (eventData.pointerCurrentRaycast.gameObject.name == "Delete")
         {
-            // 삭제 메시지 팝업
+            // 삭제
         }
         
     }
@@ -99,5 +86,13 @@ public class ItemSlot : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     {
         itemIcon.color = alpha;
         itemCount.color = alpha;
+    }
+
+    private void ItemTypeCheck(ItemSlot itemSlot)
+    {
+        if (itemSlot.item_type == (byte)ItemType.EQUIPMENT || itemSlot.item_type == (byte)ItemType.NONE)
+            itemSlot.itemCount.gameObject.SetActive(false);
+        else
+            itemSlot.itemCount.gameObject.SetActive(true);
     }
 }
