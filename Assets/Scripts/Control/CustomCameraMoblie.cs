@@ -11,6 +11,12 @@ public class CustomCameraMoblie : MonoBehaviour
     private const float HORIZONTAL_ROTATE_SPEED = 0.5f;
     private const float VERTICAL_ROTATE_SPEED = 0.2f;
 
+    private Vector2 moveDelta;
+    public Vector2 _moveDelta
+    {
+        get => moveDelta;
+    }
+
     private void Awake()
     {
         rightFingerId = -1;
@@ -46,15 +52,15 @@ public class CustomCameraMoblie : MonoBehaviour
                     if (t.fingerId == rightFingerId && !EventSystem.current.IsPointerOverGameObject(i))
                     {
                         if (Mathf.Abs(t.deltaPosition.x) > Mathf.Abs(t.deltaPosition.y)) // 수평이동 값이 수직이동 값보다 클 경우
-                            GameManager.instance.controller.cameraArm._moveDelta = new Vector2(t.deltaPosition.x * HORIZONTAL_ROTATE_SPEED, 0);
+                            moveDelta = new Vector2(t.deltaPosition.x * HORIZONTAL_ROTATE_SPEED, 0);
                         else if (Mathf.Abs(t.deltaPosition.x) < Mathf.Abs(t.deltaPosition.y))
-                            GameManager.instance.controller.cameraArm._moveDelta = new Vector2(0, t.deltaPosition.y * VERTICAL_ROTATE_SPEED);
+                            moveDelta = new Vector2(0, t.deltaPosition.y * VERTICAL_ROTATE_SPEED);
                     }
                     break;
 
                 case TouchPhase.Stationary:
                     if (t.fingerId == rightFingerId)
-                        GameManager.instance.controller.cameraArm._moveDelta = Vector2.zero;
+                        moveDelta = Vector2.zero;
                     break;
 
                 case TouchPhase.Ended:
