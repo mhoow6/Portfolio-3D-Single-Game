@@ -45,8 +45,9 @@ public class MapManager : MonoBehaviour
             cameraScript.transform.position = playerScript.transform.position + cameraScript.offset;
             cameraScript.transform.rotation = playerScript.transform.rotation;
 
-            // Add Moblie Camera
-            cameraScript.gameObject.AddComponent<CustomCameraMoblie>();
+            // Moblie Camera Load
+            CustomCameraMoblie moblieCameraScript = cameraScript.gameObject.AddComponent<CustomCameraMoblie>();
+            InputManager.instance.moblieCamera = moblieCameraScript; // Attach at InputManager
 
             // Main Camera Transform Setup
             Camera.main.transform.position = cameraScript.transform.position;
@@ -60,6 +61,18 @@ public class MapManager : MonoBehaviour
             minimapIcon.layer = 6; // Ignore MainCamera
             iconRenderer.sprite = Resources.Load<Sprite>("Sprite/player_icon");
             iconRenderer.color = Color.blue;
+
+            // Inventory Camera
+            GameObject _inventoryCamera = new GameObject("Inventory Camera");
+            Camera inventoryCamera = _inventoryCamera.AddComponent<Camera>();
+            inventoryCamera.targetTexture = Resources.Load<RenderTexture>("RendererTexture/Inventory");
+            inventoryCamera.clearFlags = CameraClearFlags.SolidColor; // Transparent Background
+            inventoryCamera.cullingMask = 1 << 3; // Only Rendering Layer [Ignore Minimap]
+            InventoryCamera invenCameraScript =_inventoryCamera.gameObject.AddComponent<InventoryCamera>();
+            invenCameraScript.transform.position = playerScript.transform.position + invenCameraScript.BasicOffset;
+            invenCameraScript.transform.rotation = Quaternion.Euler(new Vector3(10f, -playerScript.transform.rotation.y - 90f, 0)); // Face with Player
+            HUDManager.instance.inventory.inventoryCamera = invenCameraScript; // Attach at Inventory Mananger
+            invenCameraScript.gameObject.SetActive(false); // It will be actived true with Inventory On
 
             // Controller Load
             PlayerController _controller = playerScript.gameObject.AddComponent<PlayerController>();
@@ -75,6 +88,7 @@ public class MapManager : MonoBehaviour
             cameraScript.transform.SetParent(parent.transform);
             Camera.main.transform.SetParent(cameraScript.transform);
             minimapIcon.transform.SetParent(playerScript.transform);
+            invenCameraScript.transform.SetParent(parent.transform);
 
             // local Rotation Setup
             minimapIcon.transform.localRotation = Quaternion.Euler(new Vector3(90f, 0f, 180f));
