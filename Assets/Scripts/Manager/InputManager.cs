@@ -80,9 +80,13 @@ public class InputManager : MonoBehaviour
 
             // Inventory Switch
             if (Input.GetKeyDown(KeyCode.I))
-                HUDManager.instance.inventory.gameObject.SetActive(
-                    HUDManager.instance.inventory.isInventoryOn = HUDManager.instance.inventory.isInventoryOn == false ? true : false
-                    );
+            {
+                bool toggle = HUDManager.instance.inventory.isInventoryOn = HUDManager.instance.inventory.isInventoryOn == false ? true : false;
+
+                HUDManager.instance.inventory.gameObject.SetActive(toggle);
+                HUDManager.instance.inventory.inventoryCamera.gameObject.SetActive(toggle);
+            }
+                
         }
     }
 
@@ -97,6 +101,7 @@ public class InputManager : MonoBehaviour
             {
                 Debug.Log("Inventory On");
                 HUDManager.instance.inventory.isInventoryOn = true;
+                HUDManager.instance.inventory.inventoryCamera.gameObject.SetActive(true);
                 HUDManager.instance.inventory.gameObject.SetActive(true);
             }
             
@@ -104,6 +109,7 @@ public class InputManager : MonoBehaviour
             {
                 Debug.Log("Inventory Off");
                 HUDManager.instance.inventory.isInventoryOn = false;
+                HUDManager.instance.inventory.inventoryCamera.gameObject.SetActive(false);
                 HUDManager.instance.inventory.gameObject.SetActive(false);
             }
                 
