@@ -25,19 +25,6 @@ public class CustomCamera : MonoBehaviour
         }
     }
 
-    public Vector2 _moveDelta
-    {
-        get
-        {
-            return moveDelta;
-        }
-        
-        set
-        {
-            moveDelta = value;
-        }
-    }
-
     private Vector2 moveDelta;
     private float zoom;
     private float zoomResult;
@@ -64,10 +51,7 @@ public class CustomCamera : MonoBehaviour
 
     private void LookAround()
     {
-        if (Application.platform != RuntimePlatform.Android)
-            moveDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        else
-            moveDelta = _moveDelta;
+        moveDelta = InputManager.instance.moveDelta;
 
         Vector3 camAngle = transform.rotation.eulerAngles;
 
