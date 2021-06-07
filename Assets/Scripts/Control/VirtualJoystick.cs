@@ -15,7 +15,11 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private float leverRange;
 
     private Vector2 inputDirection;
-    private bool isInput;
+
+    public Vector2 _inputDirection
+    {
+        get => inputDirection;
+    }
 
     private void Start()
     {
@@ -23,16 +27,9 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             this.enabled = false;
     }
 
-    private void Update()
-    {
-        if (isInput)
-            GameManager.instance.controller._moveInput = inputDirection;
-    }
-
     public void OnBeginDrag(PointerEventData eventData)
     {
         ControlJoyStickLever(eventData);
-        isInput = true;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -43,8 +40,7 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnEndDrag(PointerEventData eventData)
     {
         lever.anchoredPosition = Vector2.zero;
-        isInput = false;
-        GameManager.instance.controller._moveInput = Vector2.zero;
+        inputDirection = Vector2.zero;
     }
 
     private void ControlJoyStickLever(PointerEventData eventData)
