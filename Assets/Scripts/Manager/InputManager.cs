@@ -29,7 +29,7 @@ public class InputManager : MonoBehaviour
         StartCoroutine(MoveInputPC());
         StartCoroutine(MoveDeltaPC());
         StartCoroutine(ShortcutPC());
-        StartCoroutine(ShortcutMoblie());
+        StartCoroutine(ShortcutMenu());
     }
 
     IEnumerator MoveInputPC()
@@ -37,7 +37,9 @@ public class InputManager : MonoBehaviour
         while (true)
         {
             yield return null;
-            moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+            if (!HUDManager.instance.inventory.isInventoryOn)
+                moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         }
     }
 
@@ -47,7 +49,7 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (joystick != null)
+            if (joystick != null && !HUDManager.instance.inventory.isInventoryOn)
                 moveInput = joystick._inputDirection;
         }
     }
@@ -57,7 +59,9 @@ public class InputManager : MonoBehaviour
         while (true)
         {
             yield return null;
-            moveDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+
+            if (!HUDManager.instance.inventory.isInventoryOn)
+                moveDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         }
     }
 
@@ -67,7 +71,7 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (moblieCamera != null)
+            if (moblieCamera != null && !HUDManager.instance.inventory.isInventoryOn)
                 moveDelta = moblieCamera._moveDelta;
         }
     }
@@ -83,14 +87,13 @@ public class InputManager : MonoBehaviour
             {
                 bool toggle = HUDManager.instance.inventory.isInventoryOn = HUDManager.instance.inventory.isInventoryOn == false ? true : false;
 
-                HUDManager.instance.inventory.gameObject.SetActive(toggle);
-                HUDManager.instance.inventory.inventoryCamera.gameObject.SetActive(toggle);
+                InventorySwitch(toggle);
             }
                 
         }
     }
 
-    IEnumerator ShortcutMoblie()
+    IEnumerator ShortcutMenu()
     {
         while (true)
         {
@@ -101,18 +104,40 @@ public class InputManager : MonoBehaviour
             {
                 Debug.Log("Inventory On");
                 HUDManager.instance.inventory.isInventoryOn = true;
-                HUDManager.instance.inventory.inventoryCamera.gameObject.SetActive(true);
-                HUDManager.instance.inventory.gameObject.SetActive(true);
+
+                InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
             }
             
             if (HUDManager.instance.inventory.homeBtn.isClicked && HUDManager.instance.inventory.isInventoryOn)
             {
                 Debug.Log("Inventory Off");
                 HUDManager.instance.inventory.isInventoryOn = false;
-                HUDManager.instance.inventory.inventoryCamera.gameObject.SetActive(false);
-                HUDManager.instance.inventory.gameObject.SetActive(false);
+
+                InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
             }
-                
+
+            if (HUDManager.instance.inventory.deleteBtn.isClicked)
+                ItemDelete(HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected));
+        }
+    }
+
+    private void InventorySwitch(bool trigger)
+    {
+        HUDManager.instance.inventory.inventoryCamera.gameObject.SetActive(trigger);
+        HUDManager.instance.inventory.gameObject.SetActive(trigger);
+    }
+
+    private void ItemDelete(ItemSlot item)
+    {
+        if (item != null)
+        {
+            item.itemIcon.sprite = null;
+            item.itemIcon.enabled = false;
+            item.itemCount.gameObject.SetActive(false);
+            item.isSelected = false;
+            item.itemGradeFrame.sprite = item.originGradeFrameSprite;
+            item.item_type = (byte)ItemType.NONE;
+            item.item_id = 0;
         }
     }
 }
