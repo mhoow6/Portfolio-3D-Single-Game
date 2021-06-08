@@ -5,94 +5,95 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class ItemSlot : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    public Image itemIcon;
-    public Image itemGradeFrame;
+    
     public TMP_Text itemCount;
+    public bool isSelected;
     public byte item_type;
+    public ushort item_id;
     public int originIndex;
 
-    private const float ALPHA_80 = 0.3137255f;
-    private Color originItemColor;
-    private Color dragItemColor;
+    public Image itemGradeFrame;
+    public Sprite originGradeFrameSprite;
+
+    private const string SELECTED_FRAME = "equipment_grade_select";
 
     private void Awake()
     {
-        originItemColor = itemCount.color;
-        dragItemColor = new Color(itemCount.color.r, itemCount.color.g, itemCount.color.b, ALPHA_80);
+        originColor = itemCount.color;
+        originGradeFrameSprite = itemGradeFrame.sprite;
+        pressedColor = new Color(originColor.r, originColor.g, originColor.b, ALPHA_80);
     }
 
-    public void OnDrag(PointerEventData eventData)
+    // Factory Method
+    public override void PointerDown(PointerEventData eventData)
     {
-        itemIcon.rectTransform.position = eventData.position;
-        AlphaChange(dragItemColor);
+        // itemIcon.rectTransform.position = eventData.position;
 
-        // Grid Layout Rule OFF
-        HUDManager.instance.inventory.itemContent.layoutGroup.enabled = false;
+        if (!isSelected && item_type != (byte)ItemType.NONE)
+            itemGradeFrame.sprite = Resources.Load<Sprite>(PlayerInventoryTableManager.spritePath + SELECTED_FRAME);
+        else
+            itemGradeFrame.sprite = originGradeFrameSprite;
 
-        // Make this First Layout
-        this.transform.SetAsLastSibling();
+        isSelected = isSelected == false ? true : false;
     }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        itemIcon.rectTransform.position = eventData.position;
-        AlphaChange(dragItemColor);
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
+    // Factory Method
+    public override void PointerUp(PointerEventData eventData)
     {
         itemIcon.rectTransform.anchoredPosition = Vector2.zero;
-        AlphaChange(originItemColor);
 
-        // Grid Layout Rule ON
-        HUDManager.instance.inventory.itemContent.layoutGroup.enabled = true;
+        // if item drag and drop Wrong Place OR if item drag and drop to itself
+        if (eventData.pointerCurrentRaycast.gameObject.name.Substring(0, 4) != "Item" || eventData.pointerCurrentRaycast.gameObject.name == this.gameObject.name)
+            this.transform.SetSiblingIndex(originIndex);
 
         // Slot Swap
-        if (eventData.pointerCurrentRaycast.gameObject.name.Substring(0, 4) == "Item" && itemIcon.sprite != null &&
-            eventData.pointerCurrentRaycast.gameObject.name != this.gameObject.name)
+        if (eventData.pointerCurrentRaycast.gameObject.name.Substring(0, 4) == "Item" &&
+        eventData.pointerCurrentRaycast.gameObject.name != this.gameObject.name && this.item_type != (byte)ItemType.NONE)
         {
             GameObject targetObject = eventData.pointerCurrentRaycast.gameObject;
             ItemSlot targetItemSlot = HUDManager.instance.inventory.itemContent.items.Find(item => item.gameObject == targetObject);
 
             // Slibing Index Change
-            int targetSibingIndex = targetItemSlot.transform.GetSiblingIndex();
-            targetItemSlot.transform.SetSiblingIndex(originIndex);
-            this.transform.SetSiblingIndex(targetSibingIndex);
+            int targetIndex = targetItemSlot.originIndex;
+            this.transform.SetSiblingIndex(targetIndex); // If target Index is change first, it will be make wrong.
+            targetItemSlot.transform.SetSiblingIndex(this.originIndex);
 
             // Change Slot in Item Slots
             ItemSlot tempItemSlot = targetItemSlot;
-            HUDManager.instance.inventory.itemContent.items[targetItemSlot.originIndex] = this;
+            HUDManager.instance.inventory.itemContent.items[targetIndex] = this;
             HUDManager.instance.inventory.itemContent.items[originIndex] = tempItemSlot;
 
             // Origin Index Change
-            int targetOriginIndex = targetItemSlot.originIndex;
             targetItemSlot.originIndex = originIndex;
-            this.originIndex = targetOriginIndex;
+            this.originIndex = targetIndex;
 
             Debug.Log("Swap Completed.");
         }
 
-        // Item Into Delete
-        if (eventData.pointerCurrentRaycast.gameObject.name == "Delete")
+        // Grid Layout Rule ON
+        HUDManager.instance.inventory.itemContent.layoutGroup.enabled = true;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        itemIcon.rectTransform.position = eventData.position;
+        AlphaChange(pressedColor);
+
+        if (item_type != (byte)ItemType.NONE)
         {
-            // ªË¡¶
+            // Grid Layout Rule OFF
+            HUDManager.instance.inventory.itemContent.layoutGroup.enabled = false;
+
+            // Make this First Layout
+            this.transform.SetAsLastSibling();
         }
-        
     }
 
     private void AlphaChange(Color alpha)
     {
         itemIcon.color = alpha;
         itemCount.color = alpha;
-    }
-
-    private void ItemTypeCheck(ItemSlot itemSlot)
-    {
-        if (itemSlot.item_type == (byte)ItemType.EQUIPMENT || itemSlot.item_type == (byte)ItemType.NONE)
-            itemSlot.itemCount.gameObject.SetActive(false);
-        else
-            itemSlot.itemCount.gameObject.SetActive(true);
     }
 }
