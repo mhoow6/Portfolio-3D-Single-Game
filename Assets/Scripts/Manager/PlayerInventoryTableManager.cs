@@ -23,29 +23,24 @@ public struct ItemInfo
 
 public static class PlayerInventoryTableManager
 {
-    private static ItemInfo[] playerInventory = new ItemInfo[50];
-    public const short EMPTY_DATA = -1;
+    public static ItemInfo[] playerInventory = new ItemInfo[50];
+    //public const short EMPTY_DATA = -1;
+    public const string spritePath = "Sprite/";
 
     public static void LoadTable(string filePath)
     {
         List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
 
-        // Initalize default index
-        for(int i = 0; i < playerInventory.Length; i++)
-            playerInventory[i].index = EMPTY_DATA;
-
-
         for (int i = 1; i < lines.Count; i++)
         {
             string[] datas = lines[i].Split(',');
 
-            // Struct Array
-            playerInventory[i-1].index = short.Parse(datas[0]);
+            playerInventory[i - 1].index = short.Parse(datas[0]);
             playerInventory[i - 1].item_type = byte.Parse(datas[1]);
-            playerInventory[i-1].id = ushort.Parse(datas[2]);
+            playerInventory[i - 1].id = ushort.Parse(datas[2]);
             playerInventory[i - 1].icon_name = datas[3];
             playerInventory[i - 1].count = ushort.Parse(datas[4]);
-            playerInventory[i-1].reinforce_level = byte.Parse(datas[5]);
+            playerInventory[i - 1].reinforce_level = byte.Parse(datas[5]);
         }
     }
 
