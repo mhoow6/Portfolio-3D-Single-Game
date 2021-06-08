@@ -12,38 +12,37 @@ public class ItemContent : MonoBehaviour
     // Load Inventory UI From Player Inventory
     private void Start()
     {
-        for (int i = 0; i < GameManager.instance.controller.player.inventory.Length; i++)
+        for (int i = 0; i < PlayerInventoryTableManager.playerInventory.Length; i++)
         {
             ItemSlot newItem = Instantiate(dummy);
 
             newItem.name = "Item (" + i + ")";
 
             // NO DATA
-            if (GameManager.instance.controller.player.inventory[i].index == PlayerInventoryTableManager.EMPTY_DATA)
+            if (PlayerInventoryTableManager.playerInventory[i].item_type == (byte)ItemType.NONE)
             {
                 newItem.itemIcon.sprite = null;
                 newItem.itemIcon.enabled = false;
                 newItem.itemCount.gameObject.SetActive(false);
             }
             else
-                newItem.itemIcon.sprite = Resources.Load<Sprite>("Sprite/" + GameManager.instance.controller.player.inventory[i].icon_name);
+                newItem.itemIcon.sprite = Resources.Load<Sprite>(PlayerInventoryTableManager.spritePath + PlayerInventoryTableManager.playerInventory[i].icon_name);
 
-            newItem.itemCount.text = GameManager.instance.controller.player.inventory[i].count.ToString();
-            newItem.item_type = GameManager.instance.controller.player.inventory[i].item_type;
+            newItem.itemCount.text = PlayerInventoryTableManager.playerInventory[i].count.ToString();
+            newItem.item_type = PlayerInventoryTableManager.playerInventory[i].item_type;
+            newItem.item_id = PlayerInventoryTableManager.playerInventory[i].id;
             newItem.originIndex = i;
 
-            if (newItem.item_type == (byte)ItemType.EQUIPMENT || newItem.item_type == (byte)ItemType.NONE)
+            if (newItem.item_type == (byte)ItemType.EQUIPMENT)
                 newItem.itemCount.gameObject.SetActive(false);
 
-            newItem.gameObject.SetActive(true);
+            newItem.gameObject.SetActive(true); // Disabled state -> Enable State
 
             items.Add(newItem);
             newItem.transform.SetParent(this.transform);
         }
-    }
 
-    private void OnEnable()
-    {
-        dummy.gameObject.SetActive(false);
+        Destroy(dummy.gameObject); // Dummy mess up my grid layout
+        dummy = null;
     }
 }
