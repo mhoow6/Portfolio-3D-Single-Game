@@ -7,35 +7,47 @@ using UnityEngine.UI;
 public class ControlSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public bool isClicked;
+    public Image itemIcon;
 
-    [SerializeField]
-    private Image background;
-
-    private Color originColor;
-    private Color pressedColor;
-    private const float ALPHA_80 = 0.3137255f;
+    protected Color originColor;
+    protected Color pressedColor;
+    protected const float ALPHA_80 = 0.3137255f;
 
     private void Awake()
     {
-        originColor = background.color;
-        pressedColor = new Color(background.color.r, background.color.g, background.color.b, ALPHA_80);
+        originColor = itemIcon.color;
+        pressedColor = new Color(itemIcon.color.r, itemIcon.color.g, itemIcon.color.b, ALPHA_80);
+    }
+
+    public virtual void PointerDown(PointerEventData eventData)
+    {
+
+    }
+
+    public virtual void PointerUp(PointerEventData eventData)
+    {
+
     }
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         isClicked = true;
-        background.color = pressedColor;
+        itemIcon.color = pressedColor;
+
+        PointerDown(eventData);
     }
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
         isClicked = false;
-        background.color = originColor;
+        itemIcon.color = originColor;
+
+        PointerUp(eventData);
     }
 
     private void OnDisable()
     {
         isClicked = false;
-        background.color = originColor;
+        itemIcon.color = originColor;
     }
 }
