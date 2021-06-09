@@ -21,8 +21,8 @@ public class Player : Character
     public bool isPlayerUseCombatSkill01;
     public bool isPlayerUseCombatSkill02;
     public float SkillDuration = 1f;
+    public GameObject weapon;
 
-    private GameObject weapon;
     private Transform sheath;
     private Transform righthand;
     private Vector3 weaponSheathLocalPos = new Vector3(-17.6000004f, 24.7000008f, 18);
@@ -53,7 +53,7 @@ public class Player : Character
         currentHp = PlayerInfoTableManager.playerInfo.hp;
         currentMp = PlayerInfoTableManager.playerInfo.mp;
         currentSp = PlayerInfoTableManager.playerInfo.sp;
-        equip_weapon_id = PlayerInfoTableManager.playerInfo.equip_weapon_id;
+        equip_weapon_id = PlayerEquipmentTableManager.playerEquipment[(int)EquipmentIndex.WEAPON].id;
         walk_speed = PlayerInfoTableManager.playerInfo.walk_speed;
         run_speed = PlayerInfoTableManager.playerInfo.run_speed;
         basic_weapon_id = PlayerInfoTableManager.playerInfo.basic_weapon_id;
@@ -180,7 +180,7 @@ public class Player : Character
         return null;
     }
 
-    private GameObject GetWeaponFromResource(ushort equipWeaponID)
+    public GameObject GetWeaponFromResource(ushort equipWeaponID)
     {
         GameObject _weapon = Resources.Load<GameObject>("Weapon/" + WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equipWeaponID).weapon_name);
         GameObject weapon = Instantiate(_weapon);
@@ -244,7 +244,7 @@ public class Player : Character
         }
     }
 
-    private float IncreaseDamageByLevel(float currentDamage, byte level)
+    public float IncreaseDamageByLevel(float currentDamage, byte level)
     {
         return currentDamage + (level*(level+1));
     }
