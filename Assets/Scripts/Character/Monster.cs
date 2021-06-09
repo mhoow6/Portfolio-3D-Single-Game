@@ -21,6 +21,7 @@ public class Monster : Character
     public float hp;
     public float run_speed;
 
+    [SerializeField]
     protected float detect_range;
     protected float skill_1_damage;
     protected float skill_1_distance;
@@ -53,11 +54,18 @@ public class Monster : Character
     protected const float ANGULAR_SPEED = 999f;
     protected const float MIN_SIGHT_ANGLE = 20f;
     
-
-    public virtual void Dead()
+    private void Start()
     {
-        agent.enabled = false;
-        Invoke("Disabled", 5f);
+        InitallizeMobInfoFromTable();
+
+        StartCoroutine(Thinking(THINKING_DURATION));
+
+        StartCoroutine(StunCooldown(STUN_DURATION));
+    }
+
+    private void Update()
+    {
+        Detector();
     }
 
     public static Monster AddMonsterComponent(GameObject obj, ushort mobID)
@@ -81,6 +89,12 @@ public class Monster : Character
         }
 
         throw new System.NotSupportedException(mobID.ToString() + " 에 해당하는 몬스터가 없어 스크립트 추가에 실패했습니다.");
+    }
+
+    public virtual void Dead()
+    {
+        agent.enabled = false;
+        Invoke("Disabled", 5f);
     }
 
     protected void Disabled()
@@ -122,57 +136,7 @@ public class Monster : Character
         }
     }
 
-    protected virtual IEnumerator Thinking(float thinkingDuration){ yield return null; }
-
-    protected virtual IEnumerator StunCooldown(float stunDuration)
-    {
-        WaitForSeconds wt = new WaitForSeconds(stunDuration);
-
-        while (true)
-        {
-            yield return wt;
-
-            if (isStuned)
-                currentStunTimer++;
-
-            if (currentStunTimer == STUN_ESCAPE)
-            {
-                isStuned = false;
-                currentStunTimer = 0;
-            }
-        }
-    }
-
-    protected virtual void Attack(int ani_id){ }
-}
-
-public class CommonMonster : Monster
-{
-    private void Start()
-    {
-        InitallizeMobInfoFromTable();
-
-        StartCoroutine(Thinking(THINKING_DURATION));
-
-        StartCoroutine(StunCooldown(STUN_DURATION));
-    }
-
-    public override void Dead()
-    {
-        agent.enabled = false;
-        Invoke("Disabled", 5f);
-    }
-
-    private void Update()
-    {
-        currentDistanceWithPlayer = Vector3.Distance(GameManager.instance.controller.player.transform.position, transform.position);
-        currentAngleWithPlayer = Mathf.Acos(Vector3.Dot
-                (transform.forward,
-                (GameManager.instance.controller.player.transform.position - transform.position).normalized)
-                ) * Mathf.Rad2Deg;
-    }
-
-    protected override IEnumerator Thinking(float thinkingDuration)
+    protected virtual IEnumerator Thinking(float thinkingDuration)
     {
         WaitForSeconds wt = new WaitForSeconds(thinkingDuration);
 
@@ -210,6 +174,66 @@ public class CommonMonster : Monster
         }
     }
 
+    protected IEnumerator StunCooldown(float stunDuration)
+    {
+        WaitForSeconds wt = new WaitForSeconds(stunDuration);
+
+        while (true)
+        {
+            yield return wt;
+
+            if (isStuned)
+                currentStunTimer++;
+
+            if (currentStunTimer == STUN_ESCAPE)
+            {
+                isStuned = false;
+                currentStunTimer = 0;
+            }
+        }
+    }
+
+    protected virtual void Attack(int ani_id)
+    {
+        switch (ani_id)
+        {
+            case (int)MonsterAnimation.AniType.ATTACK:
+                currentAttackDamage = attack_damage;
+                currentAttackDistance = attack_distance;
+                currentAttackAngle = attack_angle;
+                break;
+        }
+
+        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle)
+            GameManager.instance.controller.player.currentHp -= currentAttackDamage;
+    }
+
+    protected void Detector()
+    {
+        currentDistanceWithPlayer = Vector3.Distance(GameManager.instance.controller.player.transform.position, transform.position);
+        currentAngleWithPlayer = Mathf.Acos(Vector3.Dot
+                (transform.forward,
+                (GameManager.instance.controller.player.transform.position - transform.position).normalized)
+                ) * Mathf.Rad2Deg;
+    }
+}
+
+public class CommonMonster : Monster
+{
+    private void Start()
+    {
+        InitallizeMobInfoFromTable();
+
+        StartCoroutine(Thinking(THINKING_DURATION));
+
+        StartCoroutine(StunCooldown(STUN_DURATION));
+    }
+
+    private void Update()
+    {
+        Detector();
+    }
+
     protected override void Attack(int ani_id)
     {
         switch (ani_id)
@@ -237,11 +261,7 @@ public class EliteMonster : Monster
 
     private void Update()
     {
-        currentDistanceWithPlayer = Vector3.Distance(GameManager.instance.controller.player.transform.position, transform.position);
-        currentAngleWithPlayer = Mathf.Acos(Vector3.Dot
-                (transform.forward,
-                (GameManager.instance.controller.player.transform.position - transform.position).normalized)
-                ) * Mathf.Rad2Deg;
+        Detector();
     }
 
     protected override IEnumerator Thinking(float thinkingDuration)
@@ -333,11 +353,7 @@ public class BossMonster : Monster
 
     private void Update()
     {
-        currentDistanceWithPlayer = Vector3.Distance(GameManager.instance.controller.player.transform.position, transform.position);
-        currentAngleWithPlayer = Mathf.Acos(Vector3.Dot
-                (transform.forward,
-                (GameManager.instance.controller.player.transform.position - transform.position).normalized)
-                ) * Mathf.Rad2Deg;
+        Detector();
     }
 
     protected override IEnumerator Thinking(float thinkingDuration)
