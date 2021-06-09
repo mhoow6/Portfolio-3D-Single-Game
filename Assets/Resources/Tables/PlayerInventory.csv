@@ -1,9 +1,9 @@
 index,item_type,id,icon_name,count,reinforce_lv
-0,1,3001,broadsword,1,0
-1,5,5000,equip_stone,2,0
-2,0,0,,0,0
-3,0,0,,0,0
-4,0,0,,0,0
+0,1,3001,SM_Wep_Broadsword_01,1,0
+1,4,5000,equip_stone,2,0
+2,1,3002,SM_Wep_Zweihander_01,1,0
+3,1,3003,SM_Wep_FortGolem_01,1,0
+4,3,6000,common_item_key_bronze,1,0
 5,0,0,,0,0
 6,0,0,,0,0
 7,0,0,,0,0
