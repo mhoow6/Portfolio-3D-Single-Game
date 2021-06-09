@@ -2,16 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ItemContent : MonoBehaviour
 {
     public ItemSlot dummy;
     public GridLayoutGroup layoutGroup;
     public List<ItemSlot> items = new List<ItemSlot>();
+    public TMP_Text textItemCount;
 
-    // Load Inventory UI From Player Inventory
+    private const float ITEM_COUNT_DURATION = 0.5f;
+    private int currentItemCount;
+
+    
     private void Start()
     {
+        // Load Inventory UI From Player Inventory
         for (int i = 0; i < PlayerInventoryTableManager.playerInventory.Length; i++)
         {
             ItemSlot newItem = Instantiate(dummy);
@@ -42,7 +48,28 @@ public class ItemContent : MonoBehaviour
             newItem.transform.SetParent(this.transform);
         }
 
-        Destroy(dummy.gameObject); // Dummy mess up my grid layout
+        // Dummy mess up my grid layout
+        Destroy(dummy.gameObject);
         dummy = null;
+
+        // Item Counter
+        StartCoroutine(ItemCounter());
+    }
+
+    private void Update()
+    {
+        textItemCount.text = currentItemCount + " / 50";
+    }
+
+    IEnumerator ItemCounter()
+    {
+        WaitForSeconds wt = new WaitForSeconds(ITEM_COUNT_DURATION);
+
+        while (true)
+        {
+            yield return wt;
+
+            currentItemCount = items.FindAll(item => item.item_type != (byte)ItemType.NONE).Count;
+        }
     }
 }
