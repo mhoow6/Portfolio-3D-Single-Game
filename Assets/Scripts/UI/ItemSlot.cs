@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 
 public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    
     public TMP_Text itemCount;
     public bool isSelected;
     public byte item_type;
@@ -21,7 +20,7 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
 
     private void Awake()
     {
-        originColor = itemCount.color;
+        originColor = itemIcon.color;
         originGradeFrameSprite = itemGradeFrame.sprite;
         pressedColor = new Color(originColor.r, originColor.g, originColor.b, ALPHA_80);
     }
@@ -31,12 +30,21 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
     {
         // itemIcon.rectTransform.position = eventData.position;
 
+        // Prev selected item handle
+        ItemSlot selectedItem = HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected);
+        if (selectedItem != null && selectedItem != this)
+        {
+            selectedItem.isSelected = false;
+            selectedItem.itemGradeFrame.sprite = selectedItem.originGradeFrameSprite;
+        }
+
+        // Toggle Select
         if (!isSelected && item_type != (byte)ItemType.NONE)
             itemGradeFrame.sprite = Resources.Load<Sprite>(PlayerInventoryTableManager.spritePath + SELECTED_FRAME);
         else
             itemGradeFrame.sprite = originGradeFrameSprite;
 
-        isSelected = isSelected == false ? true : false;
+        isSelected = !isSelected;
     }
 
     // Factory Method
