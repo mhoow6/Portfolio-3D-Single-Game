@@ -37,7 +37,7 @@ public class TapSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             
         }
 
-        // TabFocus Setup
+        // TabFocus Setup [Text Color Change OR Icon Change]
         if (menuText != null)
         {
             Color tempColor = new Color();
