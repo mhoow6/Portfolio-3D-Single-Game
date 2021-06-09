@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class EliteMonsterRun : EliteMonsterAnimation
 {
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self = animator.GetComponent<EliteMonster>();
         self.agent.speed = self.run_speed;
         self.agent.acceleration = self.run_speed;
+        animationHandler = IdleCondition;
+        animationHandler += WalkCondition;
+        animationHandler += RunCondition;
+        animationHandler += InjuredCondition;
+        animationHandler += DeadCondition;
+        animationHandler += AttackCondition;
     }
 
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self.agent.destination = GameManager.instance.controller.player.transform.position;
-        animationHandler(animator, self);
+        if (self.agent.enabled == true)
+            self.agent.destination = GameManager.instance.controller.player.transform.position;
+
+        if (self.thinking_param == (int)AniType.ATTACK)
+            self.agent.destination = self.transform.position;
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

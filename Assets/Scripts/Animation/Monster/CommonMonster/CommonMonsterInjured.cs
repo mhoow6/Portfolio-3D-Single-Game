@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class CommonMonsterInjured : CommonMonsterAnimation
 {
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self = animator.GetComponent<CommonMonster>();
         self.endurance_stack = 0;
-        prevHP = self.hp;
         animationHandler = IdleCondition;
         animationHandler += InjuredCondition;
         animationHandler += DeadCondition;
@@ -16,7 +14,7 @@ public class CommonMonsterInjured : CommonMonsterAnimation
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animationHandler(animator, self);
+        // This State doesn't need OnStateUpdate.
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

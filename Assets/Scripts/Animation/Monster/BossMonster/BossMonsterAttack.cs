@@ -4,26 +4,22 @@ using UnityEngine;
 
 public class BossMonsterAttack : BossMonsterAnimation
 {
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self = animator.GetComponent<CommonMonster>();
         self.isMonsterAttackDone = false;
         animationHandler = IdleCondition;
         animationHandler += InjuredCondition;
         animationHandler += DeadCondition;
     }
 
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (currentAnimationTime < (1 - animationTransitionTime))
-            currentAnimationTime += stateInfo.normalizedTime;
-
         if (currentAnimationTime >= (1 - animationTransitionTime))
-        {
             self.isMonsterAttackDone = true;
-            currentAnimationTime = 0;
-        }
+    }
 
-        animationHandler(animator, self);
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        currentAnimationTime = 0;
     }
 }

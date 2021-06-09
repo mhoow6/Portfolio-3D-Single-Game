@@ -4,20 +4,22 @@ using UnityEngine;
 
 public class EliteMonsterInjured : EliteMonsterAnimation
 {
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self = animator.GetComponent<EliteMonster>();
         self.endurance_stack = 0;
         animationHandler = IdleCondition;
-        animationHandler += WalkCondition;
-        animationHandler += RunCondition;
         animationHandler += InjuredCondition;
-        animationHandler += AttackCondition;
-        animationHandler += Skill_01_Condition;
+        animationHandler += DeadCondition;
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animationHandler(animator, self);
+        // This State doesn't need OnStateUpdate.
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        self.thinking_param = (int)AniType.IDLE;
+        self.isStuned = true;
     }
 }

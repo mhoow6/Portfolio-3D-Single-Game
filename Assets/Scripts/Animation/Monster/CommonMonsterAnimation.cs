@@ -6,7 +6,4 @@ public class CommonMonsterAnimation : MonsterAnimation
 {
     protected const float animationTransitionTime = 0.25f;
     protected const float attackClipSpeed = 0.8f;
-
-    [SerializeField]
-    protected float currentAnimationTime;
 }
