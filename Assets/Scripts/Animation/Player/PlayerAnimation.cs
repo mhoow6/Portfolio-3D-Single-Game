@@ -11,6 +11,9 @@ public class PlayerAnimation : StateMachineBehaviour
 
     [SerializeField]
     protected float currentAnimationTime;
+    [SerializeField]
+    protected float prevHP;
+    protected const float animationBackTime = 0.1f;
 
     public enum AniType {
         IDLE=0,
@@ -35,13 +38,36 @@ public class PlayerAnimation : StateMachineBehaviour
         COMBAT_ROLL
     }
 
+    protected virtual void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+
+    }
+
+    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        prevHP = GameManager.instance.controller.player.hp;
+        StateEnter(animator, stateInfo, layerIndex);
+    }
+
+    protected virtual void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        
+    }
+
+    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        currentAnimationTime = stateInfo.normalizedTime % 1;
+        DamagedCondition(animator, ref prevHP, currentAnimationTime, animationBackTime);
+
+        StateUpdate(animator, stateInfo, layerIndex);
+    }
+
     protected void IdleCondition(Animator animator)
     {
         if (!GameManager.instance.controller.isPlayerWantToMove)
             animator.SetInteger("ani_id", (int)AniType.IDLE);
     }
 
-    // .controlSlots.Find(slot => slot.name == "Run").isClicked
     protected void WalkCondition(Animator animator)
     {
         if (GameManager.instance.controller.isPlayerWantToMove && !Input.GetKey(KeyCode.LeftShift)
@@ -174,5 +200,15 @@ public class PlayerAnimation : StateMachineBehaviour
             GameManager.instance.controller.player.isCombatMode &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.roll_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ROLL);
+    }
+
+    protected void DamagedCondition(Animator animator, ref float prevHP, float currentAnimationTime, float animationBackTime)
+    {
+        if (GameManager.instance.controller.player.currentHp < prevHP)
+        {
+            prevHP = GameManager.instance.controller.player.currentHp;
+            animator.Play(0, 0, currentAnimationTime - animationBackTime);
+            Debug.Log("피해받음!");
+        }
     }
 }

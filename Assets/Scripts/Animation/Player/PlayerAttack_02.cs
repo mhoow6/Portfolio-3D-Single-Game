@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class PlayerAttack_02 : PlayerAnimation
 {
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.player.currentSp -= PlayerInfoTableManager.playerInfo.attack_sp;
     }
 
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.immobile = true;
         GameManager.instance.controller.player.isPlayerNeedSP = false;
-
-        if (currentAnimationTime < (1 - animationTransitionTime))
-            currentAnimationTime += Time.deltaTime * attackClipSpeed;
 
         if (currentAnimationTime > interruptAvailableTime)
         {

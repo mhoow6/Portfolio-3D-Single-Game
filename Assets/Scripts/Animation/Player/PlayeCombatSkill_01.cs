@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayeCombatSkill_01 : PlayerAnimation
 {
-    override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.player.currentSp -= PlayerInfoTableManager.playerInfo.skill_01_sp;
         GameManager.instance.controller.player.currentMp -= PlayerInfoTableManager.playerInfo.skill_01_mp;
@@ -12,7 +12,7 @@ public class PlayeCombatSkill_01 : PlayerAnimation
         GameManager.instance.controller.player.isPlayerUseCombatSkill01 = true;
     }
 
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.immobile = true;
         GameManager.instance.controller.player.isPlayerNeedSP = false;

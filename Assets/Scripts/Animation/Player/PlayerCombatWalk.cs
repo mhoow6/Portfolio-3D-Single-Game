@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCombatWalk : PlayerAnimation
 {
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.immobile = false;
 
