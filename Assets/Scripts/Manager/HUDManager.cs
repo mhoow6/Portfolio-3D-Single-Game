@@ -21,11 +21,16 @@ public class HUDManager : MonoBehaviour
         instance = this;
     }
 
+    private void Start()
+    {
+        inventory.itemContent.LoadPlayerItemInventory();
+        inventory.equipContent.LoadPlayerEquipment();
+    }
+
     private void Update()
     {
         PlayerStatusUpdate();
     }
-
 
     private void PlayerStatusUpdate()
     {
