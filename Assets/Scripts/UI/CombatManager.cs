@@ -4,6 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+public enum CombatIndex
+{
+    ATTACK = 0,
+    QSKILL,
+    ESKILL,
+    COMBATMODE,
+    RUN,
+    ROLL,
+    QUICKITEM
+}
+
 public class CombatManager : MonoBehaviour
 {
     public List<ControlSlot> controlSlots = new List<ControlSlot>();
