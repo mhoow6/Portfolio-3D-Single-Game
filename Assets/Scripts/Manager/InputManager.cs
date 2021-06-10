@@ -12,9 +12,12 @@ public class InputManager : MonoBehaviour
     public Vector2 moveDelta;
     public float zoomScale; // ¹Ì±¸Çö
 
+    public bool bMultiClickPrevent;
+
     private void Awake()
     {
         instance = this;
+        bMultiClickPrevent = false;
     }
 
     private void Start()
@@ -29,8 +32,8 @@ public class InputManager : MonoBehaviour
         StartCoroutine(MoveInputPC());
         StartCoroutine(MoveDeltaPC());
         StartCoroutine(ShortcutPC());
-        StartCoroutine(ShortcutMenu());
-        StartCoroutine(InventoryButton());
+        StartCoroutine(ShortcutMenu()); // Moblie & PC
+        StartCoroutine(InventoryButton()); // Moblie & PC
     }
 
     IEnumerator MoveInputPC()
@@ -101,23 +104,41 @@ public class InputManager : MonoBehaviour
             yield return null;
 
             // Inventory
-            if (HUDManager.instance.menu.controlSlots.Find(slot => slot.name == "Inventory").isClicked)
+            if (HUDManager.instance.menu.controlSlots.Find(slot => slot.name == "Inventory").isClicked && !HUDManager.instance.inventory.isInventoryOn)
             {
-                Debug.Log("Inventory On");
                 HUDManager.instance.inventory.isInventoryOn = true;
-
                 InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
             }
             
             if (HUDManager.instance.inventory.homeBtn.isClicked && HUDManager.instance.inventory.isInventoryOn)
             {
-                Debug.Log("Inventory Off");
                 HUDManager.instance.inventory.isInventoryOn = false;
-
                 InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
             }
 
-            
+
+            // Quick Item
+            if (HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].isClicked && !bMultiClickPrevent)
+            {
+                bMultiClickPrevent = true;
+
+                EquipSlot quickItem = HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM];
+
+                // Item Count Update
+                quickItem.count--; // Real
+                quickItem.itemCount.text = quickItem.count.ToString(); // UI
+
+                // Get Quick Item Info
+                ConsumeItemInfo quickItemInfo = ConsumeInfoTableManager.GetConsumeItemInfoFromID(quickItem.item_id);
+
+                // Player Effect
+                GameManager.instance.controller.player.currentHp += quickItemInfo.hp_heal;
+                GameManager.instance.controller.player.currentMp += quickItemInfo.mp_heal;
+
+                // Item Count 0 -> Delete
+                if (quickItem.count == 0)
+                    ItemDelete(quickItem);
+            }
         }
     }
 
@@ -127,47 +148,61 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            // Delete Item, Quest Item can't destroyed.
-            if (HUDManager.instance.inventory.deleteBtn.isClicked)
-                ItemDelete(HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected && item.item_type != (byte)ItemType.QUEST));
-
-            // Tab Menu - All
-            if (HUDManager.instance.inventory.tapMenu.tabs.Find(tab => tab.isClicked && tab.gameObject.name == "All"))
+            if (!bMultiClickPrevent)
             {
-                foreach (ItemSlot item in HUDManager.instance.inventory.itemContent.items)
-                    item.gameObject.SetActive(true);
-            }
+                // Delete Item, Quest Item can't destroyed.
+                if (HUDManager.instance.inventory.deleteBtn.isClicked)
+                    ItemDelete(HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected && item.item_type != (byte)ItemType.QUEST));
 
-            // Tab Menu - Weapon
-            if (HUDManager.instance.inventory.tapMenu.tabs.Find(tab => tab.isClicked && tab.gameObject.name == "Weapon"))
-            {
-                foreach (ItemSlot item in HUDManager.instance.inventory.itemContent.items)
+                // Tab Menu - All
+                if (HUDManager.instance.inventory.tapMenu.tabs.Find(tab => tab.isClicked && tab.gameObject.name == "All"))
                 {
-                    if (item.item_type != (byte)ItemType.EQUIPMENT)
-                        item.gameObject.SetActive(false);
+                    bMultiClickPrevent = true;
 
-                    if (item.item_type == (byte)ItemType.EQUIPMENT)
-                        item.gameObject.SetActive(true);
-
-                }
-            }
-
-            // Tab Menu - Quest
-            if (HUDManager.instance.inventory.tapMenu.tabs.Find(tab => tab.isClicked && tab.gameObject.name == "Quest"))
-            {
-                foreach (ItemSlot item in HUDManager.instance.inventory.itemContent.items)
-                {
-                    if (item.item_type != (byte)ItemType.QUEST)
-                        item.gameObject.SetActive(false);
-
-                    if (item.item_type == (byte)ItemType.QUEST)
+                    foreach (ItemSlot item in HUDManager.instance.inventory.itemContent.items)
                         item.gameObject.SetActive(true);
                 }
-            }
 
-            // Equip/UnEquip Item
-            if (HUDManager.instance.inventory.equipBtn.isClicked)
-                ItemEquip(HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected));
+                // Tab Menu - Weapon
+                if (HUDManager.instance.inventory.tapMenu.tabs.Find(tab => tab.isClicked && tab.gameObject.name == "Weapon"))
+                {
+                    bMultiClickPrevent = true;
+
+                    foreach (ItemSlot item in HUDManager.instance.inventory.itemContent.items)
+                    {
+                        if (item.item_type != (byte)ItemType.EQUIPMENT)
+                            item.gameObject.SetActive(false);
+
+                        if (item.item_type == (byte)ItemType.EQUIPMENT)
+                            item.gameObject.SetActive(true);
+                    }
+                }
+
+                // Tab Menu - Quest
+                if (HUDManager.instance.inventory.tapMenu.tabs.Find(tab => tab.isClicked && tab.gameObject.name == "Quest"))
+                {
+                    bMultiClickPrevent = true;
+
+                    foreach (ItemSlot item in HUDManager.instance.inventory.itemContent.items)
+                    {
+                        if (item.item_type != (byte)ItemType.QUEST)
+                            item.gameObject.SetActive(false);
+
+                        if (item.item_type == (byte)ItemType.QUEST)
+                            item.gameObject.SetActive(true);
+                    }
+                }
+
+                // Equip Item / UnEquip Item
+                if (HUDManager.instance.inventory.equipBtn.isClicked)
+                {
+                    bMultiClickPrevent = true;
+
+                    ItemEquip(HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected));
+                    ItemUnEquip(HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM]);
+                }
+                    
+            }
         }
     }
 
@@ -177,42 +212,30 @@ public class InputManager : MonoBehaviour
         HUDManager.instance.inventory.gameObject.SetActive(trigger);
     }
 
-    private void ItemDelete(ItemSlot item)
-    {
-        if (item != null)
-        {
-            item.itemIcon.sprite = null;
-            item.itemIcon.enabled = false;
-            item.itemCount.gameObject.SetActive(false);
-            item.isSelected = false;
-            item.itemGradeFrame.sprite = item.originGradeFrameSprite;
-            item.item_type = (byte)ItemType.NONE;
-            item.item_id = 0;
-        }
-    }
-
     private void ItemEquip(ItemSlot item)
     {
+        bMultiClickPrevent = true;
+
         if (item != null)
         {
             switch (item.item_type)
             {
-                
                 case (byte)ItemType.EQUIPMENT:
 
                     if (HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON] != null)
                     {
                         // 1. Make EquipSlot Copy
                         EquipSlot temp = Instantiate(HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON]); // Deep Copy
-                        temp.gameObject.SetActive(false);
 
                         // 2. Inventory Item to Equip Slot
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].isEquiped = !HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].isEquiped;
                         HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].itemIcon.sprite = item.itemIcon.sprite;
                         HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].itemGradeFrame.sprite = item.originGradeFrameSprite;
                         HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].item_id = item.item_id;
                         HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].item_type = item.item_type;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].itemCount = item.itemCount;
-
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].count = item.count;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].itemCount.text = item.itemCount.text;
+                        
                         // 3. Player's weapon object is Destroyed
                         Destroy(GameManager.instance.controller.player.weapon);
 
@@ -227,14 +250,93 @@ public class InputManager : MonoBehaviour
                         item.originGradeFrameSprite = temp.originGradeFrameSprite;
                         item.item_id = temp.item_id;
                         item.item_type = temp.item_type;
-                        item.itemCount = temp.itemCount;
+                        item.count = temp.count;
+                        item.itemCount.text = temp.itemCount.text;
 
                         // 7. Destroy Temp
-                        Destroy(temp);
+                        Destroy(temp.gameObject);
                     }
+                    break;
+
+                case (byte)ItemType.CONSUME:
+                    if (HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM] != null)
+                    {
+                        // 1. Make EquipSlot Copy
+                        EquipSlot temp = Instantiate(HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM]); // Deep Copy
+
+                        // 2. Inventory Item to Equip Slot
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].isEquiped = !HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].isEquiped;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemIcon.sprite = item.itemIcon.sprite;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemGradeFrame.sprite = item.originGradeFrameSprite;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_id = item.item_id;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_type = item.item_type;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].count = item.count;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemCount.text = item.itemCount.text;
+
+                        // 3. Combat - Quick Item Sprite Change
+                        HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].itemIcon.sprite = HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemIcon.sprite;
+
+                        // 4. CopySlot To Inventory Slot. Empty Equip Slot doesn't need
+                        if (temp.item_type != (byte)ItemType.NONE)
+                        {
+                            item.itemIcon.sprite = temp.itemIcon.sprite;
+                            item.originGradeFrameSprite = temp.originGradeFrameSprite;
+                            item.item_id = temp.item_id;
+                            item.item_type = temp.item_type;
+                            item.count = temp.count;
+                            item.itemCount.text = temp.itemCount.text;
+                        }
+                        
+                        // 5. Destroy Temp
+                        Destroy(temp.gameObject);
+                    }
+
+                    // Equip
+                    /*if (HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_type == (byte)ItemType.NONE)
+                    {
+                        // 1. Inventory Item to Equip Slot
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].isEquiped = !HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].isEquiped;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemIcon.sprite = item.itemIcon.sprite;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemGradeFrame.sprite = item.originGradeFrameSprite;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_id = item.item_id;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_type = item.item_type;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].count = item.count;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemCount.text = item.itemCount.text;
+
+                        // 3. Clear Inventory Slot
+                        ItemDelete(item);
+                    }*/
+                    
                     break;
             }
         }
+    }
+
+    private void ItemUnEquip(EquipSlot item)
+    {
+        // NO SELECT, NO EQUIP, EMPTY SLOT -> exit
+        if (!item.isSelected && !item.isEquiped && item.item_type == (byte)ItemType.NONE)
+            return;
+
+        // Inventory already full -> exit
+        if (HUDManager.instance.inventory.itemContent.currentItemCount > PlayerInventoryTableManager.MAX_SLOTS)
+            return;
+
+        // 1. Find Empty Slot
+        ItemSlot emptySlot = HUDManager.instance.inventory.itemContent.items.Find(item => item.item_type == (byte)ItemType.NONE);
+
+        // 2. Move Data To EmptySlot
+        emptySlot.itemIcon.sprite = item.itemIcon.sprite;
+        emptySlot.originGradeFrameSprite = item.originGradeFrameSprite;
+        emptySlot.item_id = item.item_id;
+        emptySlot.item_type = item.item_type;
+        emptySlot.count = item.count;
+        emptySlot.itemCount.text = item.itemCount.text;
+        emptySlot.itemIcon.enabled = true;
+        emptySlot.itemCount.enabled = true;
+
+        // 3. Clear Equip Slot
+        ItemDelete(item);
     }
 
     private void ItemDelete(EquipSlot item)
@@ -243,7 +345,24 @@ public class InputManager : MonoBehaviour
         {
             item.itemIcon.sprite = null;
             item.itemIcon.enabled = false;
-            item.itemCount.gameObject.SetActive(false);
+            item.itemCount.enabled = false;
+            item.isSelected = false;
+            item.isEquiped = false;
+            item.itemGradeFrame.sprite = item.originGradeFrameSprite;
+            item.item_type = (byte)ItemType.NONE;
+            item.item_id = 0;
+            item.count = 0;
+            item.itemCount.text = "0";
+        }
+    }
+
+    private void ItemDelete(ItemSlot item)
+    {
+        if (item != null)
+        {
+            item.itemIcon.sprite = null;
+            item.itemIcon.enabled = false;
+            item.itemCount.enabled = false;
             item.isSelected = false;
             item.itemGradeFrame.sprite = item.originGradeFrameSprite;
             item.item_type = (byte)ItemType.NONE;
