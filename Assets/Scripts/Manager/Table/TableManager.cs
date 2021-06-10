@@ -13,6 +13,7 @@ public class TableManager : MonoBehaviour
     private string npcPath;
     private string playerInventoryPath;
     private string playerEquipmentPath;
+    private string consumeItemPath;
 
     private void Awake()
     {
@@ -24,6 +25,7 @@ public class TableManager : MonoBehaviour
         npcPath = "Tables/NPCInfo";
         playerInventoryPath = "Tables/PlayerInventory";
         playerEquipmentPath = "Tables/PlayerEquipment";
+        consumeItemPath = "Tables/ConsumeItemInfo";
 
         WeaponInfoTableManager.LoadTable(weaponPath);
         PlayerInfoTableManager.LoadTable(playerPath);
@@ -31,6 +33,7 @@ public class TableManager : MonoBehaviour
         PlayerEquipmentTableManager.LoadTable(playerEquipmentPath);
         MonsterInfoTableManager.LoadTable(monsterPath);
         NPCInfoTableManager.LoadTable(npcPath);
+        ConsumeInfoTableManager.LoadTable(consumeItemPath);
     }
 
     public List<string> GetLinesFromTable(string filePath)
