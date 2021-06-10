@@ -9,8 +9,10 @@ public class EquipSlot : ControlSlot, IPointerDownHandler
 {
     public TMP_Text itemCount;
     public bool isSelected;
+    public bool isEquiped;
     public byte item_type;
     public ushort item_id;
+    public ushort count;
 
     public Image itemGradeFrame;
     public Sprite originGradeFrameSprite;
@@ -26,6 +28,14 @@ public class EquipSlot : ControlSlot, IPointerDownHandler
 
     public override void PointerDown(PointerEventData eventData)
     {
+        // Turn off ItemSlot Selected
+        ItemSlot invenSelectedItem = HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected);
+        if (invenSelectedItem != null && invenSelectedItem != this)
+        {
+            invenSelectedItem.isSelected = false;
+            invenSelectedItem.itemGradeFrame.sprite = invenSelectedItem.originGradeFrameSprite;
+        }
+
         // Prev selected item handle
         EquipSlot selectedItem = HUDManager.instance.inventory.equipContent.items.Find(item => item.isSelected);
         if (selectedItem != null && selectedItem != this)
