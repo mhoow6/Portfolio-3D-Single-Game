@@ -13,7 +13,6 @@ public enum ItemType
 
 public struct ItemInfo
 {
-    public short index;
     public byte item_type;
     public ushort id;
     public string icon_name;
@@ -25,6 +24,7 @@ public static class PlayerInventoryTableManager
 {
     public static ItemInfo[] playerInventory = new ItemInfo[50];
     public const string spritePath = "Sprite/";
+    public const int MAX_SLOTS = 50;
 
     public static void LoadTable(string filePath)
     {
@@ -34,7 +34,6 @@ public static class PlayerInventoryTableManager
         {
             string[] datas = lines[i].Split(',');
 
-            playerInventory[i - 1].index = short.Parse(datas[0]);
             playerInventory[i - 1].item_type = byte.Parse(datas[1]);
             playerInventory[i - 1].id = ushort.Parse(datas[2]);
             playerInventory[i - 1].icon_name = datas[3];

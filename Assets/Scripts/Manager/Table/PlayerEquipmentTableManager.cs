@@ -20,7 +20,6 @@ public static class PlayerEquipmentTableManager
         {
             string[] datas = lines[i].Split(',');
 
-            playerEquipment[i - 1].index = short.Parse(datas[0]);
             playerEquipment[i - 1].item_type = byte.Parse(datas[1]);
             playerEquipment[i - 1].id = ushort.Parse(datas[2]);
             playerEquipment[i - 1].icon_name = datas[3];
