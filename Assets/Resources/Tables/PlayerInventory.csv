@@ -4,7 +4,7 @@ index,item_type,id,icon_name,count,reinforce_lv
 2,1,3002,SM_Wep_Zweihander_01,1,0
 3,1,3003,SM_Wep_FortGolem_01,1,0
 4,3,6000,common_item_key_bronze,1,0
-5,0,0,,0,0
+5,2,4002,equip_potion_blue_3,5,0
 6,0,0,,0,0
 7,0,0,,0,0
 8,0,0,,0,0
