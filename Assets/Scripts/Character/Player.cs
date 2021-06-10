@@ -244,7 +244,7 @@ public class Player : Character
         }
     }
 
-    public float IncreaseDamageByLevel(float currentDamage, byte level)
+    private float IncreaseDamageByLevel(float currentDamage, byte level)
     {
         return currentDamage + (level*(level+1));
     }
