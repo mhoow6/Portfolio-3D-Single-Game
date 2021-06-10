@@ -33,15 +33,14 @@ public class ControlSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         isClicked = true;
         itemIcon.color = pressedColor;
-
         PointerDown(eventData);
     }
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
         isClicked = false;
+        InputManager.instance.bMultiClickPrevent = false;
         itemIcon.color = originColor;
-
         PointerUp(eventData);
     }
 
