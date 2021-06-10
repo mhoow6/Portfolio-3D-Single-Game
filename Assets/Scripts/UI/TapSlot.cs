@@ -58,5 +58,6 @@ public class TapSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void OnPointerUp(PointerEventData eventData)
     {
         isClicked = false;
+        InputManager.instance.bMultiClickPrevent = false;
     }
 }
