@@ -27,13 +27,18 @@ public class TableManager : MonoBehaviour
         playerEquipmentPath = "Tables/PlayerEquipment";
         consumeItemPath = "Tables/ConsumeItemInfo";
 
-        WeaponInfoTableManager.LoadTable(weaponPath);
-        PlayerInfoTableManager.LoadTable(playerPath);
-        PlayerInventoryTableManager.LoadTable(playerInventoryPath);
-        PlayerEquipmentTableManager.LoadTable(playerEquipmentPath);
-        MonsterInfoTableManager.LoadTable(monsterPath);
-        NPCInfoTableManager.LoadTable(npcPath);
-        ConsumeInfoTableManager.LoadTable(consumeItemPath);
+        if (!SceneInfoManager.instance.isTableManagerAwakeOnce)
+        {
+            WeaponInfoTableManager.LoadTable(weaponPath);
+            PlayerInfoTableManager.LoadTable(playerPath);
+            PlayerInventoryTableManager.LoadTable(playerInventoryPath);
+            PlayerEquipmentTableManager.LoadTable(playerEquipmentPath);
+            MonsterInfoTableManager.LoadTable(monsterPath);
+            NPCInfoTableManager.LoadTable(npcPath);
+            ConsumeInfoTableManager.LoadTable(consumeItemPath);
+        }
+
+        SceneInfoManager.instance.isTableManagerAwakeOnce = true;
     }
 
     public List<string> GetLinesFromTable(string filePath)
