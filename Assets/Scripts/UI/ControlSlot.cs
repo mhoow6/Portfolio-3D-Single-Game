@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class ControlSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public bool isClicked;
     public Image itemIcon;
+    public TMP_Text itemCount;
 
-    protected Color originColor;
+    public Color originColor;
     protected Color pressedColor;
     protected const float ALPHA_80 = 0.3137255f;
 
@@ -32,7 +34,11 @@ public class ControlSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public virtual void OnPointerDown(PointerEventData eventData)
     {
         isClicked = true;
+
         itemIcon.color = pressedColor;
+        if (itemCount != null)
+            itemCount.color = pressedColor;
+
         PointerDown(eventData);
     }
 
@@ -40,7 +46,11 @@ public class ControlSlot : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         isClicked = false;
         InputManager.instance.bMultiClickPrevent = false;
+
         itemIcon.color = originColor;
+        if (itemCount != null)
+            itemCount.color = originColor;
+
         PointerUp(eventData);
     }
 
