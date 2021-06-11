@@ -57,8 +57,6 @@ public class PlayerAnimation : StateMachineBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         currentAnimationTime = stateInfo.normalizedTime % 1;
-        DamagedCondition(animator, ref prevHP, currentAnimationTime, animationBackTime);
-
         StateUpdate(animator, stateInfo, layerIndex);
     }
 
@@ -92,29 +90,29 @@ public class PlayerAnimation : StateMachineBehaviour
 
     protected void Attack_01_Condition(Animator animator)
     {
-        if (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Attack").isClicked &&
-            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp)
+        if ((Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.ATTACK].isClicked) &&
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp && !HUDManager.instance.inventory.isInventoryOn)
                 animator.SetInteger("ani_id", (int)AniType.ATTACK_01);  
     }
 
     protected void Attack_02_Condition(Animator animator)
     {
-        if (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Attack").isClicked &&
-            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp)
-                animator.SetInteger("ani_id", (int)AniType.ATTACK_02);
+        if ((Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.ATTACK].isClicked) &&
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.attack_sp && !HUDManager.instance.inventory.isInventoryOn)
+            animator.SetInteger("ani_id", (int)AniType.ATTACK_02);
     }
 
     protected void SwitchCombatModeCondition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            (Input.GetKeyDown(KeyCode.R) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "CombatMode").isClicked))
+            (Input.GetKeyDown(KeyCode.R) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.COMBATMODE].isClicked) && !HUDManager.instance.inventory.isInventoryOn)
         {
             animator.SetInteger("ani_id", (int)AniType.UNARMED);
             return;
         }
 
         if (!GameManager.instance.controller.player.isCombatMode &&
-            (Input.GetKeyDown(KeyCode.R) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "CombatMode").isClicked))
+            (Input.GetKeyDown(KeyCode.R) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.COMBATMODE].isClicked) && !HUDManager.instance.inventory.isInventoryOn)
         {
             animator.SetInteger("ani_id", (int)AniType.ARMED);
             return;
@@ -123,7 +121,7 @@ public class PlayerAnimation : StateMachineBehaviour
 
     protected void RollCondition(Animator animator)
     {
-        if (Input.GetKeyDown(KeyCode.Space) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Roll").isClicked &&
+        if (Input.GetKeyDown(KeyCode.Space) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.ROLL].isClicked &&
             !GameManager.instance.controller.player.isCombatMode &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.roll_sp)
                 animator.SetInteger("ani_id", (int)AniType.ROLL); 
@@ -153,50 +151,50 @@ public class PlayerAnimation : StateMachineBehaviour
     protected void CombatModeAttack_01_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Attack").isClicked) &&
-            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
-                animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_01);
+            (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.ATTACK].isClicked) &&
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp && !HUDManager.instance.inventory.isInventoryOn)
+            animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_01);
     }
 
     protected void CombatModeAttack_02_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Attack").isClicked) &&
-            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
-                animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_02);
+            (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.ATTACK].isClicked) &&
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp && !HUDManager.instance.inventory.isInventoryOn)
+            animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_02);
     }
 
     protected void CombatModeAttack_03_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Attack").isClicked) &&
-            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp)
-                animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_03);
+            (Input.GetKey(KeyCode.LeftControl) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.ATTACK].isClicked) &&
+            GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.combat_attack_sp && !HUDManager.instance.inventory.isInventoryOn)
+            animator.SetInteger("ani_id", (int)AniType.COMBAT_ATTACK_03);
     }
 
     protected void CombatModeSkill_01_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            (Input.GetKeyDown(KeyCode.E) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "ESkill").isClicked) &&
+            (Input.GetKeyDown(KeyCode.E) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.ESKILL].isClicked) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.skill_01_sp &&
             GameManager.instance.controller.player.currentMp >= PlayerInfoTableManager.playerInfo.skill_01_mp &&
-            GameManager.instance.controller.player.current_combat_skill_01_cooldown == 0)
-                animator.SetInteger("ani_id", (int)AniType.COMBAT_SKILL_01);
+            GameManager.instance.controller.player.current_combat_skill_01_cooldown == 0 && !HUDManager.instance.inventory.isInventoryOn)
+            animator.SetInteger("ani_id", (int)AniType.COMBAT_SKILL_01);
     }
 
     protected void CombatModeSkill_02_Condition(Animator animator)
     {
         if (GameManager.instance.controller.player.isCombatMode &&
-            (Input.GetKeyDown(KeyCode.Q) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "QSkill").isClicked)&&
+            (Input.GetKeyDown(KeyCode.Q) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.QSKILL].isClicked)&&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.skill_02_sp &&
             GameManager.instance.controller.player.currentMp >= PlayerInfoTableManager.playerInfo.skill_02_mp &&
-            GameManager.instance.controller.player.current_combat_skill_02_cooldown == 0)
-                animator.SetInteger("ani_id", (int)AniType.COMBAT_SKILL_02);
+            GameManager.instance.controller.player.current_combat_skill_02_cooldown == 0 && !HUDManager.instance.inventory.isInventoryOn)
+            animator.SetInteger("ani_id", (int)AniType.COMBAT_SKILL_02);
     }
 
     protected void CombatModeRollCondition(Animator animator)
     {
-        if (Input.GetKeyDown(KeyCode.Space) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Roll").isClicked &&
+        if (Input.GetKeyDown(KeyCode.Space) || HUDManager.instance.combat.controlSlots[(int)CombatIndex.ROLL].isClicked &&
             GameManager.instance.controller.player.isCombatMode &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.roll_sp)
                 animator.SetInteger("ani_id", (int)AniType.COMBAT_ROLL);
