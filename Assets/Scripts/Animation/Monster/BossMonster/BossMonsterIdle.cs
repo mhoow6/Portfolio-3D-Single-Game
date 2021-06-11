@@ -6,11 +6,9 @@ public class BossMonsterIdle : BossMonsterAnimation
 {
     protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animationHandler = IdleCondition;
-        animationHandler += WalkCondition;
-        animationHandler += RunCondition;
-        animationHandler += InjuredCondition;
-        animationHandler += DeadCondition;
-        animationHandler += AttackCondition;
+        animationHandler += Skill_01_Condition;
+        animationHandler += Skill_02_Condition;
+        animationHandler += Skill_03_Condition;
+        damagedStateHandler = null;
     }
 }

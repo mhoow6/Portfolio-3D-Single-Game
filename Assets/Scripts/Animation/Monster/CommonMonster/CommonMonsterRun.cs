@@ -8,12 +8,6 @@ public class CommonMonsterRun : CommonMonsterAnimation
     {
         self.agent.speed = self.run_speed;
         self.agent.acceleration = self.run_speed;
-        animationHandler = IdleCondition;
-        animationHandler += WalkCondition;
-        animationHandler += RunCondition;
-        animationHandler += InjuredCondition;
-        animationHandler += DeadCondition;
-        animationHandler += AttackCondition;
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

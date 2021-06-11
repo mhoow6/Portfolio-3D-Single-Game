@@ -10,6 +10,7 @@ public class BossMonsterSkill_02 : BossMonsterAnimation
         animationHandler = IdleCondition;
         animationHandler += InjuredCondition;
         animationHandler += DeadCondition;
+        damagedStateHandler = null;
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

@@ -8,12 +8,10 @@ public class BossMonsterRun : BossMonsterAnimation
     {
         self.agent.speed = self.run_speed;
         self.agent.acceleration = self.run_speed;
-        animationHandler = IdleCondition;
-        animationHandler += WalkCondition;
-        animationHandler += RunCondition;
-        animationHandler += InjuredCondition;
-        animationHandler += DeadCondition;
-        animationHandler += AttackCondition;
+        animationHandler += Skill_01_Condition;
+        animationHandler += Skill_02_Condition;
+        animationHandler += Skill_03_Condition;
+        damagedStateHandler = null;
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

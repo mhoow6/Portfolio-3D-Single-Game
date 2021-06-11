@@ -10,11 +10,7 @@ public class CommonMonsterInjured : CommonMonsterAnimation
         animationHandler = IdleCondition;
         animationHandler += InjuredCondition;
         animationHandler += DeadCondition;
-    }
-
-    public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        // This State doesn't need OnStateUpdate.
+        damagedStateHandler = null;
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

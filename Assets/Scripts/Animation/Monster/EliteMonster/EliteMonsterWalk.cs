@@ -8,12 +8,7 @@ public class EliteMonsterWalk : EliteMonsterAnimation
     {
         self.agent.speed = self.walk_speed;
         self.agent.acceleration = self.walk_speed;
-        animationHandler = IdleCondition;
-        animationHandler += WalkCondition;
-        animationHandler += RunCondition;
-        animationHandler += InjuredCondition;
-        animationHandler += DeadCondition;
-        animationHandler += AttackCondition;
+        animationHandler += Skill_01_Condition;
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

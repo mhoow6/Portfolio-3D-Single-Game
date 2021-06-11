@@ -14,6 +14,12 @@ public class BossMonsterInjured : BossMonsterAnimation
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        // This State doesn't need OnStateUpdate.
+        animationHandler(animator, self);
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        self.thinking_param = (int)AniType.IDLE;
+        self.isStuned = true;
     }
 }
