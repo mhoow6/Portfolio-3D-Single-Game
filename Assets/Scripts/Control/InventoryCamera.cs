@@ -8,7 +8,13 @@ public class InventoryCamera : MonoBehaviour
     {
         get
         {
-            return new Vector3(1.85f, 1.5f, 0);
+            return new Vector3(0, 1f, 1.8f);
         }
+    }
+
+    private void LateUpdate()
+    {
+        transform.localPosition = BasicOffset;
+        transform.forward = -GameManager.instance.controller.player.transform.forward;
     }
 }
