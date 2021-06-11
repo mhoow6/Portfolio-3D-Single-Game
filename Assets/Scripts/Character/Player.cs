@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Runtime.InteropServices;
 
 public class Player : Character
 {
@@ -22,6 +23,7 @@ public class Player : Character
     public bool isPlayerUseCombatSkill02;
     public float SkillDuration = 1f;
     public GameObject weapon;
+    public byte stackBreakCount;
 
     private Transform sheath;
     private Transform righthand;
@@ -131,7 +133,11 @@ public class Player : Character
                 mob.hp -= attack_damage;
 
                 if (!mob.isStuned)
-                    mob.endurance_stack += EnduranceStackCalculator(attack_damage, RequiredToIncreaseStackDamage);
+                {
+                    stackBreakCount = EnduranceStackCalculator(attack_damage, RequiredToIncreaseStackDamage);
+                    mob.endurance_stack += stackBreakCount;
+                }
+                    
             }
         }
     }
@@ -249,7 +255,7 @@ public class Player : Character
         return currentDamage + (level*(level+1));
     }
 
-    private byte EnduranceStackCalculator(float currentDamage, float RequiredToIncreaseStackDamage)
+    public byte EnduranceStackCalculator(float currentDamage, float RequiredToIncreaseStackDamage)
     {
         return (byte)(currentDamage / RequiredToIncreaseStackDamage);
     }
