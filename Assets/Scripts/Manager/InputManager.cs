@@ -22,6 +22,9 @@ public class InputManager : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(ShortcutMenu()); // Moblie & PC
+        StartCoroutine(InventoryButton()); // Moblie & PC
+
         if (Application.platform == RuntimePlatform.Android)
         {
             StartCoroutine(MoveInputMoblie());
@@ -32,8 +35,6 @@ public class InputManager : MonoBehaviour
         StartCoroutine(MoveInputPC());
         StartCoroutine(MoveDeltaPC());
         StartCoroutine(ShortcutPC());
-        StartCoroutine(ShortcutMenu()); // Moblie & PC
-        StartCoroutine(InventoryButton()); // Moblie & PC
     }
 
     IEnumerator MoveInputPC()
@@ -93,7 +94,11 @@ public class InputManager : MonoBehaviour
 
                 InventorySwitch(toggle);
             }
-                
+
+            // Quick Item
+            if (Input.GetKeyDown(KeyCode.Z) && !HUDManager.instance.inventory.isInventoryOn)
+                UseQuickItem();
+
         }
     }
 
@@ -122,22 +127,7 @@ public class InputManager : MonoBehaviour
             {
                 bMultiClickPrevent = true;
 
-                EquipSlot quickItem = HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM];
-
-                // Item Count Update
-                quickItem.count--; // Real
-                quickItem.itemCount.text = quickItem.count.ToString(); // UI
-
-                // Get Quick Item Info
-                ConsumeItemInfo quickItemInfo = ConsumeInfoTableManager.GetConsumeItemInfoFromID(quickItem.item_id);
-
-                // Player Effect
-                GameManager.instance.controller.player.currentHp += quickItemInfo.hp_heal;
-                GameManager.instance.controller.player.currentMp += quickItemInfo.mp_heal;
-
-                // Item Count 0 -> Delete
-                if (quickItem.count == 0)
-                    ItemDelete(quickItem);
+                UseQuickItem();
             }
         }
     }
@@ -228,13 +218,12 @@ public class InputManager : MonoBehaviour
                         EquipSlot temp = Instantiate(HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON]); // Deep Copy
 
                         // 2. Inventory Item to Equip Slot
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].isEquiped = !HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].isEquiped;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].itemIcon.sprite = item.itemIcon.sprite;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].itemGradeFrame.sprite = item.originGradeFrameSprite;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].item_id = item.item_id;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].item_type = item.item_type;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].count = item.count;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].itemCount.text = item.itemCount.text;
+                        //  2.1. bools
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].isEquiped = true;
+                        item.isSelected = false;
+
+                        //  2.2. ItemSlot Properties -> EquipSlot Properties
+                        ItemValueMove(item, HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON]);
                         
                         // 3. Player's weapon object is Destroyed
                         Destroy(GameManager.instance.controller.player.weapon);
@@ -246,12 +235,7 @@ public class InputManager : MonoBehaviour
                         GameManager.instance.controller.player.equip_weapon_id = HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].item_id;
 
                         // 6. CopySlot To Inventory Slot
-                        item.itemIcon.sprite = temp.itemIcon.sprite;
-                        item.originGradeFrameSprite = temp.originGradeFrameSprite;
-                        item.item_id = temp.item_id;
-                        item.item_type = temp.item_type;
-                        item.count = temp.count;
-                        item.itemCount.text = temp.itemCount.text;
+                        ItemValueMove(temp, item);
 
                         // 7. Destroy Temp
                         Destroy(temp.gameObject);
@@ -262,51 +246,33 @@ public class InputManager : MonoBehaviour
                     if (HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM] != null)
                     {
                         // 1. Make EquipSlot Copy
-                        EquipSlot temp = Instantiate(HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM]); // Deep Copy
+                        EquipSlot temp = Instantiate(HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM]); // Deep Copy;
 
                         // 2. Inventory Item to Equip Slot
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].isEquiped = !HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].isEquiped;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemIcon.sprite = item.itemIcon.sprite;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemGradeFrame.sprite = item.originGradeFrameSprite;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_id = item.item_id;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_type = item.item_type;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].count = item.count;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemCount.text = item.itemCount.text;
+                        //  2.1. bools
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].isEquiped = true;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemIcon.enabled = true;
+                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemCount.enabled = true;
+                        item.isSelected = false;
+
+                        //  2.2. ItemSlot Properties -> EquipSlot Properties
+                        ItemValueMove(item, HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM]);
 
                         // 3. Combat - Quick Item Sprite Change
+                        HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].itemIcon.enabled = true;
                         HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].itemIcon.sprite = HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemIcon.sprite;
 
-                        // 4. CopySlot To Inventory Slot. Empty Equip Slot doesn't need
-                        if (temp.item_type != (byte)ItemType.NONE)
+                        // 4. CopySlot To Inventory Slot
+                        if (temp.item_type == (byte)ItemType.NONE)
                         {
-                            item.itemIcon.sprite = temp.itemIcon.sprite;
-                            item.originGradeFrameSprite = temp.originGradeFrameSprite;
-                            item.item_id = temp.item_id;
-                            item.item_type = temp.item_type;
-                            item.count = temp.count;
-                            item.itemCount.text = temp.itemCount.text;
+                            item.itemIcon.enabled = false;
+                            item.itemCount.enabled = false;
                         }
-                        
+                        ItemValueMove(temp, item);
+
                         // 5. Destroy Temp
                         Destroy(temp.gameObject);
                     }
-
-                    // Equip
-                    /*if (HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_type == (byte)ItemType.NONE)
-                    {
-                        // 1. Inventory Item to Equip Slot
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].isEquiped = !HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.WEAPON].isEquiped;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemIcon.sprite = item.itemIcon.sprite;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemGradeFrame.sprite = item.originGradeFrameSprite;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_id = item.item_id;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].item_type = item.item_type;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].count = item.count;
-                        HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM].itemCount.text = item.itemCount.text;
-
-                        // 3. Clear Inventory Slot
-                        ItemDelete(item);
-                    }*/
-                    
                     break;
             }
         }
@@ -315,7 +281,7 @@ public class InputManager : MonoBehaviour
     private void ItemUnEquip(EquipSlot item)
     {
         // NO SELECT, NO EQUIP, EMPTY SLOT -> exit
-        if (!item.isSelected && !item.isEquiped && item.item_type == (byte)ItemType.NONE)
+        if (!item.isSelected || !item.isEquiped || item.item_type == (byte)ItemType.NONE)
             return;
 
         // Inventory already full -> exit
@@ -335,7 +301,10 @@ public class InputManager : MonoBehaviour
         emptySlot.itemIcon.enabled = true;
         emptySlot.itemCount.enabled = true;
 
-        // 3. Clear Equip Slot
+        // 3. Combat - Quick Item Sprite OFF
+        HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].itemIcon.enabled = false;
+
+        // 4. Clear Equip Slot
         ItemDelete(item);
     }
 
@@ -367,6 +336,60 @@ public class InputManager : MonoBehaviour
             item.itemGradeFrame.sprite = item.originGradeFrameSprite;
             item.item_type = (byte)ItemType.NONE;
             item.item_id = 0;
+        }
+    }
+
+    private void ItemValueMove(ItemSlot send, EquipSlot receive)
+    {
+        receive.itemIcon.sprite = send.itemIcon.sprite;
+        receive.itemGradeFrame.sprite = send.originGradeFrameSprite;
+        receive.item_id = send.item_id;
+        receive.item_type = send.item_type;
+        receive.count = send.count;
+        receive.itemCount.text = send.itemCount.text;
+        receive.reinforce_level = send.reinforce_level;
+        receive.item_name = send.item_name;
+    }
+
+    private void ItemValueMove(EquipSlot send, ItemSlot receive)
+    {
+        receive.itemIcon.sprite = send.itemIcon.sprite;
+        receive.itemGradeFrame.sprite = send.originGradeFrameSprite;
+        receive.item_id = send.item_id;
+        receive.item_type = send.item_type;
+        receive.count = send.count;
+        receive.itemCount.text = send.itemCount.text;
+        receive.reinforce_level = send.reinforce_level;
+        receive.item_name = send.item_name;
+    }
+
+    private void UseQuickItem()
+    {
+        EquipSlot quickItem = HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM];
+
+        // 1. Item Count Update
+        quickItem.count--; // Real
+        quickItem.itemCount.text = quickItem.count.ToString(); // UI
+
+        // 2. Get Quick Item Info
+        ConsumeItemInfo quickItemInfo = ConsumeInfoTableManager.GetConsumeItemInfoFromID(quickItem.item_id);
+
+        // 3. Player get healed, NO Overflow
+        if (GameManager.instance.controller.player.currentHp + quickItemInfo.hp_heal > GameManager.instance.controller.player.hp)
+            GameManager.instance.controller.player.currentHp = GameManager.instance.controller.player.hp;
+        else
+            GameManager.instance.controller.player.currentHp += quickItemInfo.hp_heal;
+
+        if (GameManager.instance.controller.player.currentMp + quickItemInfo.mp_heal > GameManager.instance.controller.player.mp)
+            GameManager.instance.controller.player.currentMp = GameManager.instance.controller.player.mp;
+        else
+            GameManager.instance.controller.player.currentMp += quickItemInfo.mp_heal;
+
+        // 4. Item Count 0 -> Delete
+        if (quickItem.count == 0)
+        {
+            HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].itemIcon.enabled = false;
+            ItemDelete(quickItem);
         }
     }
 }
