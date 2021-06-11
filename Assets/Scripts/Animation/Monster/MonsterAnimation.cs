@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public delegate void MonsterAnimationHandler(Animator animator, Monster monster);
+public delegate void MonsterDamagedStateHandler(Animator animator, Monster monster, ref float prevHP, float currentAnimationTime, float animationBackTime);
 
 public class MonsterAnimation : StateMachineBehaviour
 {
@@ -20,6 +21,7 @@ public class MonsterAnimation : StateMachineBehaviour
     }
 
     protected MonsterAnimationHandler animationHandler;
+    protected MonsterDamagedStateHandler damagedStateHandler;
     protected Monster self;
 
     [SerializeField]
@@ -37,7 +39,13 @@ public class MonsterAnimation : StateMachineBehaviour
     {
         self = animator.GetComponent<Monster>();
         prevHP = self.hp;
-
+        animationHandler = IdleCondition;
+        animationHandler += WalkCondition;
+        animationHandler += RunCondition;
+        animationHandler += InjuredCondition;
+        animationHandler += DeadCondition;
+        animationHandler += AttackCondition;
+        damagedStateHandler = DamagedCondition;
         StateEnter(animator, stateInfo, layerIndex);
     }
 
@@ -50,8 +58,12 @@ public class MonsterAnimation : StateMachineBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         currentAnimationTime = stateInfo.normalizedTime % 1;
-        animationHandler(animator, self);
-        DamagedCondition(animator, self, ref prevHP, currentAnimationTime, animationBackTime);
+
+        if (animationHandler != null)
+            animationHandler(animator, self);
+        
+        if (damagedStateHandler != null)
+            damagedStateHandler(animator, self, ref prevHP, currentAnimationTime, animationBackTime);
 
         StateUpdate(animator, stateInfo, layerIndex);
     }
@@ -94,7 +106,7 @@ public class MonsterAnimation : StateMachineBehaviour
 
     protected void DamagedCondition(Animator animator, Monster monster, ref float prevHP, float currentAnimationTime, float animationBackTime)
     {
-        if (monster.hp < prevHP && monster.hp > 0 && monster.endurance_stack < monster.endurance)
+        if (monster.hp < prevHP && monster.hp > 0)
         {
             prevHP = monster.hp;
             animator.Play(0, 0, currentAnimationTime - animationBackTime);
