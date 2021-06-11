@@ -27,6 +27,7 @@ public struct MonsterInfo
     public int agent_priority;
     public float agent_radius;
     public byte endurance;
+    public float stun_escape;
 }
 
 public static class MonsterInfoTableManager
@@ -65,6 +66,7 @@ public static class MonsterInfoTableManager
             mobInfo.agent_priority = int.Parse(datas[19]);
             mobInfo.agent_radius = float.Parse(datas[20]);
             mobInfo.endurance = byte.Parse(datas[21]);
+            mobInfo.stun_escape = float.Parse(datas[22]);
 
             mobInfoList.Add(mobInfo);
         }

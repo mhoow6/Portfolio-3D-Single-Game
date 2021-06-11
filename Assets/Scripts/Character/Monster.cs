@@ -21,7 +21,6 @@ public class Monster : Character
     public float hp;
     public float run_speed;
 
-    [SerializeField]
     protected float detect_range;
     protected float skill_1_damage;
     protected float skill_1_distance;
@@ -32,6 +31,7 @@ public class Monster : Character
     protected float skill_3_damage;
     protected float skill_3_distance;
     protected float skill_3_angle;
+    protected float stun_escape;
     //
 
     public NavMeshAgent agent;
@@ -43,14 +43,14 @@ public class Monster : Character
     protected float currentDistanceWithPlayer;
     [SerializeField]
     protected float currentAngleWithPlayer;
+    [SerializeField]
+    protected float currentStunTimer;
     protected float currentAttackDamage;
     protected float currentAttackDistance;
     protected float currentAttackAngle;
-    [SerializeField]
-    protected float currentStunTimer;
+    
     protected const float THINKING_DURATION = 0.1f;
     protected const float STUN_DURATION = 1f;
-    protected const float STUN_ESCAPE = 5F;
     protected const float ANGULAR_SPEED = 999f;
     protected const float MIN_SIGHT_ANGLE = 20f;
     
@@ -102,7 +102,7 @@ public class Monster : Character
         gameObject.SetActive(false);
     }
 
-    protected virtual void InitallizeMobInfoFromTable()
+    protected void InitallizeMobInfoFromTable()
     {
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {
@@ -131,6 +131,7 @@ public class Monster : Character
                 skill_3_damage = mobinfo.skill_3_damage;
                 skill_3_distance = mobinfo.skill_3_distance;
                 skill_3_angle = mobinfo.skill_3_angle;
+                stun_escape = mobinfo.stun_escape;
                 return;
             }
         }
@@ -180,15 +181,18 @@ public class Monster : Character
 
         while (true)
         {
-            yield return wt;
+            yield return null;
 
             if (isStuned)
+            {
+                yield return wt;
                 currentStunTimer++;
 
-            if (currentStunTimer == STUN_ESCAPE)
-            {
-                isStuned = false;
-                currentStunTimer = 0;
+                if (currentStunTimer == stun_escape)
+                {
+                    isStuned = false;
+                    currentStunTimer = 0;
+                }
             }
         }
     }
@@ -204,7 +208,7 @@ public class Monster : Character
                 break;
         }
 
-        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle)
+        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
     }
 
@@ -337,7 +341,7 @@ public class EliteMonster : Monster
                 break;
         }
 
-        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle)
+        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
     }
 }
@@ -459,7 +463,7 @@ public class BossMonster : Monster
                 break;
         }
 
-        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle)
+        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
     }
 }
