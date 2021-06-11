@@ -53,15 +53,6 @@ public class MapManager : MonoBehaviour
             Camera.main.transform.position = cameraScript.transform.position;
             Camera.main.transform.rotation = cameraScript.transform.rotation;
 
-            // Minimap Icon Load
-            GameObject minimapIcon = new GameObject("MinimapIcon");
-            SpriteRenderer iconRenderer = minimapIcon.AddComponent<SpriteRenderer>();
-            minimapIcon.transform.position = playerScript.transform.position + new Vector3(0, 1f, 0);
-            minimapIcon.transform.localScale = new Vector3(0.2f, 0.2f);
-            minimapIcon.layer = 6; // Ignore MainCamera
-            iconRenderer.sprite = Resources.Load<Sprite>("Sprite/player_icon");
-            iconRenderer.color = Color.blue;
-
             // Inventory Camera
             GameObject _inventoryCamera = new GameObject("Inventory Camera");
             Camera inventoryCamera = _inventoryCamera.AddComponent<Camera>();
@@ -69,8 +60,6 @@ public class MapManager : MonoBehaviour
             inventoryCamera.clearFlags = CameraClearFlags.SolidColor; // Transparent Background
             inventoryCamera.cullingMask = 1 << 3; // Only Rendering Layer [Ignore Minimap]
             InventoryCamera invenCameraScript =_inventoryCamera.gameObject.AddComponent<InventoryCamera>();
-            invenCameraScript.transform.position = playerScript.transform.position + invenCameraScript.BasicOffset;
-            invenCameraScript.transform.rotation = Quaternion.Euler(new Vector3(10f, -playerScript.transform.rotation.y - 90f, 0)); // Face with Player
             HUDManager.instance.inventory.inventoryCamera = invenCameraScript; // Attach at Inventory Mananger
             invenCameraScript.gameObject.SetActive(false); // It will be actived true with Inventory On
 
@@ -87,11 +76,9 @@ public class MapManager : MonoBehaviour
             playerScript.transform.SetParent(parent.transform);
             cameraScript.transform.SetParent(parent.transform);
             Camera.main.transform.SetParent(cameraScript.transform);
-            minimapIcon.transform.SetParent(playerScript.transform);
-            invenCameraScript.transform.SetParent(parent.transform);
+            invenCameraScript.transform.SetParent(playerScript.transform);
 
-            // local Rotation Setup
-            minimapIcon.transform.localRotation = Quaternion.Euler(new Vector3(90f, 0f, 180f));
+            // local Setup
             Camera.main.transform.localPosition = Camera.main.transform.localPosition + cameraScript.cameraDistance;
         }
 
