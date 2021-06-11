@@ -21,4 +21,5 @@ public class SceneInfoManager : SingleTon<SceneInfoManager>
     public float VILLAGE_TO_FOREST_MAX_X = 17f;
     public float VILLAGE_TO_FOREST_MIN_Z = -0.76f;
     public float VILLAGE_TO_FOREST_MAX_Z = 2.067f;
+    public bool isTableManagerAwakeOnce;
 }
