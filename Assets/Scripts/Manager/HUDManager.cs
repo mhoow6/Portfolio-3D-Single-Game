@@ -11,6 +11,7 @@ public class HUDManager : MonoBehaviour
     public InventoryManager inventory;
     public MenuManager menu;
     public PlayerStateManager state;
+    public SystemManager system;
 
     private void Awake()
     {
