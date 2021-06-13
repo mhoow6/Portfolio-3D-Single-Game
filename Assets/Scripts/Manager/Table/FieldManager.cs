@@ -44,7 +44,10 @@ public class FieldManager : MapManager
             if (GameManager.instance.controller.player.transform.position.x < SceneInfoManager.instance.FOREST_TO_VILLAGE_MIN_X &&
                 GameManager.instance.controller.player.transform.position.z > SceneInfoManager.instance.FOREST_TO_VILLAGE_MIN_Z &&
                 GameManager.instance.controller.player.transform.position.z < SceneInfoManager.instance.FOREST_TO_VILLAGE_MAX_Z)
+            {
                 SceneManager.LoadScene((int)loadScene);
+                HUDManager.instance.system.SaveGame();
+            }
         }
     }
 

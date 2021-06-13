@@ -44,7 +44,11 @@ public class VillageManager : MapManager
                 GameManager.instance.controller.player.transform.position.x < SceneInfoManager.instance.VILLAGE_TO_FOREST_MAX_X &&
                 GameManager.instance.controller.player.transform.position.z > SceneInfoManager.instance.VILLAGE_TO_FOREST_MIN_Z &&
                 GameManager.instance.controller.player.transform.position.z < SceneInfoManager.instance.VILLAGE_TO_FOREST_MAX_Z)
-                    SceneManager.LoadScene((int)loadScene);
+            {
+                SceneManager.LoadScene((int)loadScene);
+                HUDManager.instance.system.SaveGame();
+            }
+                    
         }
     }
 
