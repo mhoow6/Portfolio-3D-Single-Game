@@ -6,6 +6,9 @@ using System.IO;
 public class TableManager : MonoBehaviour
 {
     public static TableManager instance;
+    public string playerTempInventoryPath;
+    public string playerTempEquipmentPath;
+    public string playerTempPath;
 
     private string weaponPath;
     private string playerPath;
@@ -15,10 +18,17 @@ public class TableManager : MonoBehaviour
     private string playerEquipmentPath;
     private string consumeItemPath;
 
+    public const string FILE_EXTENSION = ".csv";
+
     private void Awake()
     {
         instance = this;
 
+        // Debug
+        Debug.Log("isTempDataExists? " + SceneInfoManager.instance.isTempDataExists);
+        Debug.Log("isTableManagerAwakeOnce? " + SceneInfoManager.instance.isTableManagerAwakeOnce);
+
+        // Table Path
         weaponPath = "Tables/WeaponInfo";
         playerPath = "Tables/PlayerInfo";
         monsterPath = "Tables/MonsterInfo";
@@ -26,6 +36,11 @@ public class TableManager : MonoBehaviour
         playerInventoryPath = "Tables/PlayerInventory";
         playerEquipmentPath = "Tables/PlayerEquipment";
         consumeItemPath = "Tables/ConsumeItemInfo";
+
+        // Temp Path
+        playerTempInventoryPath = Application.persistentDataPath + "/Tables/PlayerInventory" + FILE_EXTENSION;
+        playerTempEquipmentPath = Application.persistentDataPath + "/Tables/PlayerEquipment" + FILE_EXTENSION;
+        playerTempPath = Application.persistentDataPath + "/Tables/PlayerInfo" + FILE_EXTENSION;
 
         if (!SceneInfoManager.instance.isTableManagerAwakeOnce)
         {
@@ -38,13 +53,19 @@ public class TableManager : MonoBehaviour
             ConsumeInfoTableManager.LoadTable(consumeItemPath);
         }
 
+        if (SceneInfoManager.instance.isTempDataExists)
+        {
+            PlayerInfoTableManager.LoadTempTable(playerTempPath);
+            PlayerInventoryTableManager.LoadTempTable(playerTempInventoryPath);
+            PlayerEquipmentTableManager.LoadTempTable(playerTempEquipmentPath);
+        }
+
         SceneInfoManager.instance.isTableManagerAwakeOnce = true;
     }
 
     public List<string> GetLinesFromTable(string filePath)
     {
         TextAsset txtAsset = Resources.Load<TextAsset>(filePath);
-
         char[] option = { '\r', '\n' };
         string[] _lines = txtAsset.text.Split(option);
         List<string> lines = new List<string>();
@@ -55,6 +76,25 @@ public class TableManager : MonoBehaviour
                 continue;
 
             lines.Add(line);
+        }
+
+        return lines;
+    }
+
+    public List<string> GetLinesFromTempTable(string filePath)
+    {
+        string line = string.Empty;
+        List<string> lines = new List<string>();
+
+        using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+        {
+            using (StreamReader sr = new StreamReader(f, System.Text.Encoding.UTF8))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    lines.Add(line);
+                }
+            }
         }
 
         return lines;

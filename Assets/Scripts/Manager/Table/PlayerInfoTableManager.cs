@@ -39,9 +39,21 @@ public struct PlayerInfo
     public float running_sp_reduction_rate;
 }
 
+public struct PlayerTempInfo
+{
+    public byte level;
+    public float hp;
+    public float mp;
+    public float sp;
+    public float currentHp;
+    public float currentMp;
+    public float currentSp;
+}
+
 public static class PlayerInfoTableManager
 {
     public static PlayerInfo playerInfo;
+    public static PlayerTempInfo playerTempInfo;
 
     public static void LoadTable(string filePath)
     {
@@ -84,6 +96,23 @@ public static class PlayerInfoTableManager
             playerInfo.sp_recovery_point = float.Parse(datas[30]);
             playerInfo.running_sp_reduction_rate = float.Parse(datas[31]);
         }
+    }
 
+    public static void LoadTempTable(string filePath)
+    {
+        List<string> lines = TableManager.instance.GetLinesFromTempTable(filePath);
+
+        for (int i = 1; i < lines.Count; i++)
+        {
+            string[] datas = lines[i].Split(',');
+
+            playerTempInfo.level = byte.Parse(datas[0]);
+            playerTempInfo.hp = float.Parse(datas[1]);
+            playerTempInfo.mp = float.Parse(datas[2]);
+            playerTempInfo.sp = float.Parse(datas[3]);
+            playerTempInfo.currentHp = float.Parse(datas[4]);
+            playerTempInfo.currentMp = float.Parse(datas[5]);
+            playerTempInfo.currentSp = float.Parse(datas[6]);
+        }
     }
 }

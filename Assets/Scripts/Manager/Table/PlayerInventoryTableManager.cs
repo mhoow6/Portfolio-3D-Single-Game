@@ -42,6 +42,22 @@ public static class PlayerInventoryTableManager
         }
     }
 
+    public static void LoadTempTable(string filePath)
+    {
+        List<string> lines = TableManager.instance.GetLinesFromTempTable(filePath);
+
+        for (int i = 1; i < lines.Count; i++)
+        {
+            string[] datas = lines[i].Split(',');
+
+            playerInventory[i - 1].item_type = byte.Parse(datas[1]);
+            playerInventory[i - 1].id = ushort.Parse(datas[2]);
+            playerInventory[i - 1].icon_name = datas[3];
+            playerInventory[i - 1].count = ushort.Parse(datas[4]);
+            playerInventory[i - 1].reinforce_level = byte.Parse(datas[5]);
+        }
+    }
+
     public static ref ItemInfo[] GetPlayerInventoryFromTable()
     {
         return ref playerInventory;
