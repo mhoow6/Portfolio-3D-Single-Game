@@ -23,7 +23,6 @@ public class Player : Character
     public bool isPlayerUseCombatSkill02;
     public float SkillDuration = 1f;
     public GameObject weapon;
-    public byte stackBreakCount;
 
     private Transform sheath;
     private Transform righthand;
@@ -48,13 +47,30 @@ public class Player : Character
 
     void Start()
     {
-        level = PlayerInfoTableManager.playerInfo.level;
-        hp = PlayerInfoTableManager.playerInfo.hp;
-        mp = PlayerInfoTableManager.playerInfo.mp;
-        sp = PlayerInfoTableManager.playerInfo.sp;
-        currentHp = PlayerInfoTableManager.playerInfo.hp;
-        currentMp = PlayerInfoTableManager.playerInfo.mp;
-        currentSp = PlayerInfoTableManager.playerInfo.sp;
+        if (!SceneInfoManager.instance.isTempDataExists)
+        {
+            level = PlayerInfoTableManager.playerInfo.level;
+            hp = PlayerInfoTableManager.playerInfo.hp;
+            mp = PlayerInfoTableManager.playerInfo.mp;
+            sp = PlayerInfoTableManager.playerInfo.sp;
+            currentHp = PlayerInfoTableManager.playerInfo.hp;
+            currentMp = PlayerInfoTableManager.playerInfo.mp;
+            currentSp = PlayerInfoTableManager.playerInfo.sp;
+        }
+        else
+        {
+            level = PlayerInfoTableManager.playerTempInfo.level;
+            hp = PlayerInfoTableManager.playerTempInfo.hp;
+            mp = PlayerInfoTableManager.playerTempInfo.mp;
+            sp = PlayerInfoTableManager.playerTempInfo.sp;
+            currentHp = PlayerInfoTableManager.playerTempInfo.currentHp;
+            currentMp = PlayerInfoTableManager.playerTempInfo.currentMp;
+            currentSp = PlayerInfoTableManager.playerTempInfo.currentSp;
+        }
+
+        if (currentSp <= sp)
+            isPlayerNeedSP = true;
+
         equip_weapon_id = PlayerEquipmentTableManager.playerEquipment[(int)EquipmentIndex.WEAPON].id;
         walk_speed = PlayerInfoTableManager.playerInfo.walk_speed;
         run_speed = PlayerInfoTableManager.playerInfo.run_speed;
@@ -133,10 +149,7 @@ public class Player : Character
                 mob.hp -= attack_damage;
 
                 if (!mob.isStuned)
-                {
-                    stackBreakCount = EnduranceStackCalculator(attack_damage, RequiredToIncreaseStackDamage);
-                    mob.endurance_stack += stackBreakCount;
-                }
+                    mob.endurance_stack += EnduranceStackCalculator(attack_damage, RequiredToIncreaseStackDamage);
                     
             }
         }
