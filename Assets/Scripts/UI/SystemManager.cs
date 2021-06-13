@@ -14,25 +14,14 @@ public class SystemManager : MonoBehaviour
     public SoundContent[] sounds = new SoundContent[2];
     public ControlSlot homeBtn;
 
-    private string playerInventoryPath;
-    private const string FILE_EXTENSION = ".csv";
-
-    private void Awake()
-    {
-        playerInventoryPath = Application.persistentDataPath + "/Tables/PlayerInventory" + FILE_EXTENSION;
-    }
+    public bool isSystemMenuOn;
 
     public void ExitGame() { }
-    public void SaveGame() { InventorySave(); }
+    public void SaveGame() { InventorySave(); EquipmentSave(); PlayerInfoSave(); SceneInfoManager.instance.isTempDataExists = true; }
     public void ReturnGame() { }
 
     private void InventorySave()
     {
-        // HUDManager.instance.inventory.itemContent.items
-        // TableManager.instance.playerInventoryPath
-        // TableManager.instance.playerEquipmentPath
-        // index, item_type, id, icon_name, count, reinforce_lv
-
         string data = string.Empty;
 
         data = "index,item_type,id,icon_name,count,reinforce_lv";
@@ -50,7 +39,7 @@ public class SystemManager : MonoBehaviour
         }
 
         byte[] buffer = Encoding.UTF8.GetBytes(data);
-        File.WriteAllBytes(playerInventoryPath + FILE_EXTENSION, buffer);
+        File.WriteAllBytes(TableManager.instance.playerTempInventoryPath, buffer);
 
         Debug.Log("인벤토리 저장 완료");
     }
@@ -62,19 +51,19 @@ public class SystemManager : MonoBehaviour
         data = "index,item_type,id,icon_name,count,reinforce_lv";
         data += "\n";
 
-        for (int i = 0; i < HUDManager.instance.inventory.equipContent.items.Count i++)
+        for (int i = 0; i < HUDManager.instance.inventory.equipContent.items.Count; i++)
         {
             data += i + ",";
-            data += HUDManager.instance.inventory.itemContent.items[i].item_type + ",";
-            data += HUDManager.instance.inventory.itemContent.items[i].item_id + ",";
-            data += HUDManager.instance.inventory.itemContent.items[i].item_name + ",";
-            data += HUDManager.instance.inventory.itemContent.items[i].count + ",";
-            data += HUDManager.instance.inventory.itemContent.items[i].reinforce_level;
+            data += HUDManager.instance.inventory.equipContent.items[i].item_type + ",";
+            data += HUDManager.instance.inventory.equipContent.items[i].item_id + ",";
+            data += HUDManager.instance.inventory.equipContent.items[i].item_name + ",";
+            data += HUDManager.instance.inventory.equipContent.items[i].count + ",";
+            data += HUDManager.instance.inventory.equipContent.items[i].reinforce_level;
             data += "\n";
         }
 
         byte[] buffer = Encoding.UTF8.GetBytes(data);
-        File.WriteAllBytes(playerInventoryPath + FILE_EXTENSION, buffer);
+        File.WriteAllBytes(TableManager.instance.playerTempEquipmentPath, buffer);
 
         Debug.Log("장비창 저장 완료");
     }
@@ -83,8 +72,21 @@ public class SystemManager : MonoBehaviour
     {
         string data = string.Empty;
 
-        data = "index,item_type,id,icon_name,count,reinforce_lv";
+        data = "level,hp,mp,sp,currentHp,currentMp,currentSp";
         data += "\n";
+
+        data += GameManager.instance.controller.player.level + ",";
+        data += GameManager.instance.controller.player.hp + ",";
+        data += GameManager.instance.controller.player.mp + ",";
+        data += GameManager.instance.controller.player.sp + ",";
+        data += GameManager.instance.controller.player.currentHp + ",";
+        data += GameManager.instance.controller.player.currentMp + ",";
+        data += GameManager.instance.controller.player.currentSp + ",";
+
+        byte[] buffer = Encoding.UTF8.GetBytes(data);
+        File.WriteAllBytes(TableManager.instance.playerTempPath, buffer);
+
+        Debug.Log("플레이어 임시정보 저장 완료");
     }
 }
 
