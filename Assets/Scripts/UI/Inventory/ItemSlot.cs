@@ -37,18 +37,12 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
         // Turn off EquipSlot Selected
         EquipSlot equipSelectedItem = HUDManager.instance.inventory.equipContent.items.Find(item => item.isSelected);
         if (equipSelectedItem != null && equipSelectedItem != this)
-        {
-            equipSelectedItem.isSelected = false;
-            equipSelectedItem.itemGradeFrame.sprite = equipSelectedItem.originGradeFrameSprite;
-        }
+            SelectedItemOFF(equipSelectedItem);
 
         // Prev selected item handle
         ItemSlot selectedItem = HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected);
         if (selectedItem != null && selectedItem != this)
-        {
-            selectedItem.isSelected = false;
-            selectedItem.itemGradeFrame.sprite = selectedItem.originGradeFrameSprite;
-        }
+            SelectedItemOFF(selectedItem);
 
         // Toggle Select
         if (!isSelected && item_type != (byte)ItemType.NONE)
@@ -115,5 +109,22 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
     {
         itemIcon.color = alpha;
         itemCount.color = alpha;
+    }
+
+    private void SelectedItemOFF(ItemSlot item)
+    {
+        item.isSelected = false;
+        item.itemGradeFrame.sprite = item.originGradeFrameSprite;
+    }
+
+    private void SelectedItemOFF(EquipSlot item)
+    {
+        item.isSelected = false;
+        item.itemGradeFrame.sprite = item.originGradeFrameSprite;
+    }
+
+    private void OnDisable()
+    {
+        SelectedItemOFF(this);
     }
 }
