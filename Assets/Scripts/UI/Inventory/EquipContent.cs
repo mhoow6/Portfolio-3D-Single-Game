@@ -30,7 +30,7 @@ public class EquipContent : MonoBehaviour
             newItem.itemCount.text = newItem.count.ToString();
             newItem.item_type = PlayerEquipmentTableManager.playerEquipment[i].item_type;
             newItem.item_id = PlayerEquipmentTableManager.playerEquipment[i].id;
-            newItem.item_name = PlayerInventoryTableManager.playerInventory[i].icon_name;
+            newItem.item_name = PlayerEquipmentTableManager.playerEquipment[i].icon_name;
 
             if (newItem.item_type == (byte)ItemType.EQUIPMENT)
                 newItem.itemCount.enabled = false;
