@@ -99,6 +99,14 @@ public class InputManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Z) && !HUDManager.instance.inventory.isInventoryOn)
                 UseQuickItem();
 
+            // System Menu
+            if (Input.GetKeyDown(KeyCode.Escape) && !HUDManager.instance.system.isSystemMenuOn)
+            {
+                bool toggle = HUDManager.instance.inventory.isInventoryOn = HUDManager.instance.inventory.isInventoryOn == false ? true : false;
+
+                SystemMenuSwitch(toggle);
+            }
+
         }
     }
 
@@ -109,7 +117,7 @@ public class InputManager : MonoBehaviour
             yield return null;
 
             // Inventory
-            if (HUDManager.instance.menu.controlSlots.Find(slot => slot.name == "Inventory").isClicked && !HUDManager.instance.inventory.isInventoryOn)
+            if (HUDManager.instance.menu.controlSlots[(int)MenuIndex.INVENTORY].isClicked && !HUDManager.instance.inventory.isInventoryOn)
             {
                 HUDManager.instance.inventory.isInventoryOn = true;
                 InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
@@ -121,13 +129,25 @@ public class InputManager : MonoBehaviour
                 InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
             }
 
-
             // Quick Item
             if (HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].isClicked && !bMultiClickPrevent)
             {
                 bMultiClickPrevent = true;
 
                 UseQuickItem();
+            }
+
+            // System Menu
+            if (HUDManager.instance.menu.controlSlots[(int)MenuIndex.SYSTEM].isClicked && !HUDManager.instance.system.isSystemMenuOn)
+            {
+                HUDManager.instance.system.isSystemMenuOn = true;
+                SystemMenuSwitch(HUDManager.instance.system.isSystemMenuOn);
+            }
+
+            if (HUDManager.instance.system.homeBtn.isClicked && HUDManager.instance.system.isSystemMenuOn)
+            {
+                HUDManager.instance.system.isSystemMenuOn = false;
+                SystemMenuSwitch(HUDManager.instance.system.isSystemMenuOn);
             }
         }
     }
@@ -200,6 +220,11 @@ public class InputManager : MonoBehaviour
     {
         HUDManager.instance.inventory.inventoryCamera.gameObject.SetActive(trigger);
         HUDManager.instance.inventory.gameObject.SetActive(trigger);
+    }
+
+    private void SystemMenuSwitch(bool trigger)
+    {
+        HUDManager.instance.system.gameObject.SetActive(trigger);
     }
 
     private void ItemEquip(ItemSlot item)
