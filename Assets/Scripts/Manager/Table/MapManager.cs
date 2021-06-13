@@ -49,6 +49,11 @@ public class MapManager : MonoBehaviour
             CustomCameraMoblie moblieCameraScript = cameraScript.gameObject.AddComponent<CustomCameraMoblie>();
             InputManager.instance.moblieCamera = moblieCameraScript; // Attach at InputManager
 
+            // Alpha Wall Utilly in Camera
+            AlphaWall alphaWallUtill = cameraScript.gameObject.AddComponent<AlphaWall>();
+            alphaWallUtill.playerhead = playerScript.transform;
+            alphaWallUtill.mainCamera = Camera.main.transform;
+
             // Main Camera Transform Setup
             Camera.main.transform.position = cameraScript.transform.position;
             Camera.main.transform.rotation = cameraScript.transform.rotation;
