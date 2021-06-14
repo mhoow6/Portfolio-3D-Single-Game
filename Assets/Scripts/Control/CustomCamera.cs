@@ -78,5 +78,4 @@ public class CustomCamera : MonoBehaviour
 
         return transform.forward * zoomResult;
     }
-
 }

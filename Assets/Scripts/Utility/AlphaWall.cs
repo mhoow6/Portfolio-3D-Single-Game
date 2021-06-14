@@ -61,7 +61,7 @@ public class AlphaWall : MonoBehaviour
                         if (Alphalist[i].name == hits[j].collider.gameObject.name)
                             tmp = hits[j].collider.gameObject;
                     }
-                    catch (System.IndexOutOfRangeException e)
+                    catch (System.IndexOutOfRangeException)
                     {
                         Debug.Log("i index = " + i);
                         Debug.Log("j index = " + j);
