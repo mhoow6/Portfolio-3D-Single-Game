@@ -100,9 +100,9 @@ public class InputManager : MonoBehaviour
                 UseQuickItem();
 
             // System Menu
-            if (Input.GetKeyDown(KeyCode.Escape) && !HUDManager.instance.system.isSystemMenuOn)
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                bool toggle = HUDManager.instance.inventory.isInventoryOn = HUDManager.instance.inventory.isInventoryOn == false ? true : false;
+                bool toggle = HUDManager.instance.system.isSystemMenuOn = HUDManager.instance.system.isSystemMenuOn == false ? true : false;
 
                 SystemMenuSwitch(toggle);
             }
