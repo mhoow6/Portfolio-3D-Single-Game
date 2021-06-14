@@ -86,6 +86,13 @@ public class Player : Character
         StartCoroutine(SpRecovery(SpRecoveryDuration));
         StartCoroutine(CombatSkill01Cooldown(SkillDuration * Time.deltaTime));
         StartCoroutine(CombatSkill02Cooldown(SkillDuration * Time.deltaTime));
+
+        bound = GetBoundFromSkinnedMeshRenderer(this).Value;
+    }
+
+    private void Update()
+    {
+        bound.center = transform.position;
     }
 
     public void Attack(int ani_id)
@@ -268,7 +275,7 @@ public class Player : Character
         return currentDamage + (level*(level+1));
     }
 
-    public byte EnduranceStackCalculator(float currentDamage, float RequiredToIncreaseStackDamage)
+    private byte EnduranceStackCalculator(float currentDamage, float RequiredToIncreaseStackDamage)
     {
         return (byte)(currentDamage / RequiredToIncreaseStackDamage);
     }
