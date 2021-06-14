@@ -6,8 +6,12 @@ using System.IO;
 public class TableManager : MonoBehaviour
 {
     public static TableManager instance;
+
+    [HideInInspector]
     public string playerTempInventoryPath;
+    [HideInInspector]
     public string playerTempEquipmentPath;
+    [HideInInspector]
     public string playerTempPath;
 
     private string weaponPath;
@@ -17,16 +21,14 @@ public class TableManager : MonoBehaviour
     private string playerInventoryPath;
     private string playerEquipmentPath;
     private string consumeItemPath;
+    private string dialogPath;
+    private string questPath; 
 
     public const string FILE_EXTENSION = ".csv";
 
     private void Awake()
     {
         instance = this;
-
-        // Debug
-        Debug.Log("isTempDataExists? " + SceneInfoManager.instance.isTempDataExists);
-        Debug.Log("isTableManagerAwakeOnce? " + SceneInfoManager.instance.isTableManagerAwakeOnce);
 
         // Table Path
         weaponPath = "Tables/WeaponInfo";
@@ -36,6 +38,8 @@ public class TableManager : MonoBehaviour
         playerInventoryPath = "Tables/PlayerInventory";
         playerEquipmentPath = "Tables/PlayerEquipment";
         consumeItemPath = "Tables/ConsumeItemInfo";
+        dialogPath = "Tables/DialogInfo";
+        questPath = "Tables/QuestInfo";
 
         // Temp Path
         playerTempInventoryPath = Application.persistentDataPath + "/Tables/PlayerInventory" + FILE_EXTENSION;
@@ -51,6 +55,8 @@ public class TableManager : MonoBehaviour
             MonsterInfoTableManager.LoadTable(monsterPath);
             NPCInfoTableManager.LoadTable(npcPath);
             ConsumeInfoTableManager.LoadTable(consumeItemPath);
+            DialogInfoTableManager.LoadTable(dialogPath);
+            QuestInfoTableManager.LoadTable(questPath);
         }
 
         if (SceneInfoManager.instance.isTempDataExists)
