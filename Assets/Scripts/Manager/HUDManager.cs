@@ -12,6 +12,7 @@ public class HUDManager : MonoBehaviour
     public MenuManager menu;
     public PlayerStateManager state;
     public SystemManager system;
+    public DialogManager dialog;
 
     private void Awake()
     {
