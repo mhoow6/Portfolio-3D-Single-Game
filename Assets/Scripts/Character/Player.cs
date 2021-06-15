@@ -23,6 +23,8 @@ public class Player : Character
     public bool isPlayerUseCombatSkill02;
     public float SkillDuration = 1f;
     public GameObject weapon;
+    public NPC boundCollideNPC;
+    public bool isBoundCollide;
 
     private Transform sheath;
     private Transform righthand;
@@ -32,6 +34,7 @@ public class Player : Character
     private Quaternion weaponRHandLocalRot = Quaternion.Euler(new Vector3(80.5413818f, 22.6469021f, 205.775742f));
     private const float SpRecoveryDuration = 0.5f;
     private const float REQUIRED_MOB_ENDURANCE_BREAK = 0.03F;
+    private const float BOUND_COLLIDED_DETECT_DURATION = 0.25F;
     private bool isWeaponInRHand;
 
     private void Awake()
@@ -86,13 +89,10 @@ public class Player : Character
         StartCoroutine(SpRecovery(SpRecoveryDuration));
         StartCoroutine(CombatSkill01Cooldown(SkillDuration * Time.deltaTime));
         StartCoroutine(CombatSkill02Cooldown(SkillDuration * Time.deltaTime));
+        StartCoroutine(BoundCollideWithNPC(BOUND_COLLIDED_DETECT_DURATION));
 
+        // Get Bound
         bound = GetBoundFromSkinnedMeshRenderer(this).Value;
-    }
-
-    private void Update()
-    {
-        bound.center = transform.position;
     }
 
     public void Attack(int ani_id)
@@ -278,5 +278,34 @@ public class Player : Character
     private byte EnduranceStackCalculator(float currentDamage, float RequiredToIncreaseStackDamage)
     {
         return (byte)(currentDamage / RequiredToIncreaseStackDamage);
+    }
+
+    private IEnumerator BoundCollideWithNPC(float detectDuration)
+    {
+        WaitForSeconds wt = new WaitForSeconds(detectDuration);
+
+        yield return null;
+
+        while (true)
+        {
+            if (GameManager.instance.npcs.Count != 0)
+                foreach (NPC npc in GameManager.instance.npcs)
+                    BoundUpdate(npc, false);
+
+
+            yield return wt;
+        }
+    }
+
+    protected override void OnBoundEnter(Character character)
+    {
+        isBoundCollide = true;
+        boundCollideNPC = (NPC)character;
+    }
+
+    protected override void OnBoundEscape()
+    {
+        isBoundCollide = false;
+        boundCollideNPC = null;
     }
 }
