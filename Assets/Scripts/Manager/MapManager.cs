@@ -164,14 +164,15 @@ public class MapManager : MonoBehaviour
             float yScale = float.Parse(datas[9]);
             float zScale = float.Parse(datas[10]);
 
-            string npcName = NPCInfoTableManager.GetNPCNameFromID(id);
+            string npcPrefab = NPCInfoTableManager.GetNPCPrefabFromID(id);
 
-            GameObject _npc = Resources.Load<GameObject>("Character/NPC/" + npcName);
+            GameObject _npc = Resources.Load<GameObject>("Character/NPC/" + npcPrefab);
             GameObject npc = GameObject.Instantiate(_npc);
             NPC npcScript = npc.AddComponent<NPC>();
-
+            npcScript.questIcon = new GameObject("head");
+            
             // Set Info From Table
-            npcScript.gameObject.name = npcName;
+            npcScript.gameObject.name = npcPrefab;
             npcScript.index = index;
             npcScript.id = id;
             npcScript.transform.position = new Vector3(xPos, yPos, zPos);
@@ -184,8 +185,12 @@ public class MapManager : MonoBehaviour
             // Add GameManager
             GameManager.instance.npcs.Add(npcScript);
 
-            npcScript.transform.SetParent(parent.transform);
+            npcScript.transform.SetParent(parent.transform); // NPC Node
 
+            npcScript.questIcon.transform.SetParent(npcScript.transform); // Head is in NPC Object
+
+            // Local Setup
+            npcScript.questIcon.transform.localPosition = npcScript.headLocalPos;
         }
         Debug.Log("NPC Position Load Completed.");
     }
