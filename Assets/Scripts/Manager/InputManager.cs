@@ -25,13 +25,15 @@ public class InputManager : MonoBehaviour
         StartCoroutine(ShortcutMenu()); // Moblie & PC
         StartCoroutine(InventoryButton()); // Moblie & PC
 
-        if (Application.platform == RuntimePlatform.Android)
+        /*if (Application.platform == RuntimePlatform.Android)
         {
             StartCoroutine(MoveInputMoblie());
             StartCoroutine(MoveDeltaMoblie());
             return;
-        }
+        }*/
 
+        StartCoroutine(MoveInputMoblie());
+        StartCoroutine(MoveDeltaMoblie());
         StartCoroutine(MoveInputPC());
         StartCoroutine(MoveDeltaPC());
         StartCoroutine(ShortcutPC());
@@ -43,7 +45,7 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (!HUDManager.instance.inventory.isInventoryOn)
+            if (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn)
                 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         }
     }
@@ -54,7 +56,7 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (joystick != null && !HUDManager.instance.inventory.isInventoryOn)
+            if (joystick != null && (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn))
                 moveInput = joystick._inputDirection;
         }
     }
@@ -65,7 +67,7 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (!HUDManager.instance.inventory.isInventoryOn)
+            if (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn)
                 moveDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         }
     }
@@ -76,7 +78,7 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (moblieCamera != null && !HUDManager.instance.inventory.isInventoryOn)
+            if (moblieCamera != null && !HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn)
                 moveDelta = moblieCamera._moveDelta;
         }
     }
@@ -107,6 +109,14 @@ public class InputManager : MonoBehaviour
                 SystemMenuSwitch(toggle);
             }
 
+            // Dialog NPC
+            if (Input.GetKeyDown(KeyCode.F) && GameManager.instance.controller.player.boundCollideNPC != null)
+            {
+                HUDManager.instance.dialog.isDialogOn = true;
+                DialogSwitch(HUDManager.instance.dialog.isDialogOn);
+            }
+
+
         }
     }
 
@@ -122,7 +132,6 @@ public class InputManager : MonoBehaviour
                 HUDManager.instance.inventory.isInventoryOn = true;
                 InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
             }
-            
             if (HUDManager.instance.inventory.homeBtn.isClicked && HUDManager.instance.inventory.isInventoryOn)
             {
                 HUDManager.instance.inventory.isInventoryOn = false;
@@ -143,7 +152,6 @@ public class InputManager : MonoBehaviour
                 HUDManager.instance.system.isSystemMenuOn = true;
                 SystemMenuSwitch(HUDManager.instance.system.isSystemMenuOn);
             }
-
             if (HUDManager.instance.system.homeBtn.isClicked && HUDManager.instance.system.isSystemMenuOn)
             {
                 HUDManager.instance.system.isSystemMenuOn = false;
@@ -225,6 +233,11 @@ public class InputManager : MonoBehaviour
     private void SystemMenuSwitch(bool trigger)
     {
         HUDManager.instance.system.gameObject.SetActive(trigger);
+    }
+
+    private void DialogSwitch(bool trigger)
+    {
+        HUDManager.instance.dialog.gameObject.SetActive(trigger);
     }
 
     private void ItemEquip(ItemSlot item)
