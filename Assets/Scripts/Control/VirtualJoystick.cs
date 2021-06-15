@@ -23,8 +23,8 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     private void Start()
     {
-        if (Application.platform != RuntimePlatform.Android)
-            this.enabled = false;
+        /*if (Application.platform != RuntimePlatform.Android)
+            this.enabled = false;*/
     }
 
     public void OnBeginDrag(PointerEventData eventData)
