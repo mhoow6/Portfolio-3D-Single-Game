@@ -14,6 +14,7 @@ public struct QuestInfo
     public int target_monster_count;
     public ushort award_item_id;
     public int award_item_count;
+    public byte required_level;
 }
 
 
@@ -41,8 +42,20 @@ public static class QuestInfoTableManager
             questInfo.target_monster_count = int.Parse(datas[7]);
             questInfo.award_item_id = ushort.Parse(datas[8]);
             questInfo.award_item_count = int.Parse(datas[9]);
+            questInfo.required_level = byte.Parse(datas[10]);
 
             questInfoList.Add(questInfo);
         }
+    }
+
+    public static byte GetRequiredLevelFromQuestID(ushort questID)
+    {
+        foreach (QuestInfo questInfo in questInfoList)
+        {
+            if (questInfo.id == questID)
+                return questInfo.required_level;
+        }
+
+        throw new System.NotSupportedException(questID + " 에 해당하는 퀘스트가 없습니다.");
     }
 }
