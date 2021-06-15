@@ -40,10 +40,6 @@ public class Monster : Character
     public byte endurance_stack;
 
     [SerializeField]
-    protected float currentDistanceWithPlayer;
-    [SerializeField]
-    protected float currentAngleWithPlayer;
-    [SerializeField]
     protected float currentStunTimer;
     protected float currentAttackDamage;
     protected float currentAttackDistance;
@@ -210,15 +206,6 @@ public class Monster : Character
 
         if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
-    }
-
-    protected void Detector()
-    {
-        currentDistanceWithPlayer = Vector3.Distance(GameManager.instance.controller.player.transform.position, transform.position);
-        currentAngleWithPlayer = Mathf.Acos(Vector3.Dot
-                (transform.forward,
-                (GameManager.instance.controller.player.transform.position - transform.position).normalized)
-                ) * Mathf.Rad2Deg;
     }
 }
 

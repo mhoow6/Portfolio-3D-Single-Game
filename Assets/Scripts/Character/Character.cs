@@ -8,6 +8,12 @@ public class Character : MonoBehaviour
     public float attack_distance;
     public float attack_angle;
     public float walk_speed;
+
+    [SerializeField]
+    protected float currentDistanceWithPlayer;
+    [SerializeField]
+    protected float currentAngleWithPlayer;
+
     public Bounds _bound
     {
         get => bound;
@@ -30,31 +36,52 @@ public class Character : MonoBehaviour
             {
                 renderer = trans.GetChild(i).GetComponent<SkinnedMeshRenderer>();
 
-                // 3. Get bounds
-                bound = renderer.bounds;
+                if (renderer != null)
+                {
+                    // 3. Get bounds
+                    bound = renderer.bounds;
 
-                // 4. Avoid Root Object
-                return bound;
+                    // 4. Avoid Root Object
+                    return bound;
+                }
             }
         }
 
         return null;
     }
 
-    protected void BoundUpdate(Character character, bool isBoundStatic)
+    protected void BoundUpdate(Character targetCharacter, bool isBoundStatic)
     {
         if (!isBoundStatic)
-            this.bound.center = transform.position;
+            bound.center = transform.position;
 
-        if (character != null)
+        if (targetCharacter != null)
         {
-            if (bound.Intersects(character._bound))
-                OnBoundEnter();
+            if (bound.Intersects(targetCharacter._bound))
+                OnBoundEnter(targetCharacter);
+            else
+                OnBoundEscape();
         }
+        
     }
 
-    protected virtual void OnBoundEnter()
+    protected virtual void OnBoundEnter(Character character)
     {
-        Debug.Log("Bound Intersects.");
+        if (character != null)
+            Debug.Log("Bound Intersects with " + character.name);
+    }
+
+    protected virtual void OnBoundEscape()
+    {
+        Debug.Log("Bound Escape.");
+    }
+
+    protected void Detector()
+    {
+        currentDistanceWithPlayer = Vector3.Distance(GameManager.instance.controller.player.transform.position, transform.position);
+        currentAngleWithPlayer = Mathf.Acos(Vector3.Dot
+                (transform.forward,
+                (GameManager.instance.controller.player.transform.position - transform.position).normalized)
+                ) * Mathf.Rad2Deg;
     }
 }
