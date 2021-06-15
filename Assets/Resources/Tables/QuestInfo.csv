@@ -1,2 +1,2 @@
-id,start_npc,end_npc,start_dialog,end_dialog,quest_name,target_monster,target_monster_count,quest_award,award_count
-7000,2002,2000,8000,8008,°ñ·½À» ¹«Âî¸£´Ù,1006,1,4001,10
+id,start_npc,end_npc,start_dialog,end_dialog,quest_name,target_monster,target_monster_count,quest_award,award_count,require_level
+7000,2002,2000,8000,8008,ê³¨ë ˜ì„ ë¬´ì°Œë¥´ë‹¤,1006,1,4001,10,1
