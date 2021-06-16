@@ -11,13 +11,16 @@ public class NPC : Character
     public byte npc_type;
     public string npc_name;
     public List<QuestInfo> quests = new List<QuestInfo>();
+    public List<DialogInfo> dialogs = new List<DialogInfo>();
     public NavMeshAgent agent;
     public Image questIconImage;
     public GameObject questIcon;
-    public bool isPlayerQuestAccept;
 
     private const int AGENT_PRIORITY = 49;
     private const float QUEST_CHECK_DURATION = 3.0f;
+    private const float QUEST_VISIBLE_DISTANCE = 15.0f;
+
+    public bool _isQuestExists { get => isQuestExists; }
 
     [SerializeField]
     private bool isQuestExists;
@@ -47,38 +50,18 @@ public class NPC : Character
                 quests.Add(questInfo);
         }
 
+        // NPC'S Dialog Load
+        foreach (DialogInfo dialogInfo in DialogInfoTableManager.dialogInfoList)
+        {
+            if (dialogInfo.npc_id == id)
+                dialogs.Add(dialogInfo);
+        }
+
         // Get Bound
         bound = GetBoundFromSkinnedMeshRenderer(this).Value;
 
         // Checking NPC Quest
         StartCoroutine(QuestUpdate(QUEST_CHECK_DURATION));
-
-        // questIconImage From PoolManager
-        questIconImage = PoolManager.instance.CreateQuestIconImage();
-    }
-
-    private void Update()
-    {
-        QuestIconUpdate();
-        Detector();
-    }
-
-    private void QuestIconUpdate()
-    {
-        if (isQuestExists)
-        {
-            Vector3 screenPos = Camera.main.WorldToScreenPoint(questIcon.transform.position);
-            questIconImage.transform.position = screenPos;
-
-            if (questIconImage.transform.position.x > -30f && questIconImage.transform.position.x < 1950f &&
-                questIconImage.transform.position.y > 400f && questIconImage.transform.position.y < 800f && currentDistanceWithPlayer <= 10f)
-                questIconImage.gameObject.SetActive(true);
-            else
-                questIconImage.gameObject.SetActive(false);
-        }
-
-        if (!isQuestExists && !isPlayerQuestAccept)
-            questIconImage.gameObject.SetActive(false);
     }
 
     private IEnumerator QuestUpdate(float checkDuration)
@@ -89,14 +72,19 @@ public class NPC : Character
 
         while (true)
         {
-            for (int i = 0; i < quests.Count; i++)
+            // If Quest is exists at least one
+            if (quests.Count != 0)
             {
-                if (QuestManager.instance.quests.TryGetValue(quests[i].id, out bool clear) &&
-                    QuestInfoTableManager.GetRequiredLevelFromQuestID(quests[i].id) <= GameManager.instance.controller.player.level)
-                    isQuestExists = !clear;
-                else
-                    isQuestExists = clear;
+                for (int i = 0; i < quests.Count; i++)
+                {
+                    if (!PlayerQuestStateTableManager.playerQuestStateList.Find(quest => quest.id == quests[i].id).isClear &&
+                        QuestInfoTableManager.GetRequiredLevelFromQuestID(quests[i].id) <= GameManager.instance.controller.player.level)
+                        isQuestExists = true;
+                    else
+                        isQuestExists = false;
+                }
             }
+
             yield return wt;
         }
     }
