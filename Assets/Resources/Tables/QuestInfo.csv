@@ -1,2 +1,2 @@
-id,start_npc,end_npc,start_dialog,end_dialog,quest_name,target_monster,target_monster_count,quest_award,award_count,require_level
-7000,2002,2000,8000,8008,골렘을 무찌르다,1006,1,4001,10,1
+id,start_npc,end_npc,start_dialog,end_dialog,wait_dialog,award_start_dialog,award_end_dialog,quest_name,target_monster,target_monster_count,quest_award,award_count,require_level
+7000,2002,2002,8004,8008,8011,8009,8010,골렘을 무찌르다,1006,1,4001,10,1
