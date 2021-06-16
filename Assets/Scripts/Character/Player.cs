@@ -89,10 +89,15 @@ public class Player : Character
         StartCoroutine(SpRecovery(SpRecoveryDuration));
         StartCoroutine(CombatSkill01Cooldown(SkillDuration * Time.deltaTime));
         StartCoroutine(CombatSkill02Cooldown(SkillDuration * Time.deltaTime));
-        StartCoroutine(BoundCollideWithNPC(BOUND_COLLIDED_DETECT_DURATION));
+        StartCoroutine(FindBoundCollideChar(BOUND_COLLIDED_DETECT_DURATION));
 
         // Get Bound
         bound = GetBoundFromSkinnedMeshRenderer(this).Value;
+    }
+
+    private void Update()
+    {
+        BoundUpdate(false);
     }
 
     public void Attack(int ani_id)
@@ -280,7 +285,7 @@ public class Player : Character
         return (byte)(currentDamage / RequiredToIncreaseStackDamage);
     }
 
-    private IEnumerator BoundCollideWithNPC(float detectDuration)
+    private IEnumerator FindBoundCollideChar(float detectDuration)
     {
         WaitForSeconds wt = new WaitForSeconds(detectDuration);
 
@@ -289,18 +294,23 @@ public class Player : Character
         while (true)
         {
             if (GameManager.instance.npcs.Count != 0)
-                foreach (NPC npc in GameManager.instance.npcs)
-                    BoundUpdate(npc, false);
+            {
+                Character collided = GameManager.instance.npcs.Find(npc => this.bound.Intersects(npc._bound));
 
+                if (collided != null)
+                    OnBoundEnter(collided);
+                else
+                    OnBoundEscape();
+            }
 
             yield return wt;
         }
     }
 
-    protected override void OnBoundEnter(Character character)
+    protected override void OnBoundEnter(Character collided)
     {
         isBoundCollide = true;
-        boundCollideNPC = (NPC)character;
+        boundCollideNPC = (NPC)collided;
     }
 
     protected override void OnBoundEscape()
