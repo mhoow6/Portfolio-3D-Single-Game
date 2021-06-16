@@ -33,11 +33,11 @@ public static class DialogInfoTableManager
 
     public static List<DialogInfo> GetDialogInfoFromNPCID(ushort npcID)
     {
-        List<DialogInfo> npcDialogs = new List<DialogInfo>(); ;
+        List<DialogInfo> npcDialogs = new List<DialogInfo>();
 
         foreach (DialogInfo dialogInfo in dialogInfoList)
         {
-            if (npcID == dialogInfo.id)
+            if (npcID == dialogInfo.npc_id)
                 npcDialogs.Add(dialogInfo);
         }
 
@@ -45,5 +45,16 @@ public static class DialogInfoTableManager
             return npcDialogs;
         else
             throw new System.NotSupportedException(npcID + " 에 해당하는 대사가 없습니다.");
+    }
+
+    public static string GetDialogInfoFromDialogID(ushort dialogID)
+    {
+        foreach (DialogInfo dialogInfo in dialogInfoList)
+        {
+            if (dialogID == dialogInfo.id)
+                return dialogInfo.dialog;
+        }
+        
+        throw new System.NotSupportedException(dialogID + " 에 해당하는 대사가 없습니다.");
     }
 }
