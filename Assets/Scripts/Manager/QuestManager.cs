@@ -5,17 +5,20 @@ using UnityEngine;
 public class QuestManager : MonoBehaviour
 {
     public static QuestManager instance;
-    public Dictionary<ushort, bool> quests = new Dictionary<ushort, bool>(); // quest, isCleared?
+
+    public QuestInfo currentQuestInfo;
+    public PlayerQuestStateInfo currentQuestState;
+
+    public ref QuestInfo _currentQuestInfo => ref currentQuestInfo;
+    public ref PlayerQuestStateInfo _currentQuestState => ref currentQuestState;
 
     private void Awake()
     {
         instance = this;
     }
 
-    private void Start()
+    private void Update()
     {
-        // Player's Quest Info Load
-        foreach(PlayerQuestInfo quest in PlayerQuestTableManager.playerQuestInfoList)
-            quests.Add(quest.id, quest.isClear);
+        Debug.Log(QuestManager.instance.currentQuestState.isPlayerAccept);
     }
 }
