@@ -9,6 +9,9 @@ public struct QuestInfo
     public ushort end_npc_id;
     public ushort start_dialog_id;
     public ushort end_dialog_id;
+    public ushort wait_dialog_id;
+    public ushort award_start_dialog_id;
+    public ushort award_end_dialog_id;
     public string quest_name;
     public ushort target_monster_id;
     public int target_monster_count;
@@ -37,12 +40,15 @@ public static class QuestInfoTableManager
             questInfo.end_npc_id = ushort.Parse(datas[2]);
             questInfo.start_dialog_id = ushort.Parse(datas[3]);
             questInfo.end_dialog_id = ushort.Parse(datas[4]);
-            questInfo.quest_name = datas[5];
-            questInfo.target_monster_id = ushort.Parse(datas[6]);
-            questInfo.target_monster_count = int.Parse(datas[7]);
-            questInfo.award_item_id = ushort.Parse(datas[8]);
-            questInfo.award_item_count = int.Parse(datas[9]);
-            questInfo.required_level = byte.Parse(datas[10]);
+            questInfo.wait_dialog_id = ushort.Parse(datas[5]);
+            questInfo.award_start_dialog_id = ushort.Parse(datas[6]);
+            questInfo.award_end_dialog_id = ushort.Parse(datas[7]);
+            questInfo.quest_name = datas[8];
+            questInfo.target_monster_id = ushort.Parse(datas[9]);
+            questInfo.target_monster_count = int.Parse(datas[10]);
+            questInfo.award_item_id = ushort.Parse(datas[11]);
+            questInfo.award_item_count = int.Parse(datas[12]);
+            questInfo.required_level = byte.Parse(datas[13]);
 
             questInfoList.Add(questInfo);
         }
