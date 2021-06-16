@@ -50,25 +50,16 @@ public class Character : MonoBehaviour
         return null;
     }
 
-    protected void BoundUpdate(Character targetCharacter, bool isBoundStatic)
+    protected void BoundUpdate(bool isBoundStatic)
     {
         if (!isBoundStatic)
             bound.center = transform.position;
-
-        if (targetCharacter != null)
-        {
-            if (bound.Intersects(targetCharacter._bound))
-                OnBoundEnter(targetCharacter);
-            else
-                OnBoundEscape();
-        }
-        
     }
 
-    protected virtual void OnBoundEnter(Character character)
+    protected virtual void OnBoundEnter(Character collided)
     {
-        if (character != null)
-            Debug.Log("Bound Intersects with " + character.name);
+        if (collided != null)
+            Debug.Log("Bound Intersects with " + collided.name);
     }
 
     protected virtual void OnBoundEscape()
