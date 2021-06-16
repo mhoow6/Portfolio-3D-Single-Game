@@ -6,10 +6,6 @@ using UnityEngine.UI;
 public class PoolManager : MonoBehaviour
 {
     public static PoolManager instance;
-    public RectTransform questNode;
-    public List<Image> questIcons = new List<Image>();
-
-    private Vector2 iconSize = new Vector2(71f, 88f);
 
     private void Awake()
     {
@@ -18,7 +14,7 @@ public class PoolManager : MonoBehaviour
 
     public Image CreateQuestIconImage()
     {
-        Image questIcon = questIcons.Find(icon => (icon.gameObject.activeSelf == false) && (icon.gameObject.name == "Quest"));
+        Image questIcon = HUDManager.instance.inGame.quests.Find(icon => (icon.gameObject.activeSelf == false) && (icon.gameObject.name == "Quest"));
 
         if (questIcon != null)
         {
@@ -32,9 +28,9 @@ public class PoolManager : MonoBehaviour
 
         newQuestIcon.sprite = Resources.Load<Sprite>("Sprite/common_item_scroll_2");
 
-        newQuestIcon.transform.SetParent(questNode);
+        newQuestIcon.transform.SetParent(HUDManager.instance.inGame.questNode.transform);
 
-        newQuestIcon.rectTransform.sizeDelta = iconSize;
+        newQuestIcon.rectTransform.sizeDelta = HUDManager.instance.inGame._questIconSize;
 
         return newQuestIcon;
     }
