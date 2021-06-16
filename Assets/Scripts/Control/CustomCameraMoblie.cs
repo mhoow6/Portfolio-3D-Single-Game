@@ -25,8 +25,8 @@ public class CustomCameraMoblie : MonoBehaviour
 
     private void Start()
     {
-        /*if (Application.platform != RuntimePlatform.Android)
-            this.enabled = false;*/
+        if (Application.platform != RuntimePlatform.Android)
+            this.enabled = false;
     }
 
 

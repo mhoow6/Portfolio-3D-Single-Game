@@ -25,15 +25,13 @@ public class InputManager : MonoBehaviour
         StartCoroutine(ShortcutMenu()); // Moblie & PC
         StartCoroutine(InventoryButton()); // Moblie & PC
 
-        /*if (Application.platform == RuntimePlatform.Android)
+        if (Application.platform == RuntimePlatform.Android)
         {
             StartCoroutine(MoveInputMoblie());
             StartCoroutine(MoveDeltaMoblie());
             return;
-        }*/
+        }
 
-        StartCoroutine(MoveInputMoblie());
-        StartCoroutine(MoveDeltaMoblie());
         StartCoroutine(MoveInputPC());
         StartCoroutine(MoveDeltaPC());
         StartCoroutine(ShortcutPC());

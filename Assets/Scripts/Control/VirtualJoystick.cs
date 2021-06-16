@@ -14,6 +14,7 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     [SerializeField, Range(10, 250)]
     private float leverRange;
 
+    [SerializeField]
     private Vector2 inputDirection;
 
     public Vector2 _inputDirection
@@ -23,8 +24,8 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     private void Start()
     {
-        /*if (Application.platform != RuntimePlatform.Android)
-            this.enabled = false;*/
+        if (Application.platform != RuntimePlatform.Android)
+            this.enabled = false;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
