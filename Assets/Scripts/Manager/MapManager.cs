@@ -169,7 +169,7 @@ public class MapManager : MonoBehaviour
             GameObject _npc = Resources.Load<GameObject>("Character/NPC/" + npcPrefab);
             GameObject npc = GameObject.Instantiate(_npc);
             NPC npcScript = npc.AddComponent<NPC>();
-            npcScript.questIcon = new GameObject("head");
+            // npcScript.questIcon = new GameObject("Quest Icon");
             
             // Set Info From Table
             npcScript.gameObject.name = npcPrefab;
@@ -190,7 +190,7 @@ public class MapManager : MonoBehaviour
             npcScript.questIcon.transform.SetParent(npcScript.transform); // Head is in NPC Object
 
             // Local Setup
-            npcScript.questIcon.transform.localPosition = npcScript.headLocalPos;
+            // npcScript.questIcon.transform.localPosition = npcScript.headLocalPos;
         }
         Debug.Log("NPC Position Load Completed.");
     }
