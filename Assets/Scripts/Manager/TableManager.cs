@@ -76,6 +76,11 @@ public class TableManager : MonoBehaviour
     public List<string> GetLinesFromTable(string filePath)
     {
         TextAsset txtAsset = Resources.Load<TextAsset>(filePath);
+
+        // Empty Table
+        if (txtAsset.text == "")
+            return null;
+
         char[] option = { '\r', '\n' };
         string[] _lines = txtAsset.text.Split(option);
         List<string> lines = new List<string>();
@@ -100,6 +105,10 @@ public class TableManager : MonoBehaviour
         {
             using (StreamReader sr = new StreamReader(f, System.Text.Encoding.UTF8))
             {
+                // Empty Table
+                if (sr.ReadLine() == "")
+                    return null;
+
                 while ((line = sr.ReadLine()) != null)
                 {
                     lines.Add(line);
