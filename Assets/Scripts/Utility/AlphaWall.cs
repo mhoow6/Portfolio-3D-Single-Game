@@ -27,10 +27,9 @@ public class AlphaWall : MonoBehaviour
         {
             yield return wt;
 
-            Vector3 origin = mainCamera.position;
             Vector3 dir = playerhead.position - mainCamera.position;
 
-            RaycastHit[] hits = Physics.RaycastAll(origin, dir.normalized, playerhead.position.x - mainCamera.position.x);
+            RaycastHit[] hits = Physics.RaycastAll(mainCamera.position, dir.normalized, Vector3.Distance(mainCamera.position, playerhead.position));
 
             // 1. No hits -> Empty list
             if (hits.Length == 0)
