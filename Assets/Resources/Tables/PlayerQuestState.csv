@@ -1,2 +1,1 @@
-id,isClear,isPlayerAccept
-7000,FALSE,FALSE
+id,isClear,isPlayerAccept,target_monster_hunted
