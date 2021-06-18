@@ -65,4 +65,35 @@ public class ItemContent : MonoBehaviour
         Destroy(dummy.gameObject);
         dummy = null;
     }
+
+    public void AddItem(ushort itemID, byte itemType, int itemCount)
+    {
+        ItemSlot emptySlot = items.Find(slot => slot.item_type == (byte)ItemType.NONE);
+        emptySlot.itemIcon.enabled = true;
+
+        switch (itemType)
+        {
+            case (byte)ItemType.EQUIPMENT:
+                emptySlot.itemIcon.sprite = Resources.Load<Sprite>("Sprite/" + WeaponInfoTableManager.GetPrefabNameFromWeaponID(itemID));
+                break;
+
+            case (byte)ItemType.CONSUME:
+                emptySlot.itemIcon.sprite = Resources.Load<Sprite>("Sprite/" + ConsumeInfoTableManager.GetPrefabNameInfoFromID(itemID));
+                break;
+        }
+
+        Debug.Log(ConsumeInfoTableManager.GetPrefabNameInfoFromID(itemID));
+
+        emptySlot.count = itemCount;
+        emptySlot.itemCount.text = itemCount.ToString();
+        emptySlot.item_type = itemType;
+        emptySlot.item_id = itemID;
+        emptySlot.reinforce_level = 0;
+        emptySlot.item_name = emptySlot.itemIcon.sprite.name;
+
+        if (emptySlot.item_type == (byte)ItemType.EQUIPMENT)
+            emptySlot.itemCount.enabled = false;
+        else
+            emptySlot.itemCount.enabled = true;
+    }
 }
