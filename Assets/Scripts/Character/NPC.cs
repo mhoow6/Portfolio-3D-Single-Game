@@ -10,25 +10,16 @@ public class NPC : Character
     public ushort index;
     public byte npc_type;
     public string npc_name;
-    public List<QuestInfo> quests = new List<QuestInfo>();
-    public List<DialogInfo> dialogs = new List<DialogInfo>();
+    public List<ushort> quests = new List<ushort>();
+    public List<ushort> dialogs = new List<ushort>();
     public NavMeshAgent agent;
-    public Image questIconImage;
-    public GameObject questIcon;
 
     private const int AGENT_PRIORITY = 49;
     private const float QUEST_CHECK_DURATION = 3.0f;
-    private const float QUEST_VISIBLE_DISTANCE = 15.0f;
 
     public bool _isQuestExists { get => isQuestExists; }
-
     [SerializeField]
     private bool isQuestExists;
-
-    public Vector3 headLocalPos
-    {
-        get => new Vector3(0, 2.0f, 0);
-    }
     
     private void Start()
     {
@@ -47,45 +38,61 @@ public class NPC : Character
         foreach (QuestInfo questInfo in QuestInfoTableManager.questInfoList)
         {
             if (questInfo.start_npc_id == id)
-                quests.Add(questInfo);
+                quests.Add(questInfo.id);
         }
 
         // NPC'S Dialog Load
         foreach (DialogInfo dialogInfo in DialogInfoTableManager.dialogInfoList)
         {
             if (dialogInfo.npc_id == id)
-                dialogs.Add(dialogInfo);
+                dialogs.Add(dialogInfo.id);
         }
 
         // Get Bound
         bound = GetBoundFromSkinnedMeshRenderer(this).Value;
 
         // Checking NPC Quest
-        StartCoroutine(QuestUpdate(QUEST_CHECK_DURATION));
+        isQuestExists = PlayerQuestStateCheckFromTable();
+
+        // Real Time Quest Check
+        StartCoroutine(QuestRealTimeCheck(QUEST_CHECK_DURATION));
     }
 
-    private IEnumerator QuestUpdate(float checkDuration)
+    private bool PlayerQuestStateCheckFromTable()
     {
-        WaitForSeconds wt = new WaitForSeconds(checkDuration);
+        if (quests.Count != 0 && PlayerQuestStateTableManager.playerQuestStateList.Count != 0)
+        {
+            for (int i = 0; i < quests.Count; i++)
+            {
+                if (!PlayerQuestStateTableManager.playerQuestStateList.Find(state => state.quest_id == quests[i]).isClear &&
+                    QuestInfoTableManager.GetRequiredLevelFromQuestID(quests[i]) <= GameManager.instance.controller.player.level)
+                    return true;
+            }
+        }
+        
+        return false;
+    }
 
-        yield return null;
+    private IEnumerator QuestRealTimeCheck(float checkingTime)
+    {
+        WaitForSeconds wt = new WaitForSeconds(checkingTime);
 
         while (true)
         {
-            // If Quest is exists at least one
+            yield return wt;
+
             if (quests.Count != 0)
             {
-                for (int i = 0; i < quests.Count; i++)
+                foreach (ushort quest in quests)
                 {
-                    if (!PlayerQuestStateTableManager.playerQuestStateList.Find(quest => quest.id == quests[i].id).isClear &&
-                        QuestInfoTableManager.GetRequiredLevelFromQuestID(quests[i].id) <= GameManager.instance.controller.player.level)
-                        isQuestExists = true;
-                    else
+                    if (QuestManager.instance.playerQuests.TryGetValue(QuestInfoTableManager.GetQuestInfoFromQuestID(quest), out _))
                         isQuestExists = false;
+                    else
+                        isQuestExists = true;
                 }
             }
-
-            yield return wt;
+            else
+                isQuestExists = false;
         }
     }
 }
