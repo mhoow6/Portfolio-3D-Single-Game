@@ -24,6 +24,8 @@ public class InputManager : MonoBehaviour
     {
         StartCoroutine(ShortcutMenu()); // Moblie & PC
         StartCoroutine(InventoryButton()); // Moblie & PC
+        StartCoroutine(SystemButton()); // Moblie & PC
+        StartCoroutine(QuestButton()); // Moblie & PC
 
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -91,7 +93,6 @@ public class InputManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.I))
             {
                 bool toggle = HUDManager.instance.inventory.isInventoryOn = HUDManager.instance.inventory.isInventoryOn == false ? true : false;
-
                 InventorySwitch(toggle);
             }
 
@@ -99,12 +100,11 @@ public class InputManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Z) && !HUDManager.instance.inventory.isInventoryOn)
                 UseQuickItem();
 
-            // System Menu
+            // System Window
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                bool toggle = HUDManager.instance.system.isSystemMenuOn = HUDManager.instance.system.isSystemMenuOn == false ? true : false;
-
-                SystemMenuSwitch(toggle);
+                bool toggle = HUDManager.instance.system.isSystemWindowOn = HUDManager.instance.system.isSystemWindowOn == false ? true : false;
+                SystemWindowSwitch(toggle);
             }
 
             // Dialog NPC
@@ -114,6 +114,12 @@ public class InputManager : MonoBehaviour
                 DialogSwitch(HUDManager.instance.dialog.isDialogOn);
             }
 
+            // Quest Window
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                bool toggle = HUDManager.instance.system.isSystemWindowOn = HUDManager.instance.system.isSystemWindowOn == false ? true : false;
+                QuestWindowSwitch(toggle);
+            }
 
         }
     }
@@ -130,31 +136,44 @@ public class InputManager : MonoBehaviour
                 HUDManager.instance.inventory.isInventoryOn = true;
                 InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
             }
-            if (HUDManager.instance.inventory.homeBtn.isClicked && HUDManager.instance.inventory.isInventoryOn)
+
+            // System Window
+            if (HUDManager.instance.menu.controlSlots[(int)MenuIndex.SYSTEM].isClicked && !HUDManager.instance.system.isSystemWindowOn)
             {
-                HUDManager.instance.inventory.isInventoryOn = false;
-                InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
+                HUDManager.instance.system.isSystemWindowOn = true;
+                SystemWindowSwitch(HUDManager.instance.system.isSystemWindowOn);
             }
 
             // Quick Item
             if (HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].isClicked && !bMultiClickPrevent)
             {
                 bMultiClickPrevent = true;
-
                 UseQuickItem();
             }
 
-            // System Menu
-            if (HUDManager.instance.menu.controlSlots[(int)MenuIndex.SYSTEM].isClicked && !HUDManager.instance.system.isSystemMenuOn)
+            // Quest Window
+            if (HUDManager.instance.menu.controlSlots[(int)MenuIndex.QUEST].isClicked && !HUDManager.instance.quest.isQuestWindowOn)
             {
-                HUDManager.instance.system.isSystemMenuOn = true;
-                SystemMenuSwitch(HUDManager.instance.system.isSystemMenuOn);
+                HUDManager.instance.quest.isQuestWindowOn = true;
+                QuestWindowSwitch(HUDManager.instance.quest.isQuestWindowOn);
             }
-            if (HUDManager.instance.system.homeBtn.isClicked && HUDManager.instance.system.isSystemMenuOn)
+        }
+    }
+
+    IEnumerator SystemButton()
+    {
+        while (true)
+        {
+            yield return null;
+
+            // Home Btn
+            if (HUDManager.instance.system.homeBtn.isClicked && HUDManager.instance.system.isSystemWindowOn)
             {
-                HUDManager.instance.system.isSystemMenuOn = false;
-                SystemMenuSwitch(HUDManager.instance.system.isSystemMenuOn);
+                HUDManager.instance.system.isSystemWindowOn = false;
+                SystemWindowSwitch(HUDManager.instance.system.isSystemWindowOn);
             }
+
+            // Pause, Save, Quit -> OnClick()
         }
     }
 
@@ -217,8 +236,27 @@ public class InputManager : MonoBehaviour
                     ItemEquip(HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected));
                     ItemUnEquip(HUDManager.instance.inventory.equipContent.items[(int)EquipmentIndex.QUICKITEM]);
                 }
-                    
+
+                // Home Button
+                if (HUDManager.instance.inventory.homeBtn.isClicked && HUDManager.instance.inventory.isInventoryOn)
+                {
+                    HUDManager.instance.inventory.isInventoryOn = false;
+                    InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
+                }
+
             }
+        }
+    }
+
+    IEnumerator QuestButton()
+    {
+        while (true)
+        {
+            yield return null;
+
+            // Home Btn
+            if (HUDManager.instance.quest.homebtn.isClicked && HUDManager.instance.quest.isQuestWindowOn)
+                QuestWindowSwitch(false);
         }
     }
 
@@ -228,9 +266,14 @@ public class InputManager : MonoBehaviour
         HUDManager.instance.inventory.gameObject.SetActive(trigger);
     }
 
-    private void SystemMenuSwitch(bool trigger)
+    private void SystemWindowSwitch(bool trigger)
     {
         HUDManager.instance.system.gameObject.SetActive(trigger);
+    }
+
+    private void QuestWindowSwitch(bool trigger)
+    {
+        HUDManager.instance.quest.gameObject.SetActive(trigger);
     }
 
     private void DialogSwitch(bool trigger)
