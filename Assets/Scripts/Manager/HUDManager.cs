@@ -11,9 +11,10 @@ public class HUDManager : MonoBehaviour
     public InventoryManager inventory;
     public MenuManager menu;
     public PlayerStateManager state;
-    public SystemManager system;
+    public SystemWindowManager system;
     public DialogManager dialog;
     public InGameIconManager inGame;
+    public QuestWindowManager quest;
 
     private void Awake()
     {
@@ -24,5 +25,6 @@ public class HUDManager : MonoBehaviour
     {
         inventory.itemContent.LoadPlayerItemInventory();
         inventory.equipContent.LoadPlayerEquipment();
+        quest.LoadPlayerQuest();
     }
 }
