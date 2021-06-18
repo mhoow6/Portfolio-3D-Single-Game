@@ -47,12 +47,23 @@ public static class DialogInfoTableManager
             throw new System.NotSupportedException(npcID + " 에 해당하는 대사가 없습니다.");
     }
 
-    public static string GetDialogInfoFromDialogID(ushort dialogID)
+    public static string GetDialogFromDialogID(ushort dialogID)
     {
         foreach (DialogInfo dialogInfo in dialogInfoList)
         {
             if (dialogID == dialogInfo.id)
                 return dialogInfo.dialog;
+        }
+        
+        throw new System.NotSupportedException(dialogID + " 에 해당하는 대사가 없습니다.");
+    }
+
+    public static DialogInfo GetDialogInfoFromDialogID(ushort dialogID)
+    {
+        foreach (DialogInfo dialogInfo in dialogInfoList)
+        {
+            if (dialogID == dialogInfo.id)
+                return dialogInfo;
         }
         
         throw new System.NotSupportedException(dialogID + " 에 해당하는 대사가 없습니다.");
