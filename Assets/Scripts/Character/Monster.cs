@@ -20,6 +20,7 @@ public class Monster : Character
     public int thinking_param;
     public float hp;
     public float run_speed;
+    public string monster_name;
 
     protected float detect_range;
     protected float skill_1_damage;
@@ -89,6 +90,12 @@ public class Monster : Character
 
     public virtual void Dead()
     {
+        foreach (KeyValuePair<QuestInfo, PlayerQuestStateInfo> quests in QuestManager.instance.playerQuests)
+        {
+            if (quests.Key.target_monster_id == this.id)
+                QuestManager.instance.playerQuests[quests.Key].target_monster_hunted++;
+        }
+
         agent.enabled = false;
         Invoke("Disabled", 5f);
     }
@@ -105,6 +112,7 @@ public class Monster : Character
             if (mobinfo.id == id)
             {
                 hp = mobinfo.hp;
+                monster_name = mobinfo.monster_name;
                 attack_damage = mobinfo.attack_damage;
                 attack_distance = mobinfo.attack_distance;
                 attack_angle = mobinfo.attack_angle;
