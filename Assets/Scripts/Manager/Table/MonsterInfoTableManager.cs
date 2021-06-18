@@ -6,6 +6,7 @@ using System.IO;
 public struct MonsterInfo
 {
     public ushort id;
+    public string prefab_name;
     public string monster_name;
     public byte monster_type;
     public float hp;
@@ -45,28 +46,29 @@ public static class MonsterInfoTableManager
             MonsterInfo mobInfo;
 
             mobInfo.id = ushort.Parse(datas[0]);
-            mobInfo.monster_name = datas[1];
-            mobInfo.monster_type = byte.Parse(datas[2]);
-            mobInfo.hp = float.Parse(datas[3]);
-            mobInfo.attack_damage = float.Parse(datas[4]);
-            mobInfo.attack_distance = float.Parse(datas[5]);
-            mobInfo.attack_angle = float.Parse(datas[6]);
-            mobInfo.skill_1_damage = float.Parse(datas[7]);
-            mobInfo.skill_1_distance = float.Parse(datas[8]);
-            mobInfo.skill_1_angle = float.Parse(datas[9]);
-            mobInfo.skill_2_damage = float.Parse(datas[10]);
-            mobInfo.skill_2_distance = float.Parse(datas[11]);
-            mobInfo.skill_2_angle = float.Parse(datas[12]);
-            mobInfo.skill_3_damage = float.Parse(datas[13]);
-            mobInfo.skill_3_distance = float.Parse(datas[14]);
-            mobInfo.skill_3_angle = float.Parse(datas[15]);
-            mobInfo.walk_speed = float.Parse(datas[16]);
-            mobInfo.run_speed = float.Parse(datas[17]);
-            mobInfo.detect_range = float.Parse(datas[18]);
-            mobInfo.agent_priority = int.Parse(datas[19]);
-            mobInfo.agent_radius = float.Parse(datas[20]);
-            mobInfo.endurance = byte.Parse(datas[21]);
-            mobInfo.stun_escape = float.Parse(datas[22]);
+            mobInfo.prefab_name = datas[1];
+            mobInfo.monster_name = datas[2];
+            mobInfo.monster_type = byte.Parse(datas[3]);
+            mobInfo.hp = float.Parse(datas[4]);
+            mobInfo.attack_damage = float.Parse(datas[5]);
+            mobInfo.attack_distance = float.Parse(datas[6]);
+            mobInfo.attack_angle = float.Parse(datas[7]);
+            mobInfo.skill_1_damage = float.Parse(datas[8]);
+            mobInfo.skill_1_distance = float.Parse(datas[9]);
+            mobInfo.skill_1_angle = float.Parse(datas[10]);
+            mobInfo.skill_2_damage = float.Parse(datas[11]);
+            mobInfo.skill_2_distance = float.Parse(datas[12]);
+            mobInfo.skill_2_angle = float.Parse(datas[13]);
+            mobInfo.skill_3_damage = float.Parse(datas[14]);
+            mobInfo.skill_3_distance = float.Parse(datas[15]);
+            mobInfo.skill_3_angle = float.Parse(datas[16]);
+            mobInfo.walk_speed = float.Parse(datas[17]);
+            mobInfo.run_speed = float.Parse(datas[18]);
+            mobInfo.detect_range = float.Parse(datas[19]);
+            mobInfo.agent_priority = int.Parse(datas[20]);
+            mobInfo.agent_radius = float.Parse(datas[21]);
+            mobInfo.endurance = byte.Parse(datas[22]);
+            mobInfo.stun_escape = float.Parse(datas[23]);
 
             mobInfoList.Add(mobInfo);
         }
@@ -79,6 +81,17 @@ public static class MonsterInfoTableManager
         {
             if (mobID == mobinfo.id)
                 return mobinfo.monster_name;
+        }
+
+        throw new System.NotSupportedException(mobID + " 에 해당하는 몬스터는 없습니다.");
+    }
+
+    public static string GetMonsterPrefabNameFromID(ushort mobID)
+    {
+        foreach (MonsterInfo mobinfo in mobInfoList)
+        {
+            if (mobID == mobinfo.id)
+                return mobinfo.prefab_name;
         }
 
         throw new System.NotSupportedException(mobID + " 에 해당하는 몬스터는 없습니다.");
