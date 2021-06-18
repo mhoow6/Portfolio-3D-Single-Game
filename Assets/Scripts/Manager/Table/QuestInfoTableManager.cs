@@ -16,6 +16,7 @@ public struct QuestInfo
     public ushort target_monster_id;
     public int target_monster_count;
     public ushort award_item_id;
+    public byte awarad_item_type;
     public int award_item_count;
     public byte required_level;
 }
@@ -47,8 +48,9 @@ public static class QuestInfoTableManager
             questInfo.target_monster_id = ushort.Parse(datas[9]);
             questInfo.target_monster_count = int.Parse(datas[10]);
             questInfo.award_item_id = ushort.Parse(datas[11]);
-            questInfo.award_item_count = int.Parse(datas[12]);
-            questInfo.required_level = byte.Parse(datas[13]);
+            questInfo.awarad_item_type = byte.Parse(datas[12]);
+            questInfo.award_item_count = int.Parse(datas[13]);
+            questInfo.required_level = byte.Parse(datas[14]);
 
             questInfoList.Add(questInfo);
         }
@@ -60,6 +62,39 @@ public static class QuestInfoTableManager
         {
             if (questInfo.id == questID)
                 return questInfo.required_level;
+        }
+
+        throw new System.NotSupportedException(questID + " 에 해당하는 퀘스트가 없습니다.");
+    }
+
+    public static string GetQuestNameFromQuestID(ushort questID)
+    {
+        foreach (QuestInfo questInfo in questInfoList)
+        {
+            if (questInfo.id == questID)
+                return questInfo.quest_name;
+        }
+
+        throw new System.NotSupportedException(questID + " 에 해당하는 퀘스트가 없습니다.");
+    }
+
+    public static ushort GetQuestIDFromQuestName(string questName)
+    {
+        foreach (QuestInfo questInfo in questInfoList)
+        {
+            if (questInfo.quest_name == questName)
+                return questInfo.id;
+        }
+
+        throw new System.NotSupportedException(questName + " 에 해당하는 퀘스트가 없습니다.");
+    }
+
+    public static QuestInfo GetQuestInfoFromQuestID(ushort questID)
+    {
+        foreach (QuestInfo questInfo in questInfoList)
+        {
+            if (questInfo.id == questID)
+                return questInfo;
         }
 
         throw new System.NotSupportedException(questID + " 에 해당하는 퀘스트가 없습니다.");
