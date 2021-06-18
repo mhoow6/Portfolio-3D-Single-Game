@@ -11,7 +11,7 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
     public bool isSelected;
     public byte item_type;
     public ushort item_id;
-    public ushort count;
+    public int count;
     public byte reinforce_level;
     public string item_name;
     // ItemInfo

@@ -16,7 +16,7 @@ public struct ItemInfo
     public byte item_type;
     public ushort id;
     public string icon_name;
-    public ushort count;
+    public int count;
     public byte reinforce_level;
 }
 
@@ -37,7 +37,7 @@ public static class PlayerInventoryTableManager
             playerInventory[i - 1].item_type = byte.Parse(datas[1]);
             playerInventory[i - 1].id = ushort.Parse(datas[2]);
             playerInventory[i - 1].icon_name = datas[3];
-            playerInventory[i - 1].count = ushort.Parse(datas[4]);
+            playerInventory[i - 1].count = int.Parse(datas[4]);
             playerInventory[i - 1].reinforce_level = byte.Parse(datas[5]);
         }
     }
@@ -53,7 +53,7 @@ public static class PlayerInventoryTableManager
             playerInventory[i - 1].item_type = byte.Parse(datas[1]);
             playerInventory[i - 1].id = ushort.Parse(datas[2]);
             playerInventory[i - 1].icon_name = datas[3];
-            playerInventory[i - 1].count = ushort.Parse(datas[4]);
+            playerInventory[i - 1].count = int.Parse(datas[4]);
             playerInventory[i - 1].reinforce_level = byte.Parse(datas[5]);
         }
     }

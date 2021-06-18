@@ -10,7 +10,7 @@ public class EquipSlot : ControlSlot, IPointerDownHandler
     // ItemInfo
     public byte item_type;
     public ushort item_id;
-    public ushort count;
+    public int count;
     public byte reinforce_level;
     public string item_name;
     // ItemInfo
