@@ -9,12 +9,12 @@ public enum SoundType
     BGM
 }
 
-public class SystemManager : MonoBehaviour
+public class SystemWindowManager : MonoBehaviour
 {
     public SoundContent[] sounds = new SoundContent[2];
     public ControlSlot homeBtn;
 
-    public bool isSystemMenuOn;
+    public bool isSystemWindowOn;
 
     public void ExitGame() { }
     public void SaveGame() { InventorySave(); EquipmentSave(); PlayerInfoSave(); SceneInfoManager.instance.isTempDataExists = true; }
