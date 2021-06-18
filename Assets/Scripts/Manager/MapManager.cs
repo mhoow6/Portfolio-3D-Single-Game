@@ -169,7 +169,6 @@ public class MapManager : MonoBehaviour
             GameObject _npc = Resources.Load<GameObject>("Character/NPC/" + npcPrefab);
             GameObject npc = GameObject.Instantiate(_npc);
             NPC npcScript = npc.AddComponent<NPC>();
-            // npcScript.questIcon = new GameObject("Quest Icon");
             
             // Set Info From Table
             npcScript.gameObject.name = npcPrefab;
@@ -186,11 +185,6 @@ public class MapManager : MonoBehaviour
             GameManager.instance.npcs.Add(npcScript);
 
             npcScript.transform.SetParent(parent.transform); // NPC Node
-
-            npcScript.questIcon.transform.SetParent(npcScript.transform); // Head is in NPC Object
-
-            // Local Setup
-            // npcScript.questIcon.transform.localPosition = npcScript.headLocalPos;
         }
         Debug.Log("NPC Position Load Completed.");
     }
@@ -215,17 +209,17 @@ public class MapManager : MonoBehaviour
             float xScale = float.Parse(datas[8]);
             float yScale = float.Parse(datas[9]);
             float zScale = float.Parse(datas[10]);
-            string mobName = MonsterInfoTableManager.GetMonsterNameFromID(id);
+            string prefabName = MonsterInfoTableManager.GetMonsterPrefabNameFromID(id);
 
-            GameObject _obj = Resources.Load<GameObject>("Character/Monster/" + mobName);
+            GameObject _obj = Resources.Load<GameObject>("Character/Monster/" + prefabName);
             GameObject obj = Instantiate(_obj);
             Monster monster = Monster.AddMonsterComponent(obj, id);
 
             // Add Data from table
             monster.index = index;
             monster.id = id;
-            monster.name = mobName;
-            monster.transform.position = new Vector3(xPos, yPos, zPos); // 떠 있는 현상 방지
+            monster.name = prefabName;
+            monster.transform.position = new Vector3(xPos, yPos, zPos);
             monster.transform.rotation = Quaternion.Euler(new Vector3(xRot, yRot, zRot));
             monster.transform.localScale = new Vector3(xScale, yScale, zScale);
 
