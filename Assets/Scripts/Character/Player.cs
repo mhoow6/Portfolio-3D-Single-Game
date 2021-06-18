@@ -213,7 +213,7 @@ public class Player : Character
 
     public GameObject GetWeaponFromResource(ushort equipWeaponID)
     {
-        GameObject _weapon = Resources.Load<GameObject>("Weapon/" + WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equipWeaponID).weapon_name);
+        GameObject _weapon = Resources.Load<GameObject>("Weapon/" + WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equipWeaponID).prefab_name);
         GameObject weapon = Instantiate(_weapon);
 
         weapon.name = "Weapon";
