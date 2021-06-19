@@ -16,8 +16,8 @@ public class SystemWindowManager : MonoBehaviour
 
     public bool isSystemWindowOn;
 
-    public void ExitGame() { }
-    public void SaveGame() { InventorySave(); EquipmentSave(); PlayerInfoSave(); SceneInfoManager.instance.isTempDataExists = true; }
+    public void ExitGame() { Application.Quit(); }
+    public void SaveGame() { InventorySave(); EquipmentSave(); PlayerInfoSave(); PlayerQuestSave();  SceneInfoManager.instance.isTempDataExists = true; }
     public void ReturnGame() { }
 
     private void InventorySave()
@@ -87,6 +87,28 @@ public class SystemWindowManager : MonoBehaviour
         File.WriteAllBytes(TableManager.instance.playerTempPath, buffer);
 
         Debug.Log("플레이어 임시정보 저장 완료");
+    }
+
+    private void PlayerQuestSave()
+    {
+        string data = string.Empty;
+
+        data = "id,isClear,isPlayerAccept,target_monster_hunted";
+        data += "\n";
+
+        foreach (KeyValuePair<QuestInfo, PlayerQuestStateInfo> quests in QuestManager.instance.playerQuests)
+        {
+            data += quests.Key.id + ",";
+            data += quests.Value.isClear + ",";
+            data += quests.Value.isPlayerAccept + ",";
+            data += quests.Value.target_monster_hunted;
+            data += "\n";
+        }
+
+        byte[] buffer = Encoding.UTF8.GetBytes(data);
+        File.WriteAllBytes(TableManager.instance.playerTempQuestStatePath, buffer);
+
+        Debug.Log("플레이어 퀘스트 정보 저장 완료");
     }
 }
 
