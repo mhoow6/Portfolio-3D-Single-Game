@@ -37,7 +37,7 @@ public class NPC : Character
         // NPC's Quest Load
         foreach (QuestInfo questInfo in QuestInfoTableManager.questInfoList)
         {
-            if (questInfo.start_npc_id == id)
+            if (questInfo.start_npc_id == id && !QuestManager.instance.playerQuests.TryGetValue(questInfo, out _))
                 quests.Add(questInfo.id);
         }
 
@@ -60,17 +60,10 @@ public class NPC : Character
 
     private bool PlayerQuestStateCheckFromTable()
     {
-        if (quests.Count != 0 && PlayerQuestStateTableManager.playerQuestStateList.Count != 0)
-        {
-            for (int i = 0; i < quests.Count; i++)
-            {
-                if (!PlayerQuestStateTableManager.playerQuestStateList.Find(state => state.quest_id == quests[i]).isClear &&
-                    QuestInfoTableManager.GetRequiredLevelFromQuestID(quests[i]) <= GameManager.instance.controller.player.level)
-                    return true;
-            }
-        }
-        
-        return false;
+        if (quests.Count != 0)
+            return true;
+        else
+            return false;
     }
 
     private IEnumerator QuestRealTimeCheck(float checkingTime)
