@@ -13,6 +13,8 @@ public class TableManager : MonoBehaviour
     public string playerTempEquipmentPath;
     [HideInInspector]
     public string playerTempPath;
+    [HideInInspector]
+    public string playerTempQuestStatePath;
 
     private string weaponPath;
     private string playerPath;
@@ -48,6 +50,7 @@ public class TableManager : MonoBehaviour
         playerTempInventoryPath = Application.persistentDataPath + "/Tables/PlayerInventory" + FILE_EXTENSION;
         playerTempEquipmentPath = Application.persistentDataPath + "/Tables/PlayerEquipment" + FILE_EXTENSION;
         playerTempPath = Application.persistentDataPath + "/Tables/PlayerInfo" + FILE_EXTENSION;
+        playerTempQuestStatePath = Application.persistentDataPath + "/Tables/PlayerQuestState" + FILE_EXTENSION;
 
         if (!SceneInfoManager.instance.isTableManagerAwakeOnce)
         {
@@ -68,6 +71,7 @@ public class TableManager : MonoBehaviour
             PlayerInfoTableManager.LoadTempTable(playerTempPath);
             PlayerInventoryTableManager.LoadTempTable(playerTempInventoryPath);
             PlayerEquipmentTableManager.LoadTempTable(playerTempEquipmentPath);
+            PlayerQuestStateTableManager.LoadTempTable(playerTempQuestStatePath);
         }
 
         SceneInfoManager.instance.isTableManagerAwakeOnce = true;
@@ -105,10 +109,6 @@ public class TableManager : MonoBehaviour
         {
             using (StreamReader sr = new StreamReader(f, System.Text.Encoding.UTF8))
             {
-                // Empty Table
-                if (sr.ReadLine() == "")
-                    return null;
-
                 while ((line = sr.ReadLine()) != null)
                 {
                     lines.Add(line);
