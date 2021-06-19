@@ -7,22 +7,12 @@ public class CustomCamera : MonoBehaviour
     public Player player;
     public Vector3 offset
     {
-        get
-        {
-            return new Vector3(0, 1.683f, 0);
-        }
+        get => new Vector3(0, 1.683f, 0);
     }
 
-    // globalPosition x,y,z -> locaPosition z,y,x
     public Vector3 cameraDistance
     {
-        get
-        {
-            if (player.transform.forward.x >= 0)
-                return new Vector3(0, 0, -3.54f);
-            else
-                return new Vector3(0, 0, 3.54f);
-        }
+        get => new Vector3(0, 0, -3.54f);
     }
 
     private Vector2 moveDelta;
