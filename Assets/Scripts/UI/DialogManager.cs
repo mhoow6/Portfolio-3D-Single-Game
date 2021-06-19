@@ -19,6 +19,8 @@ public class DialogManager : MonoBehaviour
     private bool isQuestDialog;
     [SerializeField]
     private bool isAwardDialog;
+    [SerializeField]
+    private bool isAwardEndDialog;
 
     private void OnEnable()
     {
@@ -161,9 +163,10 @@ public class DialogManager : MonoBehaviour
             currentDialogID++;
             npcChat.text = DialogInfoTableManager.GetDialogFromDialogID(currentDialogID);
 
-            // 퀘스트를 최종적으로 받아들이기 전 대사가 나오면 스킵버튼이 꺼지고, 퀘스트 수락/거절버튼들이 나온다.
+            // 퀘스트를 최종적으로 받아들이기 전 대사가 나오면..
             if (currentDialogID == QuestManager.instance.currentQuestInfo.end_dialog_id)
             {
+                // 스킵버튼이 꺼지고, 퀘스트 수락/거절버튼들이 나온다.
                 skipBtn.gameObject.SetActive(false);
                 questBtnNode.gameObject.SetActive(true);
             }
@@ -177,8 +180,14 @@ public class DialogManager : MonoBehaviour
             currentDialogID++;
             npcChat.text = DialogInfoTableManager.GetDialogFromDialogID(currentDialogID);
 
-            // 퀘스트 완료 후 대사가 끝이나면 대화창을 종료한다.
+            // 퀘스트 완료 후 끝 대사까지 오면..
             if (currentDialogID == QuestManager.instance.currentQuestInfo.award_end_dialog_id)
+            {
+                isAwardEndDialog = true;
+                return;
+            }
+
+            if (isAwardEndDialog)
             {
                 // 보상
                 QuestManager.instance.GiveQuestAward(QuestManager.instance.currentQuestInfo);
@@ -186,15 +195,14 @@ public class DialogManager : MonoBehaviour
                 // 현재 퀘스트를 딕셔너리에서 삭제, 현재 퀘스트 초기화
                 QuestManager.instance.DeletePlayerQuest(QuestManager.instance.currentQuestInfo);
 
-                // 대화창 꺼짐
-                this.gameObject.SetActive(false);
+                isAwardDialog = false;
+                isAwardEndDialog = false;
                 return;
             }
         }
 
-        // 퀘스트가 없는 NPC와 퀘스트 완료를 기다리는 NPC의 대사는 하나밖에 없으므로 스킵 버튼을 누르면 대화창이 꺼지게 한다.
+        // 그 외의 상황은 대사가 한 개인 상황이므로 바로 종료
         this.gameObject.SetActive(false);
-        return;
     }
 
     public void OnQuestAccept()
