@@ -45,8 +45,11 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn)
+            if (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn && !HUDManager.instance.quest.isQuestWindowOn &&
+                !HUDManager.instance.system.isSystemWindowOn)
                 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            else
+                moveInput = Vector2.zero;
         }
     }
 
@@ -56,8 +59,11 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (joystick != null && (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn))
+            if (joystick != null && (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn && !HUDManager.instance.quest.isQuestWindowOn &&
+                !HUDManager.instance.system.isSystemWindowOn))
                 moveInput = joystick._inputDirection;
+            else
+                moveInput = Vector2.zero;
         }
     }
 
@@ -67,8 +73,11 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn)
+            if (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn && !HUDManager.instance.quest.isQuestWindowOn &&
+                !HUDManager.instance.system.isSystemWindowOn)
                 moveDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+            else
+                moveDelta = Vector2.zero;
         }
     }
 
@@ -78,7 +87,8 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (moblieCamera != null && !HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn)
+            if (moblieCamera != null && !HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn && !HUDManager.instance.quest.isQuestWindowOn &&
+                !HUDManager.instance.system.isSystemWindowOn)
                 moveDelta = moblieCamera._moveDelta;
         }
     }
@@ -115,7 +125,7 @@ public class InputManager : MonoBehaviour
             }
 
             // Quest Window
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.J))
             {
                 bool toggle = HUDManager.instance.system.isSystemWindowOn = HUDManager.instance.system.isSystemWindowOn == false ? true : false;
                 QuestWindowSwitch(toggle);
