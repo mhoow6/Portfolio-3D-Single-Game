@@ -19,7 +19,24 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
     public Image itemGradeFrame;
     public Sprite originGradeFrameSprite;
     public int originIndex;
+    public Rect _rc { get => rc; }
 
+
+    public Vector2 _screenPosition
+    { 
+        get
+        {
+            StartCoroutine(GetScreenPos());
+            return screenPosition;
+        }
+    }
+
+    public Vector2 screenPosition;
+
+    [SerializeField]
+    public RectTransform rectTransform;
+    [SerializeField]
+    private Rect rc;
     private const string SELECTED_FRAME = "equipment_grade_select";
 
     private void Awake()
@@ -27,6 +44,12 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
         originColor = itemIcon.color;
         originGradeFrameSprite = itemGradeFrame.sprite;
         pressedColor = new Color(originColor.r, originColor.g, originColor.b, ALPHA_80);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+            Debug.Log(this.gameObject.name + ": " + _screenPosition);
     }
 
     // Factory Method
@@ -126,5 +149,13 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
     private void OnDisable()
     {
         SelectedItemOFF(this);
+    }
+
+    private IEnumerator GetScreenPos()
+    {
+        yield return new WaitForEndOfFrame();
+        rectTransform.SetParent(HUDManager.instance.inventory.transform);
+        screenPosition = transform.position;
+        rectTransform.SetParent(HUDManager.instance.inventory.itemContent.transform);
     }
 }
