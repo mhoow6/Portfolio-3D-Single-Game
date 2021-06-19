@@ -55,8 +55,6 @@ public class ItemContent : MonoBehaviour
             if (newItem.item_type == (byte)ItemType.EQUIPMENT)
                 newItem.itemCount.enabled = false;
 
-            newItem.gameObject.SetActive(true); // Disabled state -> Enable State
-
             items.Add(newItem);
             newItem.transform.SetParent(this.transform);
         }
