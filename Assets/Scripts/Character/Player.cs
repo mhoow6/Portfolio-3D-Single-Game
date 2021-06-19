@@ -25,7 +25,9 @@ public class Player : Character
     public GameObject weapon;
     public NPC boundCollideNPC;
     public bool isBoundCollide;
+    public GameObject dialogIcon;
 
+    private bool isWeaponInRHand;
     private Transform sheath;
     private Transform righthand;
     private Vector3 weaponSheathLocalPos = new Vector3(-17.6000004f, 24.7000008f, 18);
@@ -35,8 +37,8 @@ public class Player : Character
     private const float SpRecoveryDuration = 0.5f;
     private const float REQUIRED_MOB_ENDURANCE_BREAK = 0.03F;
     private const float BOUND_COLLIDED_DETECT_DURATION = 0.25F;
-    private bool isWeaponInRHand;
-
+    private Vector3 dialogIconLocalPos = new Vector3(0.336f, 1.766f, 0);
+    
     private void Awake()
     {
         current_combat_skill_01_cooldown = 0;
@@ -46,6 +48,10 @@ public class Player : Character
         isPlayerUseCombatSkill01 = false;
         isPlayerUseCombatSkill02 = false;
         isWeaponInRHand = false;
+
+        dialogIcon = new GameObject("Dialog Icon");
+        dialogIcon.transform.SetParent(this.transform);
+        dialogIcon.transform.localPosition = dialogIconLocalPos;
     }
 
     void Start()
@@ -311,11 +317,13 @@ public class Player : Character
     {
         isBoundCollide = true;
         boundCollideNPC = (NPC)collided;
+        HUDManager.instance.inGame.icons.dialogIcon.gameObject.SetActive(true);
     }
 
     protected override void OnBoundEscape()
     {
         isBoundCollide = false;
         boundCollideNPC = null;
+        HUDManager.instance.inGame.icons.dialogIcon.gameObject.SetActive(false);
     }
 }
