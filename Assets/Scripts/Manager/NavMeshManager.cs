@@ -7,8 +7,8 @@ using System.IO;
 public class NavMeshManager : MonoBehaviour
 {
     public static NavMeshManager instance;
-    static Dictionary<string, NavMeshData> navMeshDatas = new Dictionary<string, NavMeshData>();
-    static List<string> navMeshNames = new List<string>();
+    private static Dictionary<string, NavMeshData> navMeshDatas = new Dictionary<string, NavMeshData>();
+    private static List<string> navMeshNames = new List<string>();
 
     NavMeshData navMesh;
 
@@ -16,16 +16,18 @@ public class NavMeshManager : MonoBehaviour
     {
         instance = this;
 
-        navMeshNames.Add("VillageNavMesh");
-        navMeshNames.Add("ForestNavMesh");
-        
-        // Store NavMeshDatas
-        foreach (string name in navMeshNames)
+        if (!SceneInfoManager.instance.isTableManagerAwakeOnce)
         {
-            navMesh = Resources.Load<NavMeshData>("NavMeshData/" + name);
-            navMeshDatas.Add(name, navMesh);
-        }
+            navMeshNames.Add("VillageNavMesh");
+            navMeshNames.Add("ForestNavMesh");
 
+            // Store NavMeshDatas
+            foreach (string name in navMeshNames)
+            {
+                navMesh = Resources.Load<NavMeshData>("NavMeshData/" + name);
+                navMeshDatas.Add(name, navMesh);
+            }
+        }
     }
 
     public void CreateNavMesh(SceneType currentScene)
