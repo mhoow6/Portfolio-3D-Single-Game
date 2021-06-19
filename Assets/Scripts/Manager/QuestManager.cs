@@ -30,6 +30,9 @@ public class QuestManager : MonoBehaviour
     {
         // Quest Data Check in Unity Editor
         StartCoroutine(CurrentQuestCheck());
+
+        // Quest Update From Table
+        QuestListUpdateFromTable();
     }
 
     public void AddCurrentQuest(QuestInfo questInfo)
@@ -127,6 +130,7 @@ public class QuestManager : MonoBehaviour
         {
             yield return wt;
 
+            // 인스펙터 확인용
             currentQuestID = currentQuestInfo.id;
 
             if (currentQuestInfo.id != 0)
@@ -139,11 +143,16 @@ public class QuestManager : MonoBehaviour
                 currentQuestIsClear = false;
                 currentQuestIsAccept = false;
             }
+            // 인스펙터 확인용
 
             if (playerQuests.Count != 0)
             {
                 foreach (KeyValuePair<QuestInfo, PlayerQuestStateInfo> quests in playerQuests)
                 {
+                    // [인스펙터 확인용] QuestManager의 quest를 playerQuestID에 갱신하기 위한 것.
+                    if (!playerQuestsID.Contains(quests.Key.id))
+                        playerQuestsID.Add(quests.Key.id);
+
                     // 현재까지 잡은 몬스터의 마릿수가 목표 마릿수랑 같으면 퀘스트가 클리어 된 것이므로 isClear -> True
                     if (quests.Key.target_monster_count == quests.Value.target_monster_hunted)
                         playerQuests[quests.Key].isClear = true;
@@ -154,5 +163,15 @@ public class QuestManager : MonoBehaviour
             }
             
         }
+    }
+
+    private void QuestListUpdateFromTable()
+    {
+        if (PlayerQuestStateTableManager.playerQuestStateList.Count != 0)
+        {
+            foreach (PlayerQuestStateInfo state in PlayerQuestStateTableManager.playerQuestStateList)
+                playerQuests.Add(QuestInfoTableManager.GetQuestInfoFromQuestID(state.quest_id), state);
+        }
+
     }
 }
