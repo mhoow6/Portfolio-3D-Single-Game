@@ -14,7 +14,7 @@ public class PoolManager : MonoBehaviour
 
     public Image CreateQuestIconImage()
     {
-        Image questIcon = HUDManager.instance.inGame.quests.Find(icon => (icon.gameObject.activeSelf == false) && (icon.gameObject.name == "Quest"));
+        Image questIcon = HUDManager.instance.inGame.icons.questIcons.Find(icon => (icon.gameObject.activeSelf == false) && (icon.gameObject.name == "Quest"));
 
         if (questIcon != null)
         {
@@ -28,9 +28,9 @@ public class PoolManager : MonoBehaviour
 
         newQuestIcon.sprite = Resources.Load<Sprite>("Sprite/common_item_scroll_2");
 
-        newQuestIcon.transform.SetParent(HUDManager.instance.inGame.questNode.transform);
+        newQuestIcon.transform.SetParent(HUDManager.instance.inGame.icons.transform);
 
-        newQuestIcon.rectTransform.sizeDelta = HUDManager.instance.inGame._questIconSize;
+        newQuestIcon.rectTransform.sizeDelta = HUDManager.instance.inGame.icons._questIconSize;
 
         return newQuestIcon;
     }
