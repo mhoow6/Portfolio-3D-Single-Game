@@ -13,7 +13,7 @@ public class HUDManager : MonoBehaviour
     public PlayerStateManager state;
     public SystemWindowManager system;
     public DialogManager dialog;
-    public InGameIconManager inGame;
+    public InGameInterfaceManager inGame;
     public QuestWindowManager quest;
 
     private void Awake()
