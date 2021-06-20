@@ -13,4 +13,16 @@ public class InventoryManager : MonoBehaviour
     public ControlSlot equipBtn;
     public InventoryCamera inventoryCamera;
     public bool isInventoryOn;
+
+    private void OnEnable()
+    {
+        isInventoryOn = true;
+        HUDManager.instance.system.TimeStop();
+    }
+
+    private void OnDisable()
+    {
+        isInventoryOn = false;
+        HUDManager.instance.system.TimeResume();
+    }
 }

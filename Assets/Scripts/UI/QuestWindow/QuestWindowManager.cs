@@ -27,11 +27,13 @@ public class QuestWindowManager : MonoBehaviour
     {
         isQuestWindowOn = true;
         QuestListUpdate();
+        HUDManager.instance.system.TimeStop();
     }
 
     private void OnDisable()
     {
         isQuestWindowOn = false;
+        HUDManager.instance.system.TimeResume();
     }
 
     public void LoadPlayerQuest()
