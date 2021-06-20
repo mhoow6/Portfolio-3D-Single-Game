@@ -16,47 +16,48 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
     public string item_name;
     // ItemInfo
 
+    public RectTransform rt;
     public Image itemGradeFrame;
     public Sprite originGradeFrameSprite;
     public int originIndex;
-    public Rect _rc { get => rc; }
 
-
-    public Vector2 _screenPosition
-    { 
+    private const string SELECTED_FRAME = "equipment_grade_select";
+    private Rect rc;
+    public Rect _rc
+    {
         get
         {
-            StartCoroutine(GetScreenPos());
-            return screenPosition;
+            rc.x = rt.position.x - rt.rect.width * 0.5f;
+            rc.y = rt.position.y + rt.rect.height * 0.5f;
+            return rc;
         }
     }
-
-    public Vector2 screenPosition;
-
-    [SerializeField]
-    public RectTransform rectTransform;
-    [SerializeField]
-    private Rect rc;
-    private const string SELECTED_FRAME = "equipment_grade_select";
+    private Color dragColor;
 
     private void Awake()
     {
         originColor = itemIcon.color;
         originGradeFrameSprite = itemGradeFrame.sprite;
-        pressedColor = new Color(originColor.r, originColor.g, originColor.b, ALPHA_80);
+        pressedColor = itemIcon.color;
+        dragColor = new Color(itemIcon.color.r, itemIcon.color.g, itemIcon.color.b, ALPHA_80);
     }
 
-    private void Update()
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-            Debug.Log(this.gameObject.name + ": " + _screenPosition);
+        // Slot's Rect
+        rc.x = rt.position.x - rt.rect.width * 0.5f;
+        rc.y = rt.position.y + rt.rect.height * 0.5f;
+
+        rc.xMax = rt.rect.xMax;
+        rc.yMax = rt.rect.yMax;
+
+        rc.width = rt.rect.width;
+        rc.height = rt.rect.height;
     }
 
     // Factory Method
     public override void PointerDown(PointerEventData eventData)
     {
-        // itemIcon.rectTransform.position = eventData.position;
-
         // Turn off EquipSlot Selected
         EquipSlot equipSelectedItem = HUDManager.instance.inventory.equipContent.items.Find(item => item.isSelected);
         if (equipSelectedItem != null && equipSelectedItem != this)
@@ -64,7 +65,7 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
 
         // Prev selected item handle
         ItemSlot selectedItem = HUDManager.instance.inventory.itemContent.items.Find(item => item.isSelected);
-        if (selectedItem != null && selectedItem != this)
+        if (selectedItem != null)
             SelectedItemOFF(selectedItem);
 
         // Toggle Select
@@ -80,30 +81,27 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
     public override void PointerUp(PointerEventData eventData)
     {
         itemIcon.rectTransform.anchoredPosition = Vector2.zero;
+        ItemSlot targetItem = HUDManager.instance.inventory.itemContent.items.Find(item => item.IsInRect(eventData.position));
 
         // if item drag and drop Wrong Place OR if item drag and drop to itself
-        if (eventData.pointerCurrentRaycast.gameObject.name.Substring(0, 4) != "Item" || eventData.pointerCurrentRaycast.gameObject.name == this.gameObject.name)
+        if (targetItem == this || targetItem == null)
             this.transform.SetSiblingIndex(originIndex);
 
         // Slot Swap
-        if (eventData.pointerCurrentRaycast.gameObject.name.Substring(0, 4) == "Item" &&
-        eventData.pointerCurrentRaycast.gameObject.name != this.gameObject.name && this.item_type != (byte)ItemType.NONE)
+        if (targetItem != null && this.item_type != (byte)ItemType.NONE)
         {
-            GameObject targetObject = eventData.pointerCurrentRaycast.gameObject;
-            ItemSlot targetItemSlot = HUDManager.instance.inventory.itemContent.items.Find(item => item.gameObject == targetObject);
-
             // Slibing Index Change
-            int targetIndex = targetItemSlot.originIndex;
+            int targetIndex = targetItem.originIndex;
             this.transform.SetSiblingIndex(targetIndex); // If target Index is change first, it will be make wrong.
-            targetItemSlot.transform.SetSiblingIndex(this.originIndex);
+            targetItem.transform.SetSiblingIndex(this.originIndex);
 
             // Change Slot in Item Slots
-            ItemSlot tempItemSlot = targetItemSlot;
+            ItemSlot tempItemSlot = targetItem;
             HUDManager.instance.inventory.itemContent.items[targetIndex] = this;
             HUDManager.instance.inventory.itemContent.items[originIndex] = tempItemSlot;
 
             // Origin Index Change
-            targetItemSlot.originIndex = originIndex;
+            targetItem.originIndex = originIndex;
             this.originIndex = targetIndex;
 
             Debug.Log("Swap Completed.");
@@ -116,7 +114,7 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
     public void OnDrag(PointerEventData eventData)
     {
         itemIcon.rectTransform.position = eventData.position;
-        AlphaChange(pressedColor);
+        AlphaChange(dragColor);
 
         if (item_type != (byte)ItemType.NONE)
         {
@@ -151,11 +149,12 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
         SelectedItemOFF(this);
     }
 
-    private IEnumerator GetScreenPos()
+    public bool IsInRect(Vector2 eventPos)
     {
-        yield return new WaitForEndOfFrame();
-        rectTransform.SetParent(HUDManager.instance.inventory.transform);
-        screenPosition = transform.position;
-        rectTransform.SetParent(HUDManager.instance.inventory.itemContent.transform);
+        if (eventPos.x >= _rc.x && eventPos.x <= _rc.x + _rc.width &&
+            eventPos.y >= _rc.y - _rc.height && eventPos.y <= _rc.y)
+            return true;
+
+        return false;
     }
 }
