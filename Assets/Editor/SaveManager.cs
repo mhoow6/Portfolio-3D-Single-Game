@@ -47,6 +47,45 @@ public static class SaveManager
         Debug.Log("NPC Position Save Completed.");
     }
 
+    [MenuItem("Menu/Save/Generate Collider")]
+    public static void GenerateCollider()
+    {
+        string path = Application.dataPath + "/Resources/Result/";
+
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+            throw new DirectoryNotFoundException("디렉토리가 없어서 콜라이더 생성에 실패했습니다. 디렉토리를 만들었으니 다시 시도해주세요.");
+        }
+
+        ColliderGenerator _instanceRoot = GameObject.FindObjectOfType<ColliderGenerator>();
+        GameObject instanceRoot; // Temp
+        string instancePath;
+
+        if (_instanceRoot.childrenMeshes.Count == 0)
+            _instanceRoot.ColliderGenerate();
+
+        for (int i = 0; i < _instanceRoot.childrenMeshes.Count; i++)
+        {
+            instanceRoot = _instanceRoot.childrenMeshes[i].gameObject;
+            instancePath = path + instanceRoot.name + ".prefab";
+
+            PrefabUtility.SaveAsPrefabAsset(instanceRoot, instancePath, out bool success);
+            Debug.Log($"{instanceRoot.name} save {success == true}");
+        }
+
+        for (int i = 0; i < _instanceRoot.childrenSkinnedMeshes.Count; i++)
+        {
+            instanceRoot = _instanceRoot.childrenSkinnedMeshes[i].transform.parent.gameObject;
+            instancePath = path + instanceRoot.name + ".prefab";
+
+            PrefabUtility.SaveAsPrefabAsset(instanceRoot, instancePath, out bool success);
+            Debug.Log($"{instanceRoot.name} save {success == true}");
+        }
+
+        Debug.Log("박스 콜라이더 생성이 완료되었습니다. 콜라이더의 센터는 오브젝트마다 다르니 필요시 조정하세요.");
+    }
+
 
     // 태그 이름을 매개변수로 받아 합칠 수 있음
     private static void SaveMonsterPosition(string filePath)
