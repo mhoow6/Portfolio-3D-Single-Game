@@ -16,6 +16,17 @@ public class HUDManager : MonoBehaviour
     public InGameInterfaceManager inGame;
     public QuestWindowManager quest;
 
+    public bool isUserStopUIopen
+    {
+        get
+        {
+            if (inventory.isInventoryOn && dialog.isDialogOn && quest.isQuestWindowOn && system.isSystemWindowOn)
+                return true;
+            else
+                return false;
+        }
+    }
+
     private void Awake()
     {
         instance = this;

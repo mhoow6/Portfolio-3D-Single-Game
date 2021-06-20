@@ -45,8 +45,7 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn && !HUDManager.instance.quest.isQuestWindowOn &&
-                !HUDManager.instance.system.isSystemWindowOn)
+            if (!HUDManager.instance.isUserStopUIopen)
                 moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             else
                 moveInput = Vector2.zero;
@@ -59,8 +58,7 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (joystick != null && (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn && !HUDManager.instance.quest.isQuestWindowOn &&
-                !HUDManager.instance.system.isSystemWindowOn))
+            if (!HUDManager.instance.isUserStopUIopen)
                 moveInput = joystick._inputDirection;
             else
                 moveInput = Vector2.zero;
@@ -73,8 +71,7 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (!HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn && !HUDManager.instance.quest.isQuestWindowOn &&
-                !HUDManager.instance.system.isSystemWindowOn)
+            if (!HUDManager.instance.isUserStopUIopen)
                 moveDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
             else
                 moveDelta = Vector2.zero;
@@ -87,9 +84,10 @@ public class InputManager : MonoBehaviour
         {
             yield return null;
 
-            if (moblieCamera != null && !HUDManager.instance.inventory.isInventoryOn && !HUDManager.instance.dialog.isDialogOn && !HUDManager.instance.quest.isQuestWindowOn &&
-                !HUDManager.instance.system.isSystemWindowOn)
+            if (!HUDManager.instance.isUserStopUIopen)
                 moveDelta = moblieCamera._moveDelta;
+            else
+                moveDelta = Vector2.zero;
         }
     }
 
@@ -120,8 +118,7 @@ public class InputManager : MonoBehaviour
             // Dialog NPC
             if (Input.GetKeyDown(KeyCode.F) && GameManager.instance.controller.player.boundCollideNPC != null)
             {
-                HUDManager.instance.dialog.isDialogOn = true;
-                DialogSwitch(HUDManager.instance.dialog.isDialogOn);
+                DialogSwitch(true);
             }
 
             // Quest Window
@@ -143,15 +140,13 @@ public class InputManager : MonoBehaviour
             // Inventory
             if (HUDManager.instance.menu.controlSlots[(int)MenuIndex.INVENTORY].isClicked && !HUDManager.instance.inventory.isInventoryOn)
             {
-                HUDManager.instance.inventory.isInventoryOn = true;
-                InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
+                InventorySwitch(true);
             }
 
             // System Window
             if (HUDManager.instance.menu.controlSlots[(int)MenuIndex.SYSTEM].isClicked && !HUDManager.instance.system.isSystemWindowOn)
             {
-                HUDManager.instance.system.isSystemWindowOn = true;
-                SystemWindowSwitch(HUDManager.instance.system.isSystemWindowOn);
+                SystemWindowSwitch(true);
             }
 
             // Quick Item
@@ -164,8 +159,7 @@ public class InputManager : MonoBehaviour
             // Quest Window
             if (HUDManager.instance.menu.controlSlots[(int)MenuIndex.QUEST].isClicked && !HUDManager.instance.quest.isQuestWindowOn)
             {
-                HUDManager.instance.quest.isQuestWindowOn = true;
-                QuestWindowSwitch(HUDManager.instance.quest.isQuestWindowOn);
+                QuestWindowSwitch(true);
             }
         }
     }
@@ -179,8 +173,7 @@ public class InputManager : MonoBehaviour
             // Home Btn
             if (HUDManager.instance.system.homeBtn.isClicked && HUDManager.instance.system.isSystemWindowOn)
             {
-                HUDManager.instance.system.isSystemWindowOn = false;
-                SystemWindowSwitch(HUDManager.instance.system.isSystemWindowOn);
+                SystemWindowSwitch(false);
             }
 
             // Pause, Save, Quit -> OnClick()
@@ -250,8 +243,7 @@ public class InputManager : MonoBehaviour
                 // Home Button
                 if (HUDManager.instance.inventory.homeBtn.isClicked && HUDManager.instance.inventory.isInventoryOn)
                 {
-                    HUDManager.instance.inventory.isInventoryOn = false;
-                    InventorySwitch(HUDManager.instance.inventory.isInventoryOn);
+                    InventorySwitch(false);
                 }
 
             }
