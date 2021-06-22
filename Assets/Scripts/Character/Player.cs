@@ -26,6 +26,7 @@ public class Player : Character
     public NPC boundCollideNPC;
     public bool isBoundCollide;
     public GameObject dialogIcon;
+    public float basic_damage;
 
     private bool isWeaponInRHand;
     private Transform sheath;
@@ -86,6 +87,7 @@ public class Player : Character
         basic_weapon_id = PlayerInfoTableManager.playerInfo.basic_weapon_id;
         attack_angle = PlayerInfoTableManager.playerInfo.attack_01_angle;
         attack_damage = IncreaseDamageByLevel(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_damage, level);
+        basic_damage = attack_damage;
         attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_distance;
 
         sheath = GetNodeObject("Spine_03");
@@ -180,6 +182,7 @@ public class Player : Character
             attack_damage = IncreaseDamageByLevel(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_damage, level);
             attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
             attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_01_angle;
+            basic_damage = attack_damage;
 
             weapon.transform.SetParent(righthand);
             weapon.transform.localPosition = weaponRHandLocalPos;
@@ -191,14 +194,13 @@ public class Player : Character
             attack_damage = IncreaseDamageByLevel(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_damage, level);
             attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(basic_weapon_id).basic_distance;
             attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_01_angle;
+            basic_damage = attack_damage;
 
             weapon.transform.SetParent(sheath);
             weapon.transform.localPosition = weaponSheathLocalPos;
             weapon.transform.localRotation = weaponSheathLocalRot;
-
             isWeaponInRHand = false;
         }
-
     }
 
     private Transform GetNodeObject(string nodeName)
@@ -223,10 +225,25 @@ public class Player : Character
         GameObject weapon = Instantiate(_weapon);
 
         weapon.name = "Weapon";
-        weapon.transform.SetParent(sheath);
-        weapon.transform.localPosition = weaponSheathLocalPos;
-        weapon.transform.localRotation = weaponSheathLocalRot;
 
+        if (isWeaponInRHand == false)
+        {
+            weapon.transform.SetParent(sheath);
+            weapon.transform.localPosition = weaponSheathLocalPos;
+            weapon.transform.localRotation = weaponSheathLocalRot;
+        }
+        else if (isWeaponInRHand == true)
+        {
+            attack_damage = IncreaseDamageByLevel(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equipWeaponID).basic_damage, level);
+            attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equipWeaponID).basic_distance;
+            attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_01_angle;
+            basic_damage = attack_damage;
+
+            weapon.transform.SetParent(righthand);
+            weapon.transform.localPosition = weaponRHandLocalPos;
+            weapon.transform.localRotation = weaponRHandLocalRot;
+        }
+        
         return weapon;
     }
 
