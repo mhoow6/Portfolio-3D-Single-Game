@@ -38,7 +38,7 @@ public class PlayerStateManager : MonoBehaviour
             invenPlayerHP.text = GameManager.instance.controller.player.currentHp.ToString();
             invenPlayerMP.text = GameManager.instance.controller.player.currentMp.ToString();
             invenPlayerSP.text = GameManager.instance.controller.player.currentSp.ToString();
-            invenPlayerDamage.text = GameManager.instance.controller.player.attack_damage.ToString();
+            invenPlayerDamage.text = GameManager.instance.controller.player.basic_damage.ToString();
             invenPlayerLevel.text = GameManager.instance.controller.player.level.ToString();
         }
     }
