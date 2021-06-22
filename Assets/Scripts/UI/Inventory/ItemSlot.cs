@@ -83,6 +83,10 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
         itemIcon.rectTransform.anchoredPosition = Vector2.zero;
         ItemSlot targetItem = HUDManager.instance.inventory.itemContent.items.Find(item => item.IsInRect(eventData.position));
 
+        // Turn off Move Icon
+        HUDManager.instance.inventory.moveItemIcon.gameObject.SetActive(false);
+        HUDManager.instance.inventory.moveItemIcon.sprite = null;
+
         // if item drag and drop Wrong Place OR if item drag and drop to itself
         if (targetItem == this || targetItem == null)
             this.transform.SetSiblingIndex(originIndex);
@@ -113,16 +117,14 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
 
     public void OnDrag(PointerEventData eventData)
     {
-        itemIcon.rectTransform.position = eventData.position;
         AlphaChange(dragColor);
 
+        // Put Sprite In Move Item Icon
         if (item_type != (byte)ItemType.NONE)
         {
-            // Grid Layout Rule OFF
-            HUDManager.instance.inventory.itemContent.layoutGroup.enabled = false;
-
-            // Make this First Layout
-            this.transform.SetAsLastSibling();
+            HUDManager.instance.inventory.moveItemIcon.gameObject.SetActive(true);
+            HUDManager.instance.inventory.moveItemIcon.sprite = Resources.Load<Sprite>("Sprite/" + this.item_name);
+            HUDManager.instance.inventory.moveItemIcon.rectTransform.position = eventData.position;
         }
     }
 
