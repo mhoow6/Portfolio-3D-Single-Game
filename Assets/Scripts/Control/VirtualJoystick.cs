@@ -26,8 +26,8 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         InputManager.instance.joystick = this;
 
-        if (Application.platform != RuntimePlatform.Android)
-            this.enabled = false;
+        /*if (Application.platform != RuntimePlatform.Android)
+            this.gameObject.SetActive(false);*/
     }
 
     public void OnBeginDrag(PointerEventData eventData)
