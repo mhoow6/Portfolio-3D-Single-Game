@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayeCombatSkill_01 : PlayerAnimation
+public class PlayerCombatSkill_01 : PlayerAnimation
 {
     protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
