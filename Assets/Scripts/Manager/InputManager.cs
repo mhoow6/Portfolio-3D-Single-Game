@@ -35,6 +35,7 @@ public class InputManager : MonoBehaviour
         }
 
         StartCoroutine(MoveInputPC());
+        //StartCoroutine(MoveInputMoblie());
         StartCoroutine(MoveDeltaPC());
         StartCoroutine(ShortcutPC());
     }
