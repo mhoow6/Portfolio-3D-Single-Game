@@ -20,7 +20,7 @@ public class HUDManager : MonoBehaviour
     {
         get
         {
-            if (inventory.isInventoryOn && dialog.isDialogOn && quest.isQuestWindowOn && system.isSystemWindowOn)
+            if (inventory.isInventoryOn || dialog.isDialogOn || quest.isQuestWindowOn || system.isSystemWindowOn)
                 return true;
             else
                 return false;
