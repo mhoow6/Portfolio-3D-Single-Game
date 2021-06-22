@@ -197,6 +197,7 @@ public class DialogManager : MonoBehaviour
 
                 isAwardDialog = false;
                 isAwardEndDialog = false;
+                this.gameObject.SetActive(false);
                 return;
             }
         }
