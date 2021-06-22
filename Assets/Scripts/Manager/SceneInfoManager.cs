@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine;
 
 public enum SceneType
 {
@@ -21,6 +22,12 @@ public class SceneInfoManager : SingleTon<SceneInfoManager>
     public float VILLAGE_TO_FOREST_MAX_X = 17f;
     public float VILLAGE_TO_FOREST_MIN_Z = -0.76f;
     public float VILLAGE_TO_FOREST_MAX_Z = 2.067f;
+    public Vector2 ROOM_MAP_RADIUS = new Vector2(60f, 60f);
+    public Vector2 ROOM_MINIMAP_CENTER = new Vector2(0, 0);
+    public Vector3 VILLAGE_MINIMAP_CENTER = new Vector3(3.8f, 0f, 0.65f);
+    public Vector2 VILLAGE_MAP_RADIUS = new Vector2(45f, 45f);
+    public Vector3 FOREST_MINIMAP_CENTER = new Vector3(-5f, 0f, 0f);
+    public Vector2 FOREST_MAP_RADIUS = new Vector2(170f, 50f);
     public bool isTableManagerAwakeOnce;
     public bool isTempDataExists;
 }
