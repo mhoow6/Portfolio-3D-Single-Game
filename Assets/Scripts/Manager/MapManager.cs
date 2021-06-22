@@ -61,7 +61,7 @@ public class MapManager : MonoBehaviour
             // Inventory Camera
             GameObject _inventoryCamera = new GameObject("Inventory Camera");
             Camera inventoryCamera = _inventoryCamera.AddComponent<Camera>();
-            inventoryCamera.targetTexture = Resources.Load<RenderTexture>("RendererTexture/Inventory");
+            inventoryCamera.targetTexture = Resources.Load<RenderTexture>("RenderTexture/Inventory");
             inventoryCamera.clearFlags = CameraClearFlags.SolidColor; // Transparent Background
             inventoryCamera.cullingMask = 1 << 3; // Only Rendering Layer [Ignore Minimap]
             InventoryCamera invenCameraScript =_inventoryCamera.gameObject.AddComponent<InventoryCamera>();
