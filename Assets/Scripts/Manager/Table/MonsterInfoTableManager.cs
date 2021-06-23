@@ -31,6 +31,13 @@ public struct MonsterInfo
     public float stun_escape;
 }
 
+public struct SpawnInfo
+{
+    public float hp;
+    public Vector3 spawnPos;
+    public Vector3 spawnRot;
+}
+
 public static class MonsterInfoTableManager
 {
     public static List<MonsterInfo> mobInfoList = new List<MonsterInfo>();
