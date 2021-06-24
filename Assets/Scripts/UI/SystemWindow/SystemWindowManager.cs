@@ -72,16 +72,20 @@ public class SystemWindowManager : MonoBehaviour
     {
         string data = string.Empty;
 
-        data = "level,hp,mp,sp,currentHp,currentMp,currentSp";
+        data = "level,currentHp,currentMp,currentSp,currentExp";
         data += "\n";
 
         data += GameManager.instance.controller.player.level + ",";
-        data += GameManager.instance.controller.player.hp + ",";
-        data += GameManager.instance.controller.player.mp + ",";
-        data += GameManager.instance.controller.player.sp + ",";
-        data += GameManager.instance.controller.player.currentHp + ",";
+
+        if (GameManager.instance.controller.player.currentHp != 0)
+            data += GameManager.instance.controller.player.currentHp + ",";
+
+        if (GameManager.instance.controller.player.currentHp == 0)
+            data += GameManager.instance.controller.player.hp + ",";
+
         data += GameManager.instance.controller.player.currentMp + ",";
         data += GameManager.instance.controller.player.currentSp + ",";
+        data += GameManager.instance.controller.player.currentExp;
 
         byte[] buffer = Encoding.UTF8.GetBytes(data);
         File.WriteAllBytes(TableManager.instance.playerTempPath, buffer);
