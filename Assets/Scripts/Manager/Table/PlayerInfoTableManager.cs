@@ -37,17 +37,16 @@ public struct PlayerInfo
     public ushort basic_weapon_id;
     public float sp_recovery_point;
     public float running_sp_reduction_rate;
+    public float exp;
 }
 
 public struct PlayerTempInfo
 {
     public byte level;
-    public float hp;
-    public float mp;
-    public float sp;
     public float currentHp;
     public float currentMp;
     public float currentSp;
+    public float currentExp;
 }
 
 public static class PlayerInfoTableManager
@@ -95,6 +94,7 @@ public static class PlayerInfoTableManager
             playerInfo.basic_weapon_id = ushort.Parse(datas[29]);
             playerInfo.sp_recovery_point = float.Parse(datas[30]);
             playerInfo.running_sp_reduction_rate = float.Parse(datas[31]);
+            playerInfo.exp = float.Parse(datas[32]);
         }
     }
 
@@ -107,12 +107,10 @@ public static class PlayerInfoTableManager
             string[] datas = lines[i].Split(',');
 
             playerTempInfo.level = byte.Parse(datas[0]);
-            playerTempInfo.hp = float.Parse(datas[1]);
-            playerTempInfo.mp = float.Parse(datas[2]);
-            playerTempInfo.sp = float.Parse(datas[3]);
-            playerTempInfo.currentHp = float.Parse(datas[4]);
-            playerTempInfo.currentMp = float.Parse(datas[5]);
-            playerTempInfo.currentSp = float.Parse(datas[6]);
+            playerTempInfo.currentHp = float.Parse(datas[1]);
+            playerTempInfo.currentMp = float.Parse(datas[2]);
+            playerTempInfo.currentSp = float.Parse(datas[3]);
+            playerTempInfo.currentExp = float.Parse(datas[4]);
         }
     }
 }
