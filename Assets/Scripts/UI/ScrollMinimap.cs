@@ -17,7 +17,6 @@ public class ScrollMinimap : MonoBehaviour
     Vector3 START_POS; // 실제 게임에서의 중앙
     Vector2 MAP_SIZE;
     Vector2 NORMAL_POS = new Vector2(0.5f, 0.5f); // 실제 게임에서의 중앙
-    // Forest -> self.content.anchoredPosition = new Vector2(-125f, 209.3f);
 
     private void Start()
     {
@@ -40,9 +39,6 @@ public class ScrollMinimap : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-            Debug.Log(self.normalizedPosition);
-
         if (InputManager.instance.moveInput.magnitude != 0)
             MinimapUpdate();
     }
