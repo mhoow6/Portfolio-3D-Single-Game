@@ -15,12 +15,13 @@ public class HUDManager : MonoBehaviour
     public DialogManager dialog;
     public InGameInterfaceManager inGame;
     public QuestWindowManager quest;
+    public DeadWindowManager dead;
 
     public bool isUserStopUIopen
     {
         get
         {
-            if (inventory.isInventoryOn || dialog.isDialogOn || quest.isQuestWindowOn || system.isSystemWindowOn)
+            if (inventory.isInventoryOn || dialog.isDialogOn || quest.isQuestWindowOn || system.isSystemWindowOn || dead.isDeadWindowOn)
                 return true;
             else
                 return false;
