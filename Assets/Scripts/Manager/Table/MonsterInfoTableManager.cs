@@ -29,6 +29,8 @@ public struct MonsterInfo
     public float agent_radius;
     public byte endurance;
     public float stun_escape;
+    public float respawn_time;
+    public float exp;
 }
 
 public struct SpawnInfo
@@ -76,10 +78,11 @@ public static class MonsterInfoTableManager
             mobInfo.agent_radius = float.Parse(datas[21]);
             mobInfo.endurance = byte.Parse(datas[22]);
             mobInfo.stun_escape = float.Parse(datas[23]);
+            mobInfo.respawn_time = float.Parse(datas[24]);
+            mobInfo.exp = float.Parse(datas[25]);
 
             mobInfoList.Add(mobInfo);
         }
-
     }
 
     public static string GetMonsterNameFromID(ushort mobID)
