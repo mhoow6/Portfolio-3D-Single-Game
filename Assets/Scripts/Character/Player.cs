@@ -12,6 +12,7 @@ public class Player : Character
     public float currentHp;
     public float currentMp;
     public float currentSp;
+    public float currentExp;
     public float run_speed;
     public ushort basic_weapon_id;
     public ushort equip_weapon_id;
@@ -60,23 +61,24 @@ public class Player : Character
         if (!SceneInfoManager.instance.isTempDataExists)
         {
             level = PlayerInfoTableManager.playerInfo.level;
-            hp = PlayerInfoTableManager.playerInfo.hp;
-            mp = PlayerInfoTableManager.playerInfo.mp;
-            sp = PlayerInfoTableManager.playerInfo.sp;
             currentHp = PlayerInfoTableManager.playerInfo.hp;
             currentMp = PlayerInfoTableManager.playerInfo.mp;
             currentSp = PlayerInfoTableManager.playerInfo.sp;
+            currentExp = PlayerInfoTableManager.playerInfo.exp;
         }
-        else
+
+        if (SceneInfoManager.instance.isTempDataExists)
         {
             level = PlayerInfoTableManager.playerTempInfo.level;
-            hp = PlayerInfoTableManager.playerTempInfo.hp;
-            mp = PlayerInfoTableManager.playerTempInfo.mp;
-            sp = PlayerInfoTableManager.playerTempInfo.sp;
             currentHp = PlayerInfoTableManager.playerTempInfo.currentHp;
             currentMp = PlayerInfoTableManager.playerTempInfo.currentMp;
             currentSp = PlayerInfoTableManager.playerTempInfo.currentSp;
+            currentExp = PlayerInfoTableManager.playerTempInfo.currentExp;
         }
+
+        hp = PlayerLevelInfoTableManager.GetPlayerLevelInfoFromLevel(level).hp;
+        mp = PlayerLevelInfoTableManager.GetPlayerLevelInfoFromLevel(level).mp;
+        sp = PlayerLevelInfoTableManager.GetPlayerLevelInfoFromLevel(level).sp;
 
         if (currentSp <= sp)
             isPlayerNeedSP = true;
@@ -245,6 +247,11 @@ public class Player : Character
         }
         
         return weapon;
+    }
+
+    public void Dead()
+    {
+        HUDManager.instance.dead.gameObject.SetActive(true);
     }
 
     private IEnumerator SpRecovery(float recoveryDuration)
