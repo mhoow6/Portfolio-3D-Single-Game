@@ -26,6 +26,8 @@ public class TableManager : MonoBehaviour
     private string dialogPath;
     private string questPath;
     private string playerQuestStatePath;
+    private string playerExpPath;
+    private string playerLevelPath;
     
 
     public const string FILE_EXTENSION = ".csv";
@@ -45,6 +47,8 @@ public class TableManager : MonoBehaviour
         dialogPath = "Tables/DialogInfo";
         questPath = "Tables/QuestInfo";
         playerQuestStatePath = "Tables/PlayerQuestState";
+        playerExpPath = "Tables/PlayerExp";
+        playerLevelPath = "Tables/PlayerLevel";
 
         // Temp Path
         playerTempInventoryPath = Application.persistentDataPath + "/Tables/PlayerInventory" + FILE_EXTENSION;
@@ -64,6 +68,8 @@ public class TableManager : MonoBehaviour
             DialogInfoTableManager.LoadTable(dialogPath);
             QuestInfoTableManager.LoadTable(questPath);
             PlayerQuestStateTableManager.LoadTable(playerQuestStatePath);
+            PlayerExpInfoTableManager.LoadTable(playerExpPath);
+            PlayerLevelInfoTableManager.LoadTable(playerLevelPath);
         }
 
         if (SceneInfoManager.instance.isTempDataExists)
