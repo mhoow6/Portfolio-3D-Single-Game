@@ -17,5 +17,6 @@ public class CommonMonsterInjured : CommonMonsterAnimation
     {
         self.thinking_param = (int)AniType.IDLE;
         self.isStuned = true;
+        self.Stun();
     }
 }

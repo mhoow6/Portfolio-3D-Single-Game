@@ -21,5 +21,6 @@ public class BossMonsterInjured : BossMonsterAnimation
     {
         self.thinking_param = (int)AniType.IDLE;
         self.isStuned = true;
+        self.Stun();
     }
 }
