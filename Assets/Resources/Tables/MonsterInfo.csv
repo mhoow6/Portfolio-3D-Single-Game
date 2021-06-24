@@ -1,8 +1,8 @@
-id,prefab_name,monster_name,monster_type,hp,attack_damage,attack_distance,attack_angle,skill_1_damage,skill_1_distance,skill_1_angle,skill_2_damage,skill_2_distance,skill_2_angle,skill_3_damage,skill_3_distance,skill_3_angle,walk_speed,run_speed,detect_range,agent_priority,agent_radius,endurance,stun_escape
-1000,Polygonal_Metalon_Purple,보라색 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3
-1001,Polygonal_Metalon_Green,초록색 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3
-1002,Polygonal_Metalon_Red,빨간색 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3
-1003,Character_BR_BigOrk_01,망치를 든 오크,2,250,10,4,60,40,6,80,0,0,0,0,0,0,2,3,20,48,0.5,40,5
-1004,Character_BR_BigOrk_02,도끼를 든 오크,2,250,10,4,60,40,6,80,0,0,0,0,0,0,2,3,20,48,0.5,40,5
-1005,Character_BR_PigButcher_01,돼지,1,80,5,2,60,0,0,0,0,0,0,0,0,0,3,5,20,49,0.5,20,2
-1006,Character_BR_FortGolem_01,골렘,3,500,10,4,60,15,6,60,20,8,60,25,10,80,2,3,20,47,0.5,80,6
+id,prefab_name,monster_name,monster_type,hp,attack_damage,attack_distance,attack_angle,skill_1_damage,skill_1_distance,skill_1_angle,skill_2_damage,skill_2_distance,skill_2_angle,skill_3_damage,skill_3_distance,skill_3_angle,walk_speed,run_speed,detect_range,agent_priority,agent_radius,endurance,stun_escape,respawn_time,exp
+1000,Polygonal_Metalon_Purple,보랏빛 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3,90,20
+1001,Polygonal_Metalon_Green,초록빛 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3,90,20
+1002,Polygonal_Metalon_Red,붉은빛 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3,90,20
+1003,Character_BR_BigOrk_01,몽둥이를 든 오크,2,250,10,4,60,40,6,80,0,0,0,0,0,0,2,3,20,48,0.5,40,5,180,40
+1004,Character_BR_BigOrk_02,도끼를 든 오크,2,250,10,4,60,40,6,80,0,0,0,0,0,0,2,3,20,48,0.5,40,5,180,40
+1005,Character_BR_PigButcher_01,돼지,1,80,5,2,60,0,0,0,0,0,0,0,0,0,3,5,20,49,0.5,20,2,90,20
+1006,Character_BR_FortGolem_01,골렘,3,500,10,4,60,15,6,60,20,8,60,25,10,80,2,3,20,47,0.5,80,6,99999999,400
