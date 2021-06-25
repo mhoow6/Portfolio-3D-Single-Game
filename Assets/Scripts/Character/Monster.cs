@@ -154,12 +154,22 @@ public class Monster : Character
                 QuestManager.instance.playerQuests[quests.Key].target_monster_hunted++;
         }
 
-        GameManager.instance.controller.player.currentExp += exp;
+        if (GameManager.instance.controller.player.level != PlayerExpInfoTableManager.playerExpInfo.Length)
+            GameManager.instance.controller.player.currentExp += exp;
 
+        if (GameManager.instance.controller.player.level == PlayerExpInfoTableManager.playerExpInfo.Length)
+            GameManager.instance.controller.player.currentExp = 0f;
+
+        // Level up
         if (GameManager.instance.controller.player.currentExp >= PlayerExpInfoTableManager.GetPlayerExpInfoFromLevel(GameManager.instance.controller.player.level).max_exp)
+        {
             GameManager.instance.controller.player.level++;
+            HUDManager.instance.levelup.gameObject.SetActive(true);
+        }
+            
 
         agent.enabled = false;
+        
 
         Invoke("DeadState", DISABLE_TIME);
     }
