@@ -16,7 +16,7 @@ public class PlayerStateManager : MonoBehaviour
     public TMP_Text invenPlayerSP;
     public TMP_Text invenPlayerDamage;
     public TMP_Text invenPlayerLevel;
-    public Slider invenPlayerExp; // ¹Ì±¸Çö
+    public Slider invenPlayerExp;
     public TMP_Text invenPlayerExpText;
 
     private void Update()
@@ -48,11 +48,16 @@ public class PlayerStateManager : MonoBehaviour
             invenPlayerLevel.text = GameManager.instance.controller.player.level.ToString();
 
             if (GameManager.instance.controller.player.level > 1)
-                invenPlayerExp.minValue = PlayerExpInfoTableManager.GetPlayerExpInfoFromLevel(--GameManager.instance.controller.player.level).max_exp;
+                invenPlayerExp.minValue = PlayerExpInfoTableManager.GetPlayerExpInfoFromLevel((byte)(GameManager.instance.controller.player.level - 1)).max_exp;
 
             invenPlayerExp.maxValue = PlayerExpInfoTableManager.GetPlayerExpInfoFromLevel(GameManager.instance.controller.player.level).max_exp;
             invenPlayerExp.value = GameManager.instance.controller.player.currentExp;
-            invenPlayerExpText.text = string.Format("{0:0.0}%", (invenPlayerExp.value / invenPlayerExp.maxValue) * 100);
+            invenPlayerExpText.text = string.Format("{0:0.0}%", Percentage(invenPlayerExp.minValue, invenPlayerExp.maxValue, invenPlayerExp.value));
         }
+    }
+
+    private float Percentage(float min, float max, float value)
+    {
+        return (value - min) / (max - min) * 100f;
     }
 }
