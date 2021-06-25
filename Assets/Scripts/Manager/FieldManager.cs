@@ -7,6 +7,8 @@ using UnityEngine.AI;
 
 public class FieldManager : MapManager
 {
+    public GameObject field;
+
     private string forestPath;
     private string forestMonsterPath;
     private string forestPlayerPath;
@@ -25,7 +27,7 @@ public class FieldManager : MapManager
     {
         NavMeshManager.instance.CreateNavMesh(SceneInfoManager.instance.currentScene);
 
-        CreateScene(forestPath);
+        CreateScene(forestPath, field);
         CreatePlayer(forestPlayerPath);
         CreateMonster(forestMonsterPath);
 

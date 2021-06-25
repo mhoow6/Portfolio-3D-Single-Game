@@ -90,10 +90,11 @@ public class MapManager : MonoBehaviour
         Debug.Log("Player Load Completed.");
     }
 
-    public void CreateScene(string filePath)
+    public void CreateScene(string filePath, GameObject node)
     {
         List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
-
+        List<GameObject> parents = new List<GameObject>();
+        
         GameObject parent = null;
         string path = string.Empty;
 
@@ -108,6 +109,7 @@ public class MapManager : MonoBehaviour
             {
                 path = objName;
                 parent = new GameObject(objName);
+                parents.Add(parent);
                 continue;
             }
 
@@ -138,6 +140,9 @@ public class MapManager : MonoBehaviour
             // 6. 더미 부모 게임오브젝트에 적용
             obj.transform.SetParent(parent.transform);
         }
+
+        for (int i = 0; i < parents.Count; i++)
+            parents[i].transform.SetParent(node.transform);
 
         Debug.Log("Scene Load Completed.");
     }

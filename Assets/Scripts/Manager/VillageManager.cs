@@ -7,6 +7,8 @@ using UnityEngine.AI;
 
 public class VillageManager : MapManager
 {
+    public GameObject village;
+
     private string villagePath;
     private string villageNPCPath;
     private string villagePlayerPath;
@@ -24,15 +26,19 @@ public class VillageManager : MapManager
     {
         NavMeshManager.instance.CreateNavMesh(SceneInfoManager.instance.currentScene);
 
-        CreateScene(villagePath);
+        CreateScene(villagePath, village);
         CreatePlayer(villagePlayerPath);
         CreateNPC(villageNPCPath);
+
+        HUDManager.instance.loading.gameObject.SetActive(false);
+        village.gameObject.SetActive(true);
 
         StartCoroutine(GoToTheNextScene(SceneType.Forest));
     }
 
     private IEnumerator GoToTheNextScene(SceneType loadScene)
     {
+        SceneInfoManager.instance.isSceneLoadCompleted = false;
         SceneInfoManager.instance.beforeScene = SceneInfoManager.instance.currentScene;
         WaitForSeconds wt = new WaitForSeconds(SceneInfoManager.instance.SCENE_ROAD_DURATION);
 
