@@ -16,6 +16,8 @@ public class HUDManager : MonoBehaviour
     public InGameInterfaceManager inGame;
     public QuestWindowManager quest;
     public DeadWindowManager dead;
+    public LevelUpManager levelup;
+    public LoadingManager loading;
 
     public bool isUserStopUIopen
     {
