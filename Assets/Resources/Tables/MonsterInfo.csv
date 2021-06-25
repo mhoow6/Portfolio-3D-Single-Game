@@ -1,6 +1,6 @@
 id,prefab_name,monster_name,monster_type,hp,attack_damage,attack_distance,attack_angle,skill_1_damage,skill_1_distance,skill_1_angle,skill_2_damage,skill_2_distance,skill_2_angle,skill_3_damage,skill_3_distance,skill_3_angle,walk_speed,run_speed,detect_range,agent_priority,agent_radius,endurance,stun_escape,respawn_time,exp
 1000,Polygonal_Metalon_Purple,보랏빛 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3,90,20
-1001,Polygonal_Metalon_Green,초록빛 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3,90,20
+1001,Polygonal_Metalon_Green,초록빛 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3,5,30
 1002,Polygonal_Metalon_Red,붉은빛 거미,1,150,5,4,60,0,0,0,0,0,0,0,0,0,2,4,20,49,1,20,3,90,20
 1003,Character_BR_BigOrk_01,몽둥이를 든 오크,2,250,10,4,60,40,6,80,0,0,0,0,0,0,2,3,20,48,0.5,40,5,180,40
 1004,Character_BR_BigOrk_02,도끼를 든 오크,2,250,10,4,60,40,6,80,0,0,0,0,0,0,2,3,20,48,0.5,40,5,180,40
