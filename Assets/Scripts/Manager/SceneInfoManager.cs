@@ -30,4 +30,5 @@ public class SceneInfoManager : SingleTon<SceneInfoManager>
     public Vector2 FOREST_MAP_RADIUS = new Vector2(170f, 50f);
     public bool isTableManagerAwakeOnce;
     public bool isTempDataExists;
+    public bool isSceneLoadCompleted;
 }
