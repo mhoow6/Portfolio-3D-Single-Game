@@ -18,12 +18,14 @@ public class HUDManager : MonoBehaviour
     public DeadWindowManager dead;
     public LevelUpManager levelup;
     public LoadingManager loading;
+    public AwardCheckManager awardCheck;
+    public CurrentPlace place;
 
     public bool isUserStopUIopen
     {
         get
         {
-            if (inventory.isInventoryOn || dialog.isDialogOn || quest.isQuestWindowOn || system.isSystemWindowOn || dead.isDeadWindowOn)
+            if (inventory.isInventoryOn || dialog.isDialogOn || quest.isQuestWindowOn || system.isSystemWindowOn || dead.isDeadWindowOn || loading.isLoadingOn || awardCheck.isAwardCheckOn)
                 return true;
             else
                 return false;
