@@ -33,7 +33,7 @@ public struct MonsterInfo
     public float exp;
 }
 
-public struct SpawnInfo
+public struct MonsterSpawnInfo
 {
     public float hp;
     public Vector3 spawnPos;
