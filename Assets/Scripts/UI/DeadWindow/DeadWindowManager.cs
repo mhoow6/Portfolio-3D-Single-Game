@@ -22,7 +22,7 @@ public class DeadWindowManager : MonoBehaviour
 
     public void GoVillage()
     {
-        SceneInfoManager.instance.beforeScene = SceneInfoManager.instance.currentScene;
+        SceneInfoManager.instance.spawnPos = SpawnPosID.VILLAGE_START;
         SceneManager.LoadScene((int)SceneType.Village);
         HUDManager.instance.system.SaveGame();
     }
