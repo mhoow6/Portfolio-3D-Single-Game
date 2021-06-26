@@ -120,6 +120,7 @@ public class QuestManager : MonoBehaviour
         int awardItemCount = questInfo.award_item_count;
 
         HUDManager.instance.inventory.itemContent.AddItem(awardItemID, awardItemType, awardItemCount);
+        HUDManager.instance.awardCheck.ShowItem(questInfo.quest_name, awardItemID, awardItemType, awardItemCount);
     }
 
     private IEnumerator CurrentQuestCheck()
