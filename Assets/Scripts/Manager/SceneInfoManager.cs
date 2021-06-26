@@ -31,4 +31,5 @@ public class SceneInfoManager : SingleTon<SceneInfoManager>
     public bool isTableManagerAwakeOnce;
     public bool isTempDataExists;
     public bool isSceneLoadCompleted;
+    public SpawnPosID spawnPos = SpawnPosID.VILLAGE_START;
 }
