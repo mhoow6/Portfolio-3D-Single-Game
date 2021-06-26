@@ -28,8 +28,9 @@ public class TableManager : MonoBehaviour
     private string playerQuestStatePath;
     private string playerExpPath;
     private string playerLevelPath;
+    private string sceneInfoPath;
+    private string playerSpawnInfoPath;
     
-
     public const string FILE_EXTENSION = ".csv";
 
     private void Awake()
@@ -49,6 +50,8 @@ public class TableManager : MonoBehaviour
         playerQuestStatePath = "Tables/PlayerQuestState";
         playerExpPath = "Tables/PlayerExp";
         playerLevelPath = "Tables/PlayerLevel";
+        sceneInfoPath = "Tables/SceneInfo";
+        playerSpawnInfoPath = "Tables/PlayerSpawnInfo";
 
         // Temp Path
         playerTempInventoryPath = Application.persistentDataPath + "/Tables/PlayerInventory" + FILE_EXTENSION;
@@ -70,6 +73,8 @@ public class TableManager : MonoBehaviour
             PlayerQuestStateTableManager.LoadTable(playerQuestStatePath);
             PlayerExpInfoTableManager.LoadTable(playerExpPath);
             PlayerLevelInfoTableManager.LoadTable(playerLevelPath);
+            SceneInfoTableManager.LoadTable(sceneInfoPath);
+            PlayerSpawnInfoTableManager.LoadTable(playerSpawnInfoPath);
         }
 
         if (SceneInfoManager.instance.isTempDataExists)
