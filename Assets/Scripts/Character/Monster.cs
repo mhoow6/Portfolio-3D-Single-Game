@@ -42,7 +42,7 @@ public class Monster : Character
     public bool isStuned;
     public bool isAlphaBlending;
     public byte endurance_stack;
-    public SpawnInfo spawnInfo;
+    public MonsterSpawnInfo spawnInfo;
 
     protected float currentStunTimer;
     protected float currentAttackDamage;
@@ -161,12 +161,8 @@ public class Monster : Character
             GameManager.instance.controller.player.currentExp = 0f;
 
         // Level up
-        if (GameManager.instance.controller.player.currentExp >= PlayerExpInfoTableManager.GetPlayerExpInfoFromLevel(GameManager.instance.controller.player.level).max_exp)
-        {
-            GameManager.instance.controller.player.level++;
-            HUDManager.instance.levelup.gameObject.SetActive(true);
-        }
-            
+        GameManager.instance.controller.player.LevelUpCheck();
+
 
         agent.enabled = false;
         

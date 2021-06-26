@@ -205,20 +205,9 @@ public class Player : Character
         }
     }
 
-    private Transform GetNodeObject(string nodeName)
+    public void Dead()
     {
-        Transform[] children = transform.GetComponentsInChildren<Transform>();
-        Transform hand;
-
-        foreach (Transform child in children)
-        {
-            if (child.name == nodeName)
-            {
-                hand = child;
-                return hand;
-            }
-        }
-        return null;
+        HUDManager.instance.dead.gameObject.SetActive(true);
     }
 
     public GameObject GetWeaponFromResource(ushort equipWeaponID)
@@ -245,14 +234,36 @@ public class Player : Character
             weapon.transform.localPosition = weaponRHandLocalPos;
             weapon.transform.localRotation = weaponRHandLocalRot;
         }
-        
+
         return weapon;
     }
 
-    public void Dead()
+    public void LevelUpCheck()
     {
-        HUDManager.instance.dead.gameObject.SetActive(true);
+        if (GameManager.instance.controller.player.currentExp >= PlayerExpInfoTableManager.GetPlayerExpInfoFromLevel(GameManager.instance.controller.player.level).max_exp)
+        {
+            GameManager.instance.controller.player.level++;
+            LevelUpCheck();
+            HUDManager.instance.levelup.gameObject.SetActive(true);
+        }
     }
+
+    private Transform GetNodeObject(string nodeName)
+    {
+        Transform[] children = transform.GetComponentsInChildren<Transform>();
+        Transform hand;
+
+        foreach (Transform child in children)
+        {
+            if (child.name == nodeName)
+            {
+                hand = child;
+                return hand;
+            }
+        }
+        return null;
+    }
+
 
     private IEnumerator SpRecovery(float recoveryDuration)
     {
