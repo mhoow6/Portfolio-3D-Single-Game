@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public PlayerController controller;
     public List<Monster> monsters = new List<Monster>();
     public List<NPC> npcs = new List<NPC>();
+    public Teleport teleport;
 
     private void Awake()
     {

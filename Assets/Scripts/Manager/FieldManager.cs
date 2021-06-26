@@ -11,14 +11,11 @@ public class FieldManager : MapManager
 
     private string forestPath;
     private string forestMonsterPath;
-    private string forestPlayerPath;
-    
 
     private void Awake()
     {
         forestPath = "Tables/Forest";
         forestMonsterPath = "Tables/ForestMonsterPosition";
-        forestPlayerPath = "Tables/ForestPlayerPosition";
 
         SceneInfoManager.instance.currentScene = SceneType.Forest;
     }
@@ -28,29 +25,13 @@ public class FieldManager : MapManager
         NavMeshManager.instance.CreateNavMesh(SceneInfoManager.instance.currentScene);
 
         CreateScene(forestPath, field);
-        CreatePlayer(forestPlayerPath);
+        CreatePlayer(SceneInfoManager.instance.spawnPos);
         CreateMonster(forestMonsterPath);
+        field.gameObject.SetActive(true);
 
-        StartCoroutine(GoToTheNextScene(SceneType.Village));
-    }
+        SceneInfoManager.instance.isSceneLoadCompleted = true;
 
-    private IEnumerator GoToTheNextScene(SceneType loadScene)
-    {
-        SceneInfoManager.instance.beforeScene = SceneInfoManager.instance.currentScene;
-        WaitForSeconds wt = new WaitForSeconds(SceneInfoManager.instance.SCENE_ROAD_DURATION);
-
-        while (true)
-        {
-            yield return wt;
-
-            if (GameManager.instance.controller.player.transform.position.x < SceneInfoManager.instance.FOREST_TO_VILLAGE_MIN_X &&
-                GameManager.instance.controller.player.transform.position.z > SceneInfoManager.instance.FOREST_TO_VILLAGE_MIN_Z &&
-                GameManager.instance.controller.player.transform.position.z < SceneInfoManager.instance.FOREST_TO_VILLAGE_MAX_Z)
-            {
-                SceneManager.LoadScene((int)loadScene);
-                HUDManager.instance.system.SaveGame();
-            }
-        }
+        StartCoroutine(GoToTheNextScene(SceneType.Village, SpawnPosID.FOREST_TO_VILLAGE));
     }
 
     private void OnDestroy()
