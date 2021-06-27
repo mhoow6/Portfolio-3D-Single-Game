@@ -15,7 +15,6 @@ public class Monster : Character
     // Load From Table
     public byte monster_type;
     public byte endurance;
-    public ushort id;
     public ushort index;
     public int thinking_param;
     public float hp;
@@ -33,36 +32,43 @@ public class Monster : Character
     protected float skill_3_damage;
     protected float skill_3_distance;
     protected float skill_3_angle;
-    protected float stun_escape;
+    public float stun_escape;
     protected float respawn_time;
+    public float attack_speed;
     //
 
     public NavMeshAgent agent;
-    public bool isMonsterAttackDone;
     public bool isStuned;
     public bool isAlphaBlending;
+    public bool isMonsterAttackDone;
     public byte endurance_stack;
     public MonsterSpawnInfo spawnInfo;
+    public Transform head;
 
+    [SerializeField]
     protected float currentStunTimer;
+    [SerializeField]
+    protected float currentAttackCooldown;
     protected float currentAttackDamage;
     protected float currentAttackDistance;
     protected float currentAttackAngle;
     protected SkinnedMeshRenderer smr;
+    protected IEnumerator thinking;
 
     protected const float THINKING_DURATION = 0.1f;
     protected const float MIN_SIGHT_ANGLE = 20f;
 
-    private const float STUN_DURATION = 1f;
     private const float ANGULAR_SPEED = 999f;
     private const float DISABLE_TIME = 5f;
     private const float COLOR_LERF_SPEED = 0.1f;
 
+    private Effect stunEffect;
+
+
     private void Start()
     {
         Setup();
-
-        StartCoroutine(Thinking(THINKING_DURATION));
+        StartCoroutine(thinking);
     }
 
     private void Update()
@@ -73,6 +79,8 @@ public class Monster : Character
     protected void Setup()
     {
         smr = GetComponentInChildren<SkinnedMeshRenderer>();
+        thinking = Thinking(THINKING_DURATION);
+        GetNodeObject(this.transform, "Head", ref head);
 
         SpawnInfoSetup();
         InitallizeMobInfoFromTable();
@@ -118,6 +126,7 @@ public class Monster : Character
                 stun_escape = mobinfo.stun_escape;
                 respawn_time = mobinfo.respawn_time;
                 exp = mobinfo.exp;
+                attack_speed = mobinfo.attack_speed;
                 return;
             }
         }
@@ -170,23 +179,45 @@ public class Monster : Character
         Invoke("DeadState", DISABLE_TIME);
     }
 
-    public void Stun()
+    public IEnumerator StunCooldown(float duration)
     {
-        StartCoroutine(StunCooldown(STUN_DURATION));
-    }
+        stunEffect = EffectManager.instance.CreateStarStunEffect(id, head);
+        stunEffect.ps.Play();
 
-    protected IEnumerator StunCooldown(float stunDuration)
-    {
-        WaitForSeconds wt = new WaitForSeconds(stunDuration);
+        StopCoroutine(thinking);
 
-        while (currentStunTimer != stun_escape)
+        WaitForSeconds wt = new WaitForSeconds(1f);
+        
+        while (currentStunTimer != duration)
         {
-            yield return wt;
             currentStunTimer++;
+            yield return wt;
         }
 
+        StartCoroutine(thinking);
+
         isStuned = false;
+        stunEffect.ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        stunEffect = null;
         currentStunTimer = 0;
+    }
+
+    public IEnumerator AttackCooldown(float duration)
+    {
+        StopCoroutine(thinking);
+
+        WaitForSeconds wt = new WaitForSeconds(1f);
+
+        while (currentAttackCooldown != duration)
+        {
+            currentAttackCooldown++;
+            yield return wt;
+        }
+
+        if (!isStuned)
+            StartCoroutine(thinking);
+
+        currentAttackCooldown = 0;
     }
 
     protected virtual IEnumerator Thinking(float thinkingDuration)
@@ -200,11 +231,10 @@ public class Monster : Character
             switch (thinking_param)
             {
                 case (int)MonsterAnimation.AniType.IDLE:
-                    if (currentDistanceWithPlayer <= detect_range && GameManager.instance.controller.player.currentHp > 0 && !isStuned)
+                    if (currentDistanceWithPlayer <= detect_range && GameManager.instance.controller.player.currentHp > 0)
                         thinking_param = Random.Range((int)MonsterAnimation.AniType.WALK, (int)MonsterAnimation.AniType.RUN + 1);
 
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0 &&
-                        !isStuned)
+                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
                         thinking_param = (int)MonsterAnimation.AniType.ATTACK;
                     break;
 
@@ -217,12 +247,6 @@ public class Monster : Character
                     if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
                         thinking_param = (int)MonsterAnimation.AniType.ATTACK;
                     break;
-
-                case (int)MonsterAnimation.AniType.ATTACK:
-                    if (isMonsterAttackDone)
-                        thinking_param = (int)MonsterAnimation.AniType.IDLE;
-                    break;
-
             }
         }
     }
@@ -279,6 +303,28 @@ public class Monster : Character
         yield return StartCoroutine(Utility.AlphaBlending(smr.material, 1, COLOR_LERF_SPEED));
         yield return StartCoroutine(Thinking(THINKING_DURATION));
     }
+
+    private void GetNodeObject(Transform parent, string nodeName, ref Transform node)
+    {
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            // 이미 nodeName에 맞는 것을 찾아서 null이 아닐 경우 의미없는 호출을 방지하기 위해 함수 종료
+            if (node != null)
+                return;
+
+            Transform child = parent.GetChild(i);
+
+            if (child.name != nodeName)
+            {
+                // 자식이 또다른 자식을 가질 경우 자식의 자식들을 탐색
+                if (child.childCount != 0)
+                    GetNodeObject(child, nodeName, ref node);
+            }
+
+            if (child.name == nodeName)
+                node = child;
+        }
+    }
 }
 
 public class CommonMonster : Monster
@@ -286,8 +332,7 @@ public class CommonMonster : Monster
     private void Start()
     {
         Setup();
-
-        StartCoroutine(Thinking(THINKING_DURATION));
+        StartCoroutine(thinking);
     }
 
     private void Update()
@@ -367,16 +412,6 @@ public class EliteMonster : Monster
                         GameManager.instance.controller.player.currentHp > 0)
                         thinking_param = (int)MonsterAnimation.AniType.ATTACK;
                     break;
-
-                case (int)MonsterAnimation.AniType.ATTACK:
-                    if (isMonsterAttackDone)
-                        thinking_param = (int)MonsterAnimation.AniType.IDLE;
-                    break;
-
-                case (int)MonsterAnimation.AniType.SKILL_01:
-                    if (isMonsterAttackDone)
-                        thinking_param = (int)MonsterAnimation.AniType.IDLE;
-                    break;
             }
             
         }
@@ -400,7 +435,10 @@ public class EliteMonster : Monster
         }
 
         if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
+        {
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
+            StartCoroutine(AttackCooldown(attack_speed));
+        }    
     }
 }
 
@@ -468,26 +506,6 @@ public class BossMonster : Monster
                         GameManager.instance.controller.player.currentHp > 0)
                         thinking_param = (int)MonsterAnimation.AniType.ATTACK;
                     break;
-
-                case (int)MonsterAnimation.AniType.ATTACK:
-                    if (isMonsterAttackDone)
-                        thinking_param = (int)MonsterAnimation.AniType.IDLE;
-                    break;
-
-                case (int)MonsterAnimation.AniType.SKILL_01:
-                    if (isMonsterAttackDone)
-                        thinking_param = (int)MonsterAnimation.AniType.IDLE;
-                    break;
-
-                case (int)MonsterAnimation.AniType.SKILL_02:
-                    if (isMonsterAttackDone)
-                        thinking_param = (int)MonsterAnimation.AniType.IDLE;
-                    break;
-
-                case (int)MonsterAnimation.AniType.SKILL_03:
-                    if (isMonsterAttackDone)
-                        thinking_param = (int)MonsterAnimation.AniType.IDLE;
-                    break;
             }
             
         }
@@ -523,6 +541,10 @@ public class BossMonster : Monster
         }
 
         if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
+        {
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
+            StartCoroutine(AttackCooldown(attack_speed));
+        }
+            
     }
 }
