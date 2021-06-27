@@ -264,7 +264,6 @@ public class Player : Character
         return null;
     }
 
-
     private IEnumerator SpRecovery(float recoveryDuration)
     {
         WaitForSeconds wt = new WaitForSeconds(recoveryDuration);
