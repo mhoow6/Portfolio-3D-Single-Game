@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class NPC : Character
 {    
-    public ushort id;
     public ushort index;
     public byte npc_type;
     public string npc_name;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
+    public ushort id;
     public float attack_damage;
     public float attack_distance;
     public float attack_angle;
