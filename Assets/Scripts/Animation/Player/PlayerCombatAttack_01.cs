@@ -33,5 +33,6 @@ public class PlayerCombatAttack_01 : PlayerAnimation
         GameManager.instance.controller.player.isPlayerNeedSP = true;
         GameManager.instance.controller.immobile = false;
         currentAnimationTime = 0;
+        
     }
 }
