@@ -21,6 +21,6 @@ public class BossMonsterAttack : BossMonsterAnimation
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         currentAnimationTime = 0;
-        self.StartCoroutine(self.AttackCooldown(self.attack_speed));
+        self.StartCoroutine(self.AttackCooldown(self.attack_duration));
     }
 }

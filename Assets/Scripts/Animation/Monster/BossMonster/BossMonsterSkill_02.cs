@@ -6,21 +6,20 @@ public class BossMonsterSkill_02 : BossMonsterAnimation
 {
     protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self.isMonsterAttackDone = false;
         animationHandler = IdleCondition;
         animationHandler += InjuredCondition;
         animationHandler += DeadCondition;
-        damagedStateHandler = null;
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (currentAnimationTime >= (1 - animationTransitionTime))
-            self.isMonsterAttackDone = true;
+            self.thinking_param = (int)AniType.IDLE;
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         currentAnimationTime = 0;
+        self.StartCoroutine(self.AttackCooldown(self.attack_duration));
     }
 }
