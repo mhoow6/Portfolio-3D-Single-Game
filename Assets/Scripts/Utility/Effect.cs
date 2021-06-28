@@ -10,15 +10,36 @@ public class Effect : MonoBehaviour
 
     private void Awake()
     {
-        ps = GetComponent<ParticleSystem>();
+        if (ps == null)
+            ps = GetComponent<ParticleSystem>();
     }
-
 }
 
-public class StunEffect : Effect
+public class PlayerAttackEffect : Effect
 {
+    public Transform hitEffect;
+
     private void Awake()
     {
-        ps = GetComponent<ParticleSystem>();
+        if (ps == null)
+            ps = GetComponent<ParticleSystem>();
+    }
+
+    private void Start()
+    {
+        if (hitEffect == null)
+            StartCoroutine(GetFXHitTransform());
+    }
+
+    IEnumerator GetFXHitTransform()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (transform.GetChild(i).name == "FX_Hit")
+            {
+                hitEffect = transform.GetChild(i);
+                yield return null;
+            }
+        }
     }
 }
