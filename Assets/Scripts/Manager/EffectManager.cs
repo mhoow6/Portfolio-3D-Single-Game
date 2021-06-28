@@ -11,6 +11,8 @@ public class EffectManager : MonoBehaviour
     private Vector3 POLYTOPE_STUDIO_CHARACTER_STUN_EFFECT_ROT = new Vector3(0, 0, 24.618f);
     private Vector3 POLYGONAL_METALON_SPIDER_STUN_EFFECT_POS = new Vector3(-0.358f, -0.75f, 0);
     private Vector3 POLYGONAL_METALON_SPIDER_STUN_EFFECT_ROT = Vector3.zero;
+    private Vector3 FX_NORMAL_COMBAT_ATTACK_01_POS = new Vector3(0.97f, 1.507f, -0.304f);
+    private Vector3 FX_NORMAL_COMBAT_ATTACK_01_ROT = new Vector3(-34.76f, 128.518f, 35.615f);
 
     private void Awake()
     {
@@ -54,6 +56,53 @@ public class EffectManager : MonoBehaviour
         }
 
         // 6. 해당 이펙트 return
+        return effect;
+    }
+
+    public Effect CreateNormalAttackEffect(int aniIndex)
+    {
+        string normalAttackEffectName = "FX_NormalAttack";
+        ushort normalAttackEffectID = EffectInfoTableManager.GetEffectIDFromPrefabName(normalAttackEffectName);
+
+        // 이펙트 풀에 이미 해당 노드에 비활성화 된 이펙트가 있는지 검사
+        Effect existEffect = effects.Find(eff => eff.effectNode == this.transform && eff.effectID == normalAttackEffectID && !eff.ps.isPlaying);
+
+        if (existEffect != null)
+        {
+            // 해당 공격에 맞게 이펙트 조정
+            switch (aniIndex)
+            {
+                case (int)PlayerAnimation.AniType.COMBAT_ATTACK_01:
+                    existEffect.transform.position = GameManager.instance.controller.player.transform.position + FX_NORMAL_COMBAT_ATTACK_01_POS;
+                    existEffect.transform.rotation = Quaternion.Euler(FX_NORMAL_COMBAT_ATTACK_01_ROT);
+                    break;
+            }
+
+            return existEffect;
+        }
+            
+        // 그게 아니면 새로 이펙트 생성
+        GameObject _effect = Resources.Load<GameObject>("Particle/" + normalAttackEffectName);
+        Effect effect = Instantiate(_effect.AddComponent<PlayerAttackEffect>());
+
+        // 데이터 추가
+        effect.effectID = normalAttackEffectID;
+        effect.effectNode = this.transform;
+
+        // 새로 생긴 이펙트를 이펙트 풀에 추가 및 부모 지정
+        effects.Add(effect);
+        effect.transform.SetParent(this.transform);
+
+        // 해당 공격에 맞게 이펙트 조정
+        switch (aniIndex)
+        {
+            case (int)PlayerAnimation.AniType.COMBAT_ATTACK_01:
+                effect.transform.position = GameManager.instance.controller.player.transform.position + FX_NORMAL_COMBAT_ATTACK_01_POS;
+                effect.transform.rotation = Quaternion.Euler(FX_NORMAL_COMBAT_ATTACK_01_ROT);
+                break;
+        }
+        
+        // 해당 이펙트 return
         return effect;
     }
 

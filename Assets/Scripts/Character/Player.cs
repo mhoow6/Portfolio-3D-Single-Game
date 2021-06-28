@@ -40,6 +40,8 @@ public class Player : Character
     private const float REQUIRED_MOB_ENDURANCE_BREAK = 0.03F;
     private const float BOUND_COLLIDED_DETECT_DURATION = 0.25F;
     private Vector3 dialogIconLocalPos = new Vector3(0.336f, 1.766f, 0);
+
+    private Effect attackEffect;
     
     private void Awake()
     {
@@ -99,7 +101,7 @@ public class Player : Character
         StartCoroutine(SpRecovery(SpRecoveryDuration));
         StartCoroutine(CombatSkill01Cooldown(SkillDuration * Time.deltaTime));
         StartCoroutine(CombatSkill02Cooldown(SkillDuration * Time.deltaTime));
-        StartCoroutine(FindBoundCollideChar(BOUND_COLLIDED_DETECT_DURATION));
+        StartCoroutine(FindBoundCollideNPC(BOUND_COLLIDED_DETECT_DURATION));
 
         // Get Bound
         bound = GetBoundFromSkinnedMeshRenderer(this).Value;
@@ -126,6 +128,8 @@ public class Player : Character
                 attack_damage = IncreaseDamageByLevel(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_damage, level);
                 attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_02_angle;
+                attackEffect = EffectManager.instance.CreateNormalAttackEffect((int)PlayerAnimation.AniType.COMBAT_ATTACK_01);
+                attackEffect.ps.Play(true);
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_02:
@@ -325,7 +329,7 @@ public class Player : Character
         return (byte)(currentDamage / RequiredToIncreaseStackDamage);
     }
 
-    private IEnumerator FindBoundCollideChar(float detectDuration)
+    private IEnumerator FindBoundCollideNPC(float detectDuration)
     {
         WaitForSeconds wt = new WaitForSeconds(detectDuration);
 
