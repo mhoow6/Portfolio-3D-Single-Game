@@ -31,7 +31,7 @@ public struct MonsterInfo
     public float stun_escape;
     public float respawn_time;
     public float exp;
-    public float attack_speed;
+    public float attack_duration;
 }
 
 public struct MonsterSpawnInfo
@@ -81,7 +81,7 @@ public static class MonsterInfoTableManager
             mobInfo.stun_escape = float.Parse(datas[23]);
             mobInfo.respawn_time = float.Parse(datas[24]);
             mobInfo.exp = float.Parse(datas[25]);
-            mobInfo.attack_speed = float.Parse(datas[26]);
+            mobInfo.attack_duration = float.Parse(datas[26]);
 
             mobInfoList.Add(mobInfo);
         }
