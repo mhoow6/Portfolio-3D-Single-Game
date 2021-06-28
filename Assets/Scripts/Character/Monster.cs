@@ -19,9 +19,11 @@ public class Monster : Character
     public int thinking_param;
     public float hp;
     public float run_speed;
-    public string monster_name;
     public float exp;
-    
+    public float stun_escape;
+    public float attack_duration;
+    public string monster_name;
+
     protected float detect_range;
     protected float skill_1_damage;
     protected float skill_1_distance;
@@ -32,22 +34,18 @@ public class Monster : Character
     protected float skill_3_damage;
     protected float skill_3_distance;
     protected float skill_3_angle;
-    public float stun_escape;
     protected float respawn_time;
-    public float attack_speed;
     //
 
     public NavMeshAgent agent;
     public bool isStuned;
     public bool isAlphaBlending;
-    public bool isMonsterAttackDone;
+    public bool isAttackCoolDown;
     public byte endurance_stack;
     public MonsterSpawnInfo spawnInfo;
     public Transform head;
 
-    [SerializeField]
     protected float currentStunTimer;
-    [SerializeField]
     protected float currentAttackCooldown;
     protected float currentAttackDamage;
     protected float currentAttackDistance;
@@ -63,7 +61,6 @@ public class Monster : Character
     private const float COLOR_LERF_SPEED = 0.1f;
 
     private Effect stunEffect;
-
 
     private void Start()
     {
@@ -126,7 +123,7 @@ public class Monster : Character
                 stun_escape = mobinfo.stun_escape;
                 respawn_time = mobinfo.respawn_time;
                 exp = mobinfo.exp;
-                attack_speed = mobinfo.attack_speed;
+                attack_duration = mobinfo.attack_duration;
                 return;
             }
         }
@@ -194,11 +191,13 @@ public class Monster : Character
             yield return wt;
         }
 
-        StartCoroutine(thinking);
-
         isStuned = false;
+
         stunEffect.ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         stunEffect = null;
+
+        StartCoroutine(thinking);
+
         currentStunTimer = 0;
     }
 
@@ -210,8 +209,8 @@ public class Monster : Character
 
         while (currentAttackCooldown != duration)
         {
-            currentAttackCooldown++;
             yield return wt;
+            currentAttackCooldown++;
         }
 
         if (!isStuned)
@@ -248,6 +247,7 @@ public class Monster : Character
                         thinking_param = (int)MonsterAnimation.AniType.ATTACK;
                     break;
             }
+            
         }
     }
 
@@ -377,7 +377,7 @@ public class EliteMonster : Monster
         while (true)
         {
             yield return wt;
- 
+
             switch (thinking_param)
             {
                 case (int)MonsterAnimation.AniType.IDLE:
@@ -435,10 +435,7 @@ public class EliteMonster : Monster
         }
 
         if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
-        {
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
-            StartCoroutine(AttackCooldown(attack_speed));
-        }    
     }
 }
 
@@ -541,10 +538,7 @@ public class BossMonster : Monster
         }
 
         if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
-        {
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
-            StartCoroutine(AttackCooldown(attack_speed));
-        }
-            
+
     }
 }
