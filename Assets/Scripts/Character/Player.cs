@@ -41,7 +41,7 @@ public class Player : Character
     private const float BOUND_COLLIDED_DETECT_DURATION = 0.25F;
     private Vector3 dialogIconLocalPos = new Vector3(0.336f, 1.766f, 0);
 
-    private Effect attackEffect;
+    public PlayerAttackEffect attackEffect;
     
     private void Awake()
     {
@@ -128,20 +128,24 @@ public class Player : Character
                 attack_damage = IncreaseDamageByLevel(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_damage, level);
                 attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_02_angle;
-                attackEffect = EffectManager.instance.CreateNormalAttackEffect((int)PlayerAnimation.AniType.COMBAT_ATTACK_01);
-                attackEffect.ps.Play(true);
+                attackEffect = EffectManager.instance.CreateAttackEffect((int)PlayerAnimation.AniType.COMBAT_ATTACK_01);
+                attackEffect.ps.Play();
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_02:
                 attack_damage = IncreaseDamageByLevel(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_damage, level);
                 attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_02_angle;
+                attackEffect = EffectManager.instance.CreateAttackEffect((int)PlayerAnimation.AniType.COMBAT_ATTACK_02);
+                attackEffect.ps.Play();
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_03:
                 attack_damage = IncreaseDamageByLevel(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_damage, level);
                 attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_03_angle;
+                attackEffect = EffectManager.instance.CreateAttackEffect((int)PlayerAnimation.AniType.COMBAT_ATTACK_03);
+                attackEffect.ps.Play();
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_SKILL_01:
