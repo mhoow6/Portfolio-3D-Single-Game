@@ -17,29 +17,26 @@ public class Effect : MonoBehaviour
 
 public class PlayerAttackEffect : Effect
 {
-    public Transform hitEffect;
-
     private void Awake()
     {
         if (ps == null)
             ps = GetComponent<ParticleSystem>();
     }
+}
 
-    private void Start()
-    {
-        if (hitEffect == null)
-            StartCoroutine(GetFXHitTransform());
-    }
+public class PlayerAttackHitEffect : Effect
+{
+    public List<ParticleSystem> hitEffects = new List<ParticleSystem>();
 
-    IEnumerator GetFXHitTransform()
+    private void Awake()
     {
-        for (int i = 0; i < transform.childCount; i++)
+        if (hitEffects.Count == 0)
         {
-            if (transform.GetChild(i).name == "FX_Hit")
+            for (int i=0; i < transform.childCount; i++)
             {
-                hitEffect = transform.GetChild(i);
-                yield return null;
+                hitEffects.Add(transform.GetChild(i).GetComponent<ParticleSystem>());
             }
         }
     }
+
 }
