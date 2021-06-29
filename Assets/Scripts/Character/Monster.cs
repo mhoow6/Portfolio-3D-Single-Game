@@ -13,7 +13,6 @@ enum mobType
 public class Monster : Character
 {
     // Load From Table
-    public byte monster_type;
     public byte endurance;
     public ushort index;
     public int thinking_param;
@@ -35,15 +34,18 @@ public class Monster : Character
     protected float skill_3_distance;
     protected float skill_3_angle;
     protected float respawn_time;
+    protected byte monster_type;
     //
 
-    public NavMeshAgent agent;
     public bool isStuned;
     public bool isAlphaBlending;
-    public bool isAttackCoolDown;
+    public bool isAttackCooldown;
     public byte endurance_stack;
     public MonsterSpawnInfo spawnInfo;
+    public NavMeshAgent agent;
     public Transform head;
+    public IEnumerator thinking;
+    public Transform[] hitEffectsPos = new Transform[4];
 
     protected float currentStunTimer;
     protected float currentAttackCooldown;
@@ -51,11 +53,9 @@ public class Monster : Character
     protected float currentAttackDistance;
     protected float currentAttackAngle;
     protected SkinnedMeshRenderer smr;
-    protected IEnumerator thinking;
-
+    
     protected const float THINKING_DURATION = 0.1f;
     protected const float MIN_SIGHT_ANGLE = 20f;
-
     private const float ANGULAR_SPEED = 999f;
     private const float DISABLE_TIME = 5f;
     private const float COLOR_LERF_SPEED = 0.1f;
@@ -78,6 +78,11 @@ public class Monster : Character
         smr = GetComponentInChildren<SkinnedMeshRenderer>();
         thinking = Thinking(THINKING_DURATION);
         GetNodeObject(this.transform, "Head", ref head);
+
+        GetNodeObject(this.transform, "Forward_Hit_Effect", ref hitEffectsPos[0]);
+        GetNodeObject(this.transform, "Backward_Hit_Effect", ref hitEffectsPos[1]);
+        GetNodeObject(this.transform, "Leftward_Hit_Effect", ref hitEffectsPos[2]);
+        GetNodeObject(this.transform, "Rightward_Hit_Effect", ref hitEffectsPos[3]);
 
         SpawnInfoSetup();
         InitallizeMobInfoFromTable();
@@ -169,10 +174,8 @@ public class Monster : Character
         // Level up
         GameManager.instance.controller.player.LevelUpCheck();
 
-
         agent.enabled = false;
         
-
         Invoke("DeadState", DISABLE_TIME);
     }
 
@@ -181,41 +184,30 @@ public class Monster : Character
         stunEffect = EffectManager.instance.CreateStarStunEffect(id, head);
         stunEffect.ps.Play();
 
-        StopCoroutine(thinking);
-
-        WaitForSeconds wt = new WaitForSeconds(1f);
-        
-        while (currentStunTimer != duration)
+        while (currentStunTimer <= duration)
         {
-            currentStunTimer++;
-            yield return wt;
+            yield return null;
+            isStuned = true;
+            currentStunTimer += Time.deltaTime;
         }
 
         isStuned = false;
-
-        stunEffect.ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        stunEffect = null;
-
         StartCoroutine(thinking);
 
+        stunEffect.ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         currentStunTimer = 0;
     }
 
     public IEnumerator AttackCooldown(float duration)
     {
-        StopCoroutine(thinking);
-
-        WaitForSeconds wt = new WaitForSeconds(1f);
-
-        while (currentAttackCooldown != duration)
+        while (currentAttackCooldown <= duration)
         {
-            yield return wt;
-            currentAttackCooldown++;
+            yield return null;
+            isAttackCooldown = true;
+            currentAttackCooldown += Time.deltaTime;
         }
 
-        if (!isStuned)
-            StartCoroutine(thinking);
-
+        isAttackCooldown = false;
         currentAttackCooldown = 0;
     }
 
@@ -227,27 +219,29 @@ public class Monster : Character
         {
             yield return wt;
 
-            switch (thinking_param)
+            if (!isAttackCooldown && !isStuned)
             {
-                case (int)MonsterAnimation.AniType.IDLE:
-                    if (currentDistanceWithPlayer <= detect_range && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = Random.Range((int)MonsterAnimation.AniType.WALK, (int)MonsterAnimation.AniType.RUN + 1);
+                switch (thinking_param)
+                {
+                    case (int)MonsterAnimation.AniType.IDLE:
+                        if (currentDistanceWithPlayer <= detect_range && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = Random.Range((int)MonsterAnimation.AniType.WALK, (int)MonsterAnimation.AniType.RUN + 1);
 
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.ATTACK;
-                    break;
+                        if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.ATTACK;
+                        break;
 
-                case (int)MonsterAnimation.AniType.WALK:
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.ATTACK;
-                    break;
+                    case (int)MonsterAnimation.AniType.WALK:
+                        if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.ATTACK;
+                        break;
 
-                case (int)MonsterAnimation.AniType.RUN:
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.ATTACK;
-                    break;
-            }
-            
+                    case (int)MonsterAnimation.AniType.RUN:
+                        if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.ATTACK;
+                        break;
+                }
+            } 
         }
     }
 
