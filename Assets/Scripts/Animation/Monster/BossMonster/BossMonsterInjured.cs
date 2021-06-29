@@ -10,10 +10,7 @@ public class BossMonsterInjured : BossMonsterAnimation
         animationHandler = IdleCondition;
         animationHandler += InjuredCondition;
         animationHandler += DeadCondition;
-    }
-
-    protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
+        self.StopCoroutine(self.thinking);
         self.thinking_param = (int)AniType.IDLE;
     }
 

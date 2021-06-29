@@ -14,7 +14,11 @@ public class CommonMonsterAttack : CommonMonsterAnimation
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         if (currentAnimationTime >= (1 - animationTransitionTime))
+        {
+            self.isAttackCooldown = true;
             self.thinking_param = (int)AniType.IDLE;
+        }
+
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
