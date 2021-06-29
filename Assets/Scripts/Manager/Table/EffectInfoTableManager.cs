@@ -39,4 +39,15 @@ public static class EffectInfoTableManager
 
         throw new System.NotSupportedException(prefabName + " 에 해당하는 이펙트가 없습니다.");
     }
+
+    public static string GetPrefabNameFromEffectID(ushort effectID)
+    {
+        for (int i = 0; i < effectList.Count; i++)
+        {
+            if (effectList[i].id == effectID)
+                return effectList[i].prefab_name;
+        }
+
+        throw new System.NotSupportedException(effectID + " 에 해당하는 이펙트가 없습니다.");
+    }
 }
