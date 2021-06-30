@@ -2,3 +2,5 @@ id,prefab_name
 500,FX_StarStunned_01
 501,FX_NormalAttack
 502,FX_NormalHit
+503,FX_ESkill_Attack
+504,FX_ESkill_Background
