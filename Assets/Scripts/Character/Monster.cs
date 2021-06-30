@@ -52,7 +52,8 @@ public class Monster : Character
     protected float currentAttackDamage;
     protected float currentAttackDistance;
     protected float currentAttackAngle;
-    protected SkinnedMeshRenderer smr;
+    public SkinnedMeshRenderer smr;
+    public Color originEmissionColor;
     
     protected const float THINKING_DURATION = 0.1f;
     protected const float MIN_SIGHT_ANGLE = 20f;
@@ -76,6 +77,7 @@ public class Monster : Character
     protected void Setup()
     {
         smr = GetComponentInChildren<SkinnedMeshRenderer>();
+        originEmissionColor = smr.material.GetColor("_EmissionColor");
         thinking = Thinking(THINKING_DURATION);
         GetNodeObject(this.transform, "Head", ref head);
 
@@ -319,6 +321,7 @@ public class Monster : Character
                 node = child;
         }
     }
+
 }
 
 public class CommonMonster : Monster
