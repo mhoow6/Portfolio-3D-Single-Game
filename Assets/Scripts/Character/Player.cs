@@ -42,6 +42,9 @@ public class Player : Character
     private Vector3 dialogIconLocalPos = new Vector3(0.336f, 1.766f, 0);
 
     public PlayerAttackEffect attackEffect;
+    public PlayerAttackHitEffect attackHitEffect;
+    public PlayerESkillAttackEffect eSkillEffect;
+    public PlayerESkillBackEffect eSkillBackEffect;
     
     private void Awake()
     {
@@ -152,6 +155,10 @@ public class Player : Character
                 attack_damage = IncreaseDamageByLevel(PlayerInfoTableManager.playerInfo.skill_01_damage, level);
                 attack_distance = PlayerInfoTableManager.playerInfo.skill_01_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.skill_01_angle;
+                eSkillEffect = EffectManager.instance.CreateESkillAttackEffect();
+                eSkillBackEffect.StopSwirlEffect();
+                eSkillBackEffect.StopRippleEffect();
+                eSkillEffect.ps.Play();
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
@@ -172,11 +179,17 @@ public class Player : Character
             float RequiredToIncreaseStackDamage = MonsterInfoTableManager.GetMonsterOriginHpFromID(mob.id) * REQUIRED_MOB_ENDURANCE_BREAK;
 
             if (mob != null &&
-                mob.gameObject.activeSelf == true &&
+                mob.gameObject.activeSelf &&
+                mob.hp > 0 &&
                 PlayerAndMonster_Distance <= attack_distance &&
                 PlayerAndMonster_Angle <= attack_angle)
             {
                 mob.hp -= attack_damage;
+
+                attackHitEffect = EffectManager.instance.CreateHitEffect(mob);
+
+                if (attackHitEffect != null)
+                    attackHitEffect.PlayEffects(mob);
 
                 if (!mob.isStuned)
                     mob.endurance_stack += EnduranceStackCalculator(attack_damage, RequiredToIncreaseStackDamage);
@@ -367,5 +380,16 @@ public class Player : Character
         isBoundCollide = false;
         boundCollideNPC = null;
         HUDManager.instance.inGame.icons.dialogIcon.gameObject.SetActive(false);
+    }
+
+    public void BackEffect(int ani_id)
+    {
+        switch (ani_id)
+        {
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_01:
+                eSkillBackEffect = EffectManager.instance.CreateESkillBackEffect();
+                eSkillBackEffect.PlayEffect();
+                break;
+        }
     }
 }
