@@ -30,7 +30,6 @@ public class TableManager : MonoBehaviour
     private string playerLevelPath;
     private string sceneInfoPath;
     private string playerSpawnInfoPath;
-    private string effectPath;
     
     public const string FILE_EXTENSION = ".csv";
 
@@ -53,7 +52,6 @@ public class TableManager : MonoBehaviour
         playerLevelPath = "Tables/PlayerLevel";
         sceneInfoPath = "Tables/SceneInfo";
         playerSpawnInfoPath = "Tables/PlayerSpawnInfo";
-        effectPath = "Tables/EffectInfo";
 
         // Temp Path
         playerTempInventoryPath = Application.persistentDataPath + "/Tables/PlayerInventory" + FILE_EXTENSION;
@@ -77,7 +75,6 @@ public class TableManager : MonoBehaviour
             PlayerLevelInfoTableManager.LoadTable(playerLevelPath);
             SceneInfoTableManager.LoadTable(sceneInfoPath);
             PlayerSpawnInfoTableManager.LoadTable(playerSpawnInfoPath);
-            EffectInfoTableManager.LoadTable(effectPath);
         }
 
         if (SceneInfoManager.instance.isTempDataExists)
