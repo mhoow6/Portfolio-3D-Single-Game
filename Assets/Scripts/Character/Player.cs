@@ -41,11 +41,11 @@ public class Player : Character
     private const float BOUND_COLLIDED_DETECT_DURATION = 0.25F;
     private Vector3 dialogIconLocalPos = new Vector3(0.336f, 1.766f, 0);
 
-    public PlayerAttackEffect attackEffect;
-    public PlayerAttackHitEffect attackHitEffect;
-    public PlayerESkillAttackEffect eSkillEffect;
-    public PlayerESkillBackEffect eSkillBackEffect;
-    
+    private PlayerAttackEffect attackEffect;
+    private PlayerSkillBackEffect skillBackEffect;
+    private PlayerHitEffect attackHitEffect;
+    public PlayerFootstepEffect footStepEffect;
+
     private void Awake()
     {
         current_combat_skill_01_cooldown = 0;
@@ -132,7 +132,7 @@ public class Player : Character
                 attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_02_angle;
                 attackEffect = EffectManager.instance.CreateAttackEffect((int)PlayerAnimation.AniType.COMBAT_ATTACK_01);
-                attackEffect.ps.Play();
+                attackEffect.self.Play();
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_02:
@@ -140,7 +140,7 @@ public class Player : Character
                 attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_02_angle;
                 attackEffect = EffectManager.instance.CreateAttackEffect((int)PlayerAnimation.AniType.COMBAT_ATTACK_02);
-                attackEffect.ps.Play();
+                attackEffect.self.Play();
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_03:
@@ -148,23 +148,25 @@ public class Player : Character
                 attack_distance = WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equip_weapon_id).basic_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.combat_attack_03_angle;
                 attackEffect = EffectManager.instance.CreateAttackEffect((int)PlayerAnimation.AniType.COMBAT_ATTACK_03);
-                attackEffect.ps.Play();
+                attackEffect.self.Play();
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_SKILL_01:
                 attack_damage = IncreaseDamageByLevel(PlayerInfoTableManager.playerInfo.skill_01_damage, level);
                 attack_distance = PlayerInfoTableManager.playerInfo.skill_01_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.skill_01_angle;
-                eSkillEffect = EffectManager.instance.CreateESkillAttackEffect();
-                eSkillBackEffect.StopSwirlEffect();
-                eSkillBackEffect.StopRippleEffect();
-                eSkillEffect.ps.Play();
+                attackEffect = EffectManager.instance.CreateAttackEffect((int)PlayerAnimation.AniType.COMBAT_SKILL_01);
+                skillBackEffect.StopEffect();
+                attackEffect.self.Play();
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
                 attack_damage = IncreaseDamageByLevel(PlayerInfoTableManager.playerInfo.skill_02_damage, level);
                 attack_distance = PlayerInfoTableManager.playerInfo.skill_02_distance;
                 attack_angle = PlayerInfoTableManager.playerInfo.skill_02_angle;
+                attackEffect = EffectManager.instance.CreateAttackEffect((int)PlayerAnimation.AniType.COMBAT_SKILL_02);
+                skillBackEffect.StopEffect();
+                attackEffect.self.Play();
                 break;
         }
 
@@ -186,7 +188,7 @@ public class Player : Character
             {
                 mob.hp -= attack_damage;
 
-                attackHitEffect = EffectManager.instance.CreateHitEffect(mob);
+                attackHitEffect = EffectManager.instance.CreateHitEffect(ani_id, mob);
 
                 if (attackHitEffect != null)
                     attackHitEffect.PlayEffects(mob);
@@ -387,8 +389,13 @@ public class Player : Character
         switch (ani_id)
         {
             case (int)PlayerAnimation.AniType.COMBAT_SKILL_01:
-                eSkillBackEffect = EffectManager.instance.CreateESkillBackEffect();
-                eSkillBackEffect.PlayEffect();
+                skillBackEffect = EffectManager.instance.CreateESkillBackEffect();
+                skillBackEffect.PlayEffect();
+                break;
+
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
+                skillBackEffect = EffectManager.instance.CreateQSkillBackEffect();
+                skillBackEffect.PlayEffect();
                 break;
         }
     }
