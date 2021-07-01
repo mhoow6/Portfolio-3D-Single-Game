@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Effect : MonoBehaviour
 {
-    public ParticleSystem ps;
+    public ParticleSystem self;
     public Transform effectNode;
     public ushort effectID;
 
     private void Awake()
     {
-        if (ps == null)
-            ps = GetComponent<ParticleSystem>();
+        if (self == null)
+            self = GetComponent<ParticleSystem>();
     }
 
     protected void GetChildParticleSystem(Transform parent, string particeName, ref ParticleSystem node)
@@ -36,6 +36,26 @@ public class Effect : MonoBehaviour
         }
     }
 
+    protected void GetChildLight(Transform parent, string lightName, ref Light node)
+    {
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            if (node != null)
+                return;
+
+            Transform child = parent.GetChild(i);
+
+            if (child.name != lightName)
+            {
+                if (child.childCount != 0)
+                    GetChildLight(child, lightName, ref node);
+            }
+
+            if (child.name == lightName)
+                node = child.GetComponent<Light>();
+        }
+    }
+
     protected virtual IEnumerator PlayCheckUpdate()
     {
         yield return null;
@@ -46,42 +66,82 @@ public class PlayerAttackEffect : Effect
 {
     private void Awake()
     {
-        if (ps == null)
-            ps = GetComponent<ParticleSystem>();
+        if (self == null)
+            self = GetComponent<ParticleSystem>();
     }
 }
 
-public class PlayerAttackHitEffect : Effect
+public class PlayerHitEffect : Effect
 {
-    public List<ParticleSystem> hitEffects = new List<ParticleSystem>();
-    public Light hitLight;
+    protected Light hitLight;
+    public Light _hitLight { get => hitLight; }
 
     private WaitForSeconds hitChangeColorWt = new WaitForSeconds(0.2f);
     private Color hitChangeColor = new Color(0.117f, 0, 0, 1f); // RGB 30, 0, 0
 
+    public void PlayEffects(Monster hitMob)
+    {
+        Play(hitMob);
+    }
+
+    protected virtual void OnAwake() { }
+
+    protected virtual void Play(Monster hitMob) { }
+
+    protected IEnumerator LightUpdate()
+    {
+        float time = 0f;
+
+        while (true)
+        {
+            time += Time.deltaTime;
+
+            if (time >= 0.1f)
+            {
+                hitLight.gameObject.SetActive(false);
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    protected IEnumerator HitChangeMobColor(Monster hitMob)
+    {
+        hitMob.smr.material.EnableKeyword("_EMISSION");
+        hitMob.smr.material.SetColor("_EmissionColor", hitChangeColor);
+
+        yield return hitChangeColorWt;
+
+        hitMob.smr.material.DisableKeyword("_EMISSION");
+        hitMob.smr.material.SetColor("_EmissionColor", hitMob.originEmissionColor);
+    }
+}
+
+public class PlayerAttackHitEffect : PlayerHitEffect
+{
+    private List<ParticleSystem> hitEffects = new List<ParticleSystem>();
+
     private void Awake()
     {
-        effectNode = EffectManager.instance.transform;
-        effectID = EffectManager.instance.hitEffectID;
-
         if (hitEffects.Count == 0)
         {
             ParticleSystem _ps;
 
-            for (int i=0; i < transform.childCount; i++)
+            for (int i = 0; i < transform.childCount; i++)
             {
                 _ps = transform.GetChild(i).GetComponent<ParticleSystem>();
 
                 if (_ps != null)
                     hitEffects.Add(_ps);
 
-                if (ps == null)
+                if (_ps == null)
                     hitLight = transform.GetChild(i).GetComponent<Light>();
             }
         }
     }
 
-    public void PlayEffects(Monster hitMob)
+    protected override void Play(Monster hitMob)
     {
         for (int i = 0; i < hitEffects.Count; i++)
             hitEffects[i].Play(true);
@@ -104,51 +164,64 @@ public class PlayerAttackHitEffect : Effect
             yield return null;
         }
     }
+}
 
-    private IEnumerator LightUpdate()
+public class PlayerQSkillHitEffect : PlayerHitEffect
+{
+    private ParticleSystem hitEffect;
+
+    private void Awake()
     {
-        float time = 0f;
+        GetChildParticleSystem(transform, "FX_Fire_Explosion_01", ref hitEffect);
+        GetChildLight(transform, "Hit_Light", ref hitLight);
+    }
 
+    protected override void Play(Monster hitMob)
+    {
+        hitEffect.Play(true);
+
+        StartCoroutine(PlayCheckUpdate());
+        StartCoroutine(LightUpdate());
+        StartCoroutine(HitChangeMobColor(hitMob));
+    }
+
+    protected override IEnumerator PlayCheckUpdate()
+    {
         while (true)
         {
-            time += Time.deltaTime;
-
-            if (time >= 0.1f)
+            if (hitEffect.isStopped)
             {
-                hitLight.gameObject.SetActive(false);
+                this.gameObject.SetActive(false);
                 yield break;
             }
 
             yield return null;
         }
     }
-
-    private IEnumerator HitChangeMobColor(Monster hitMob)
-    {
-        hitMob.smr.material.EnableKeyword("_EMISSION");
-        hitMob.smr.material.SetColor("_EmissionColor", hitChangeColor);
-        
-        yield return hitChangeColorWt;
-
-        hitMob.smr.material.DisableKeyword("_EMISSION");
-        hitMob.smr.material.SetColor("_EmissionColor", hitMob.originEmissionColor);
-    }
 }
 
-public class PlayerESkillAttackEffect : Effect
+public class PlayerSkillBackEffect : Effect
 {
-    private void Awake()
+    public void PlayEffect()
     {
-        if (ps == null)
-            ps = GetComponent<ParticleSystem>();
+        Play();
     }
+
+    public void StopEffect()
+    {
+        Stop();
+        StartCoroutine(PlayCheckUpdate());
+    }
+
+    protected virtual void Play() { }
+    protected virtual void Stop() { }
+
 }
 
-public class PlayerESkillBackEffect : Effect
+public class PlayerESkillBackEffect : PlayerSkillBackEffect
 {
-    private ParticleSystem swirlEffect;
     public ParticleSystem rippleEffect;
-    private WaitForSeconds rippleStayWaitTime = new WaitForSeconds(0.5f);
+    private ParticleSystem swirlEffect;
 
     private void Awake()
     {
@@ -156,22 +229,17 @@ public class PlayerESkillBackEffect : Effect
         GetChildParticleSystem(transform, "FX_Water_Ripple", ref rippleEffect);
     }
 
-    public void PlayEffect()
+    protected override void Play()
     {
         swirlEffect.Play(true);
         rippleEffect.Play(true);
     }
 
-    public void StopSwirlEffect()
+    protected override void Stop()
     {
         // 파티클 발산만 중지. 함수 호출하는 순간 파티클이 즉시 사리자지 않게 할 수 있음
         swirlEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-    }
-
-    public void StopRippleEffect()
-    {
         rippleEffect.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        StartCoroutine(PlayCheckUpdate());
     }
 
     protected override IEnumerator PlayCheckUpdate()
@@ -185,6 +253,102 @@ public class PlayerESkillBackEffect : Effect
             }
 
             yield return null;
+        }
+    }
+}
+
+public class PlayerQSkillBackEffect : PlayerSkillBackEffect
+{
+    private ParticleSystem ember;
+    private ParticleSystem swirl;
+    private Light front_light;
+    private Light back_light;
+
+    private const float LIGHT_TURN_OFF_SPEED = 1f;
+
+    private void Awake()
+    {
+        GetChildParticleSystem(this.transform, "FX_Embers_01", ref ember);
+        GetChildParticleSystem(this.transform, "FX_Swirl_03", ref swirl);
+        GetChildLight(this.transform, "Back_Light", ref back_light);
+        GetChildLight(this.transform, "Front_Light", ref front_light);
+    }
+
+    protected override void Play()
+    {
+        ember.Play(true);
+        swirl.Play(true);
+        front_light.gameObject.SetActive(true);
+        back_light.gameObject.SetActive(true);
+    }
+
+    protected override void Stop()
+    {
+        ember.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        swirl.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        StartCoroutine(LightTurnoffSmooth(front_light));
+        StartCoroutine(LightTurnoffSmooth(back_light));
+    }
+
+    private IEnumerator LightTurnoffSmooth(Light light)
+    {
+        while (true)
+        {
+            light.intensity = Mathf.Lerp(light.intensity, 0f, Time.deltaTime * LIGHT_TURN_OFF_SPEED);
+
+            if (light.intensity <= 0.1f)
+            {
+                light.intensity = 0f;
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    protected override IEnumerator PlayCheckUpdate()
+    {
+        while (true)
+        {
+            if (ember.isStopped)
+            {
+                this.gameObject.SetActive(false);
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+}
+
+public class PlayerFootstepEffect : Effect
+{
+    private ParticleSystem.EmissionModule em;
+    
+    private void Awake()
+    {
+        if (self == null)
+            self = GetComponent<ParticleSystem>();
+
+        em = self.emission;
+    }
+
+    public void FootStepChange(PlayerAnimation.AniType ani_id)
+    {
+        switch (ani_id)
+        {
+            case PlayerAnimation.AniType.WALK:
+            case PlayerAnimation.AniType.COMBAT_WALK:
+                em.enabled = true;
+                em.rateOverDistance = 0f;
+                break;
+            case PlayerAnimation.AniType.RUN:
+                em.enabled = true;
+                em.rateOverDistance = 1.0f;
+                break;
+            default:
+                em.enabled = false;
+                break;
         }
     }
 }
