@@ -57,6 +57,12 @@ public class MapManager : MonoBehaviour
         _controller.cameraArm = cameraScript;
         GameManager.instance.controller = _controller; // Attach at GameManger
 
+        // FootStepEffect Load
+        PlayerFootstepEffect footstep = EffectManager.instance.CreateFootStepEffect();
+        footstep.transform.position = playerScript.transform.position;
+        playerScript.footStepEffect = footstep;
+        
+
         // Add NavMeshAgent
         player.AddComponent<NavMeshAgent>();
 
