@@ -17,40 +17,32 @@ public class EffectManager : MonoBehaviour
     private Vector3 FX_NORMAL_COMBAT_ATTACK_02_ROT = new Vector3(-13.6f, 48.598f, 11.714f);
     private Vector3 FX_NORMAL_COMBAT_ATTACK_03_POS = new Vector3(0.6199f, 1.02f, 0.9700f);
     private Vector3 FX_NORMAL_COMBAT_ATTACK_03_ROT = new Vector3(17.899f, 47.508f, -15.723f);
-
     private Vector3 FX_SKILL_E_POS = new Vector3(0.3039f, 1.698f, 0.9700f);
     private Vector3 FX_SKILL_E_ROT = new Vector3(-34.76f, 38.518f, 35.615f);
     private Vector3 FX_SKILL_E_RIPPLE_ROT = new Vector3(0, 50f, 0);
+    private Vector3 FX_SKILL_Q_POS = new Vector3(0.8f, 1.33f, 0.84f);
+    private Vector3 FX_SKILL_Q_ROT = new Vector3(0f, 40.106f, 0f);
+    private Vector3 FX_SKILL_Q_SCALE = new Vector3(1.3f, 1f, 1.3f);
 
     private const string attackEffectName = "FX_NormalAttack";
-    public ushort attackEffectID;
     private const string starStunEffectName = "FX_StarStunned_01";
-    public ushort starStunEffectID;
     private const string hitEffectName = "FX_NormalHit";
-    public ushort hitEffectID;
     private const string eSkillAttackEffectName = "FX_ESkill_Attack";
-    public ushort eSkillAttackEffectID;
     private const string eSkillBackEffectName = "FX_ESkill_Background";
-    public ushort eSkillBackEffectID;
+    private const string qSkillAttackEffectName = "FX_QSkill_Attack";
+    private const string qSkillHitEffectName = "FX_QSkill_Hit";
+    private const string qSkillBackEffectName = "FX_QSkill_Background";
+    private const string footStepEffectName = "FX_Cartoony_Footstep";
 
     private void Awake()
     {
         instance = this;
     }
 
-    private void Start()
-    {
-        attackEffectID = EffectInfoTableManager.GetEffectIDFromPrefabName(attackEffectName);
-        starStunEffectID = EffectInfoTableManager.GetEffectIDFromPrefabName(starStunEffectName);
-        hitEffectID = EffectInfoTableManager.GetEffectIDFromPrefabName(hitEffectName);
-        eSkillAttackEffectID = EffectInfoTableManager.GetEffectIDFromPrefabName(eSkillAttackEffectName);
-        eSkillBackEffectID = EffectInfoTableManager.GetEffectIDFromPrefabName(eSkillBackEffectName);
-    }
-
     public Effect CreateStarStunEffect(ushort objID, Transform head)
     {
         // 1. 이펙트 풀에 이미 해당 위치에 비활성화 된 이펙트가 있는지 검사
-        Effect existEffect = effects.Find(eff => eff.effectNode == head && eff.effectID == starStunEffectID && eff.ps.isStopped);
+        Effect existEffect = effects.Find(eff => eff.effectNode == head && eff.gameObject.name == starStunEffectName && eff.self.isStopped);
 
         if (existEffect != null)
             return existEffect;
@@ -60,7 +52,7 @@ public class EffectManager : MonoBehaviour
         Effect effect = Instantiate(_effect.AddComponent<Effect>());
 
         // 3. 데이터 추가
-        effect.effectID = starStunEffectID;
+        effect.gameObject.name = starStunEffectName;
         effect.effectNode = head;
 
         // 4. 새로 생긴 이펙트를 이펙트 풀에 추가 및 부모 지정
@@ -84,21 +76,40 @@ public class EffectManager : MonoBehaviour
         return effect;
     }
 
-    public PlayerAttackEffect CreateAttackEffect(int aniIndex)
+    public PlayerAttackEffect CreateAttackEffect(int ani_id)
     {
+        string effectPrefabName = string.Empty;
+
+        switch (ani_id)
+        {
+            case (int)PlayerAnimation.AniType.COMBAT_ATTACK_01:
+            case (int)PlayerAnimation.AniType.COMBAT_ATTACK_02:
+            case (int)PlayerAnimation.AniType.COMBAT_ATTACK_03:
+                effectPrefabName = attackEffectName;
+                break;
+
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_01:
+                effectPrefabName = eSkillAttackEffectName;
+                break;
+
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
+                effectPrefabName = qSkillAttackEffectName;
+                break;
+        }
+
         // 이펙트 풀에 이미 해당 노드에 비활성화 된 이펙트가 있는지 검사
-        Effect _existEffect = effects.Find(eff => eff.effectID == attackEffectID && eff.ps.isStopped);
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == effectPrefabName && eff.self.isStopped);
         PlayerAttackEffect existEffect = (PlayerAttackEffect)_existEffect;
 
         if (existEffect != null)
         {
             // 해당 공격에 맞게 이펙트 조정 및 데이터 추가
-            AttackEffectSetup(existEffect, aniIndex);
+            AttackEffectSetup(existEffect, effectPrefabName, ani_id);
             return existEffect;
         }
 
         // 그게 아니면 새로 이펙트 생성
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + attackEffectName);
+        GameObject _effect = Resources.Load<GameObject>("Particle/" + effectPrefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         PlayerAttackEffect eff = effect.AddComponent<PlayerAttackEffect>();
@@ -108,91 +119,85 @@ public class EffectManager : MonoBehaviour
         effect.transform.SetParent(GameManager.instance.controller.player.transform);
 
         // 해당 공격에 맞게 이펙트 조정 및 데이터 추가
-        AttackEffectSetup(eff, aniIndex);
+        AttackEffectSetup(eff, effectPrefabName, ani_id);
 
         // 해당 이펙트 return
         return eff;
     }
 
-    public PlayerAttackHitEffect CreateHitEffect(Monster hitMob)
+    public PlayerHitEffect CreateHitEffect(int ani_id, Monster hitMob)
     {
-        // 재사용 가능 이펙트 검사
-        Effect _existEffect = effects.Find(eff => eff.effectID == hitEffectID && !eff.gameObject.activeSelf);
-        PlayerAttackHitEffect existEffect = (PlayerAttackHitEffect)_existEffect;
+        string effectPrefabName = string.Empty;
+
+        switch (ani_id)
+        {
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
+                effectPrefabName = qSkillHitEffectName;
+                break;
+
+            default:
+                effectPrefabName = hitEffectName;
+                break;
+        }
+
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == effectPrefabName && !eff.gameObject.activeSelf);
+        PlayerHitEffect existEffect = (PlayerHitEffect)_existEffect;
 
         if (existEffect != null)
         {
             existEffect.gameObject.SetActive(true);
-            existEffect.hitLight.gameObject.SetActive(true);
+            existEffect._hitLight.gameObject.SetActive(true);
             existEffect.transform.SetParent(this.transform);
             existEffect.transform.position = SetHitEffectPosition(hitMob);
             return existEffect;
         }
 
-        // 새 이펙트 생성
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + hitEffectName);
+        GameObject _effect = Resources.Load<GameObject>("Particle/" + effectPrefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
+        PlayerHitEffect eff;
 
-        PlayerAttackHitEffect eff = effect.AddComponent<PlayerAttackHitEffect>();
-
-        // 이펙트 풀에 추가
-        effects.Add(eff);
-
-        // 위치 Setup
-        effect.transform.SetParent(this.transform);
-        effect.transform.position = SetHitEffectPosition(hitMob);
-
-        // 해당 이펙트 return
-        return eff;
-    }
-
-    public PlayerESkillAttackEffect CreateESkillAttackEffect()
-    {
-        Effect _existEffect = effects.Find(eff => eff.effectID == eSkillAttackEffectID && eff.ps.isStopped);
-        PlayerESkillAttackEffect existEffect = (PlayerESkillAttackEffect)_existEffect;
-
-        if (existEffect != null)
+        switch (ani_id)
         {
-            SkillAttackEffectSetup(existEffect);
-            return existEffect;
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
+                eff = effect.AddComponent<PlayerQSkillHitEffect>();
+                break;
+
+            default:
+                eff = effect.AddComponent<PlayerAttackHitEffect>();
+                break;
         }
 
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + eSkillAttackEffectName);
-        GameObject effect = Instantiate<GameObject>(_effect);
-
-        PlayerESkillAttackEffect eff = effect.AddComponent<PlayerESkillAttackEffect>();
-
         effects.Add(eff);
-        effect.transform.SetParent(GameManager.instance.controller.player.transform);
 
-        SkillAttackEffectSetup(eff);
+        eff.effectNode = hitMob.transform;
+        eff.gameObject.name = effectPrefabName;
+        effect.transform.SetParent(this.transform);
+        effect.transform.position = SetHitEffectPosition(hitMob);
 
         return eff;
     }
 
     public PlayerESkillBackEffect CreateESkillBackEffect()
     {
-        Effect _existEffect = effects.Find(eff => eff.effectID == eSkillBackEffectID && !eff.gameObject.activeSelf);
+        string prefabName = eSkillBackEffectName;
+
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName && !eff.gameObject.activeSelf);
         PlayerESkillBackEffect existEffect = (PlayerESkillBackEffect)_existEffect;
 
         if (existEffect != null)
         {
             existEffect.gameObject.SetActive(true);
-            existEffect.transform.position = GameManager.instance.controller.player.transform.position;
-            existEffect.transform.rotation = GameManager.instance.controller.player.transform.rotation;
+            BackEffectSetup(existEffect, prefabName);
             existEffect.rippleEffect.transform.localRotation = Quaternion.Euler(FX_SKILL_E_RIPPLE_ROT);
             return existEffect;
         }
             
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + eSkillBackEffectName);
+        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         PlayerESkillBackEffect eff = effect.AddComponent<PlayerESkillBackEffect>();
 
-        eff.effectID = eSkillBackEffectID;
-        eff.effectNode = this.transform;
-        eff.transform.position = GameManager.instance.controller.player.transform.position;
-        eff.transform.rotation = GameManager.instance.controller.player.transform.rotation;
+        BackEffectSetup(eff, prefabName);
 
         effects.Add(eff);
         effect.transform.SetParent(GameManager.instance.controller.player.transform);
@@ -202,12 +207,64 @@ public class EffectManager : MonoBehaviour
         return eff;
     }
 
-    private void AttackEffectSetup(Effect eff, int aniIndex)
+    public PlayerQSkillBackEffect CreateQSkillBackEffect()
     {
-        eff.effectID = attackEffectID;
-        eff.effectNode = GameManager.instance.controller.player.transform;
+        string prefabName = qSkillBackEffectName;
 
-        switch (aniIndex)
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName && !eff.gameObject.activeSelf);
+        PlayerQSkillBackEffect existEffect = (PlayerQSkillBackEffect)_existEffect;
+
+        if (existEffect != null)
+        {
+            existEffect.gameObject.SetActive(true);
+            BackEffectSetup(existEffect, prefabName);
+            return existEffect;
+        }
+
+        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject effect = Instantiate<GameObject>(_effect);
+
+        PlayerQSkillBackEffect eff = effect.AddComponent<PlayerQSkillBackEffect>();
+
+        BackEffectSetup(eff, prefabName);
+
+        effects.Add(eff);
+        effect.transform.SetParent(GameManager.instance.controller.player.transform);
+
+        return eff;
+    }
+
+    public PlayerFootstepEffect CreateFootStepEffect()
+    {
+        string prefabName = footStepEffectName;
+
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName);
+        PlayerFootstepEffect existEffect = (PlayerFootstepEffect)_existEffect;
+
+        if (existEffect != null)
+            return existEffect;
+
+        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject effect = Instantiate<GameObject>(_effect);
+
+        PlayerFootstepEffect eff = effect.AddComponent<PlayerFootstepEffect>();
+
+        eff.effectNode = GameManager.instance.controller.player.transform;
+        effects.Add(eff);
+        effect.transform.SetParent(GameManager.instance.controller.player.transform);
+
+        return eff;
+    }
+
+    private void AttackEffectSetup(Effect eff, string effName, int ani_id)
+    {
+        if (eff.effectNode == null)
+        {
+            eff.gameObject.name = effName;
+            eff.effectNode = GameManager.instance.controller.player.transform;
+        }
+        
+        switch (ani_id)
         {
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_01:
                 eff.transform.localPosition = FX_NORMAL_COMBAT_ATTACK_01_POS;
@@ -223,16 +280,30 @@ public class EffectManager : MonoBehaviour
                 eff.transform.localPosition = FX_NORMAL_COMBAT_ATTACK_03_POS;
                 eff.transform.localRotation = Quaternion.Euler(FX_NORMAL_COMBAT_ATTACK_03_ROT);
                 break;
+
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_01:
+                eff.transform.localPosition = FX_SKILL_E_POS;
+                eff.transform.localRotation = Quaternion.Euler(FX_SKILL_E_ROT);
+                break;
+
+            case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
+                eff.transform.localPosition = FX_SKILL_Q_POS;
+                eff.transform.localRotation = Quaternion.Euler(FX_SKILL_Q_ROT);
+                eff.transform.localScale = FX_SKILL_Q_SCALE;
+                break;
         }
     }
 
-    private void SkillAttackEffectSetup(Effect eff)
+    private void BackEffectSetup(Effect eff, string effName)
     {
-        eff.effectID = eSkillAttackEffectID;
-        eff.effectNode = GameManager.instance.controller.player.transform;
+        if (eff.effectNode == null)
+        {
+            eff.gameObject.name = effName;
+            eff.effectNode = this.transform;
+        }
 
-        eff.transform.localPosition = FX_SKILL_E_POS;
-        eff.transform.localRotation = Quaternion.Euler(FX_SKILL_E_ROT);
+        eff.transform.position = GameManager.instance.controller.player.transform.position;
+        eff.transform.rotation = GameManager.instance.controller.player.transform.rotation;
     }
 
     private Vector3 SetHitEffectPosition(Monster hitMob)
