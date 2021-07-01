@@ -184,7 +184,7 @@ public class Monster : Character
     public IEnumerator StunCooldown(float duration)
     {
         stunEffect = EffectManager.instance.CreateStarStunEffect(id, head);
-        stunEffect.ps.Play();
+        stunEffect.self.Play();
 
         while (currentStunTimer <= duration)
         {
@@ -196,7 +196,7 @@ public class Monster : Character
         isStuned = false;
         StartCoroutine(thinking);
 
-        stunEffect.ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        stunEffect.self.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         currentStunTimer = 0;
     }
 
