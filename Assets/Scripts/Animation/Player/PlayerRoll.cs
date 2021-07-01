@@ -11,6 +11,9 @@ public class PlayerRoll : PlayerAnimation
         GameManager.instance.controller.immobile = false;
         GameManager.instance.controller.player.currentSp -= PlayerInfoTableManager.playerInfo.roll_sp;
         currentAnimationTime = 0;
+
+        if (GameManager.instance.controller.player.footStepEffect != null)
+            GameManager.instance.controller.player.footStepEffect.FootStepChange(AniType.NONE);
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

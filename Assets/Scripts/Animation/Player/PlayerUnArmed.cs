@@ -7,6 +7,9 @@ public class PlayerUnArmed : PlayerAnimation
     protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.player.isCombatMode = false;
+
+        if (GameManager.instance.controller.player.footStepEffect != null)
+            GameManager.instance.controller.player.footStepEffect.FootStepChange(AniType.NONE);
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -17,7 +20,7 @@ public class PlayerUnArmed : PlayerAnimation
         DeadCondition(animator);
     }
 
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.immobile = false;
     }

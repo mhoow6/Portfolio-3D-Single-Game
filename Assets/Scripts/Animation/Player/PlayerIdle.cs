@@ -6,6 +6,9 @@ public class PlayerIdle : PlayerAnimation
 {
     protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        if (GameManager.instance.controller.player.footStepEffect != null)
+            GameManager.instance.controller.player.footStepEffect.FootStepChange(AniType.NONE);
+
         GameManager.instance.controller.immobile = false;
     }
 

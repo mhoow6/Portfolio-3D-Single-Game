@@ -7,6 +7,9 @@ public class PlayerCombatAttack_02 : PlayerAnimation
     protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.player.currentSp -= PlayerInfoTableManager.playerInfo.combat_attack_sp;
+
+        if (GameManager.instance.controller.player.footStepEffect != null)
+            GameManager.instance.controller.player.footStepEffect.FootStepChange(AniType.NONE);
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -28,7 +31,7 @@ public class PlayerCombatAttack_02 : PlayerAnimation
         CombatModeDeadCondition(animator);
     }
 
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.player.isPlayerNeedSP = true;
         GameManager.instance.controller.immobile = false;

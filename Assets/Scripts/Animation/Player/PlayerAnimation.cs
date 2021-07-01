@@ -9,13 +9,12 @@ public class PlayerAnimation : StateMachineBehaviour
     protected const float attackClipSpeed = 0.8f;
     protected const float combatAttackClipSpeed = 0.75f;
 
-    [SerializeField]
     protected float currentAnimationTime;
-    [SerializeField]
     protected float prevHP;
     protected const float animationBackTime = 0.1f;
 
     public enum AniType {
+        NONE=-1,
         IDLE=0,
         WALK,
         RUN,
@@ -45,7 +44,6 @@ public class PlayerAnimation : StateMachineBehaviour
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        prevHP = GameManager.instance.controller.player.hp;
         StateEnter(animator, stateInfo, layerIndex);
     }
 
@@ -58,6 +56,16 @@ public class PlayerAnimation : StateMachineBehaviour
     {
         currentAnimationTime = stateInfo.normalizedTime % 1;
         StateUpdate(animator, stateInfo, layerIndex);
+    }
+
+    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        StateExit(animator, stateInfo, layerIndex);
+    }
+
+    protected virtual void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+
     }
 
     protected void IdleCondition(Animator animator)

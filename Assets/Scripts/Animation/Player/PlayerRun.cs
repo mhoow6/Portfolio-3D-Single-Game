@@ -9,6 +9,9 @@ public class PlayerRun : PlayerAnimation
         GameManager.instance.controller.player.isPlayerNeedSP = false;
         GameManager.instance.controller.isPlayerWantToRun = true;
         GameManager.instance.controller.immobile = false;
+
+        if (GameManager.instance.controller.player.footStepEffect != null)
+            GameManager.instance.controller.player.footStepEffect.FootStepChange(AniType.RUN);
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -33,7 +36,7 @@ public class PlayerRun : PlayerAnimation
 
     }
 
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.isPlayerWantToRun = false;
         GameManager.instance.controller.player.isPlayerNeedSP = true;
