@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum hitEffectPos
+{
+    FRONT = 0,
+    BACK = 1,
+    LEFT = 2,
+    RIGHT = 3
+}
+
 enum mobType
 {
     COMMON_MONSTER = 1,
@@ -48,7 +56,7 @@ public class Monster : Character
     public Transform[] hitEffectsPos = new Transform[4];
 
     protected float currentStunTimer;
-    protected float currentAttackCooldown;
+    public float currentAttackCooldown;
     protected float currentAttackDamage;
     protected float currentAttackDistance;
     protected float currentAttackAngle;
@@ -81,10 +89,10 @@ public class Monster : Character
         thinking = Thinking(THINKING_DURATION);
         GetNodeObject(this.transform, "Head", ref head);
 
-        GetNodeObject(this.transform, "Forward_Hit_Effect", ref hitEffectsPos[0]);
-        GetNodeObject(this.transform, "Backward_Hit_Effect", ref hitEffectsPos[1]);
-        GetNodeObject(this.transform, "Leftward_Hit_Effect", ref hitEffectsPos[2]);
-        GetNodeObject(this.transform, "Rightward_Hit_Effect", ref hitEffectsPos[3]);
+        GetNodeObject(this.transform, "Forward_Hit_Effect", ref hitEffectsPos[(int)hitEffectPos.FRONT]);
+        GetNodeObject(this.transform, "Backward_Hit_Effect", ref hitEffectsPos[(int)hitEffectPos.BACK]);
+        GetNodeObject(this.transform, "Leftward_Hit_Effect", ref hitEffectsPos[(int)hitEffectPos.LEFT]);
+        GetNodeObject(this.transform, "Rightward_Hit_Effect", ref hitEffectsPos[(int)hitEffectPos.RIGHT]);
 
         SpawnInfoSetup();
         InitallizeMobInfoFromTable();
@@ -150,9 +158,14 @@ public class Monster : Character
             monster = obj.AddComponent<EliteMonster>();
             return monster;
         }
-        else if (MonsterInfoTableManager.GetMonsterTypeFromMobID(mobID) == (byte)mobType.BOSS_MONSTER)
+        else if (MonsterInfoTableManager.GetMonsterPrefabNameFromID(mobID) == "Character_BR_FortGolem_01")
         {
-            monster = obj.AddComponent<BossMonster>();
+            monster = obj.AddComponent<Golem>();
+            return monster;
+        }
+        else if (MonsterInfoTableManager.GetMonsterPrefabNameFromID(mobID) == "DragonSoulEaterRedHP")
+        {
+            monster = obj.AddComponent<Golem>();
             return monster;
         }
 
@@ -202,10 +215,12 @@ public class Monster : Character
 
     public IEnumerator AttackCooldown(float duration)
     {
+        Debug.Log("코루틴 실행!");
+
         while (currentAttackCooldown <= duration)
         {
-            yield return null;
             isAttackCooldown = true;
+            yield return null;
             currentAttackCooldown += Time.deltaTime;
         }
 
@@ -436,7 +451,7 @@ public class EliteMonster : Monster
     }
 }
 
-public class BossMonster : Monster
+public class Golem : Monster
 {
     private void Start()
     {
