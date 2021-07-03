@@ -6,7 +6,6 @@ public class Effect : MonoBehaviour
 {
     public ParticleSystem self;
     public Transform effectNode;
-    public ushort effectID;
 
     private void Awake()
     {
@@ -351,4 +350,108 @@ public class PlayerFootstepEffect : Effect
                 break;
         }
     }
+}
+
+public class DragonFireBallEffect : Effect
+{
+    public Bounds _bound { get => bound; }
+    public float currentDamage;
+
+    [SerializeField]
+    private Bounds bound;
+
+    private const float fireBallSize = 1.2f;
+    private Vector3 originPos;
+    private Vector3 targetPos;
+    private float deltaDistance;
+    private const float FIRE_BALL_MOVE_SPEED = 6.0f;
+
+    private void Awake()
+    {
+        if (self == null)
+            self = GetComponent<ParticleSystem>();
+
+        BoundSetup();
+    }
+
+    private void OnEnable()
+    {
+        StartCoroutine(OnBoundIntersect());
+    }
+
+    private void Update()
+    {
+        bound.center = transform.position;
+    }
+
+    private void BoundSetup()
+    {
+        bound.center = transform.position;
+        bound.extents = new Vector3(fireBallSize, fireBallSize, fireBallSize);
+    }
+
+    private IEnumerator OnBoundIntersect()
+    {
+        while (true)
+        {
+            if (bound.Intersects(GameManager.instance.controller.player._bound))
+            {
+                // Create FireBall Explosion
+                GameManager.instance.controller.player.currentHp -= currentDamage;
+                StopEffect();
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    public void PlayEffect(int ani_id, Dragon dragon)
+    {
+        self.Play(true);
+
+        switch (ani_id)
+        {
+            case (int)DragonAnimation.AniType.FIREBALL:
+                StartCoroutine(MoveFireBall(dragon._fireBallDistance));
+                break;
+        }
+    }
+
+    private IEnumerator MoveFireBall(float moveDistance)
+    {
+        originPos = transform.position;
+        targetPos = GameManager.instance.controller.cameraArm.transform.position;
+
+        while (deltaDistance <= moveDistance)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * FIRE_BALL_MOVE_SPEED);
+            deltaDistance = Vector3.Distance(originPos, transform.position);
+            yield return null;
+        }
+
+        StopEffect();
+        deltaDistance = 0f;
+    }
+
+    public void StopEffect()
+    {
+        self.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        StartCoroutine(PlayCheckUpdate());
+    }
+
+    protected override IEnumerator PlayCheckUpdate()
+    {
+        while (true)
+        {
+            if (self.isStopped)
+            {
+                this.gameObject.SetActive(false);
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
 }
