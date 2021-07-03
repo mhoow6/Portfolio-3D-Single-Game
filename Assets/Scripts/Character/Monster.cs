@@ -215,8 +215,6 @@ public class Monster : Character
 
     public IEnumerator AttackCooldown(float duration)
     {
-        Debug.Log("코루틴 실행!");
-
         while (currentAttackCooldown <= duration)
         {
             isAttackCooldown = true;
@@ -315,7 +313,7 @@ public class Monster : Character
         yield return StartCoroutine(Thinking(THINKING_DURATION));
     }
 
-    private void GetNodeObject(Transform parent, string nodeName, ref Transform node)
+    protected void GetNodeObject(Transform parent, string nodeName, ref Transform node)
     {
         for (int i = 0; i < parent.childCount; i++)
         {
