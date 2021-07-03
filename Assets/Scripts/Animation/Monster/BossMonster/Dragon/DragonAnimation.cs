@@ -14,6 +14,9 @@ public class DragonAnimation : StateMachineBehaviour
 
     protected const float defaultAnimationTransitionTime = 0.25f;
     protected const float SPARE_DISTANCE = 1f;
+    protected const float ATTACK_MIN_ANGLE = 20f;
+    protected const float FIREBALL_MIN_ANGLE = 5f;
+    protected const float TURN_AROUND_SPEED = 2f;
 
     public enum AniType
     {
@@ -23,7 +26,8 @@ public class DragonAnimation : StateMachineBehaviour
         ATTACK,
         TAIL_ATTACK,
         FIREBALL,
-        INJURED
+        INJURED,
+        TURN_AROUND
     }
 
     public enum ComboAniType
@@ -91,11 +95,12 @@ public class DragonAnimation : StateMachineBehaviour
     {
         if (player.currentHp > 0)
         {
-            if (dragon._currentDistanceWithPlayer >= dragon._attackRange + SPARE_DISTANCE)
-                animator.SetInteger("ani_id", (int)AniType.WALK);
+            if (!dragon.isFreeze)
+            {
+                if (dragon._currentDistanceWithPlayer >= dragon._attackRange + SPARE_DISTANCE)
+                    animator.SetInteger("ani_id", (int)AniType.WALK);
+            }
         }
-
-        
     }
 
     protected void AttackCondition(Animator animator, Dragon dragon)
@@ -104,7 +109,7 @@ public class DragonAnimation : StateMachineBehaviour
         {
             if (!dragon.isAttackCooldown)
             {
-                if (dragon._currentDistanceWithPlayer < dragon._attackRange && dragon._currentAngleWithPlayer < dragon._attackAngle)
+                if (dragon._currentDistanceWithPlayer < dragon._attackRange && dragon._currentAngleWithPlayer < ATTACK_MIN_ANGLE)
                     animator.SetInteger("ani_id", (int)AniType.ATTACK);
             }
         }
@@ -121,6 +126,29 @@ public class DragonAnimation : StateMachineBehaviour
                         animator.SetInteger("ani_id", (int)AniType.TAIL_ATTACK);
             }
         }
-        
+    }
+
+    protected void TurnAroundCondition(Animator animator, Dragon dragon)
+    {
+        if (player.currentHp > 0)
+        {
+            if (!dragon.isAttackCooldown)
+            {
+                if (dragon.IsNeedTurnAround())
+                    animator.SetInteger("ani_id", (int)AniType.TURN_AROUND);
+            }
+        }
+    }
+
+    protected void FireBallCondition(Animator animator, Dragon dragon)
+    {
+        if (player.currentHp > 0)
+        {
+            if (!dragon.isFireBallCooldown)
+            {
+                if (dragon._currentDistanceWithPlayer >= dragon._attackRange + SPARE_DISTANCE && dragon._currentAngleWithPlayer < FIREBALL_MIN_ANGLE)
+                    animator.SetInteger("ani_id", (int)AniType.FIREBALL);
+            }  
+        }
     }
 }
