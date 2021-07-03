@@ -33,6 +33,7 @@ public class EffectManager : MonoBehaviour
     private const string qSkillHitEffectName = "FX_QSkill_Hit";
     private const string qSkillBackEffectName = "FX_QSkill_Background";
     private const string footStepEffectName = "FX_Cartoony_Footstep";
+    private const string fireBallEffectName = "FX_Fireball_Shooting_Straight_Trail_01";
 
     private void Awake()
     {
@@ -256,6 +257,33 @@ public class EffectManager : MonoBehaviour
         return eff;
     }
 
+    public DragonFireBallEffect CreateDragonFireBallEffect(Dragon dragon)
+    {
+        string prefabName = fireBallEffectName;
+
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName);
+        DragonFireBallEffect existEffect = (DragonFireBallEffect)_existEffect;
+
+        if (existEffect != null)
+        {
+            FireBallEffectSetup(existEffect, dragon);
+            return existEffect;
+        }
+            
+
+        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject effect = Instantiate<GameObject>(_effect);
+
+        DragonFireBallEffect eff = effect.AddComponent<DragonFireBallEffect>();
+
+        FireBallEffectSetup(eff, dragon);
+        eff.effectNode = this.transform;
+        effects.Add(eff);
+        effect.transform.SetParent(this.transform);
+
+        return eff;
+    }
+
     private void AttackEffectSetup(Effect eff, string effName, int ani_id)
     {
         if (eff.effectNode == null)
@@ -324,5 +352,10 @@ public class EffectManager : MonoBehaviour
         }
 
         return effectPos;
+    }
+
+    private void FireBallEffectSetup(Effect eff, Dragon dragon)
+    {
+        eff.transform.position = dragon._fireBallEffectPos.position;
     }
 }
