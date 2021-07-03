@@ -9,5 +9,7 @@ public class DragonBattleIdle : DragonAnimation
         aniHandler = WalkCondition;
         aniHandler += AttackCondition;
         aniHandler += TailAttackCondition;
+        aniHandler += TurnAroundCondition;
+        aniHandler += FireBallCondition;
     }
 }
