@@ -86,8 +86,6 @@ public static class SaveManager
         Debug.Log("박스 콜라이더 생성이 완료되었습니다. 콜라이더의 센터는 오브젝트마다 다르니 필요시 조정하세요.");
     }
 
-
-    // 태그 이름을 매개변수로 받아 합칠 수 있음
     private static void SaveMonsterPosition(string filePath)
     {
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
@@ -171,7 +169,6 @@ public static class SaveManager
         byte[] buffer = Encoding.UTF8.GetBytes(data);
         File.WriteAllBytes(filePath, buffer);
     }
-    // 태그 이름을 매개변수로 받아 합칠 수 있음
 
     private static void SaveScene(string filePath)
     {
