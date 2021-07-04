@@ -25,9 +25,14 @@ public class Dragon : Monster
     public bool isFreeze;
 
     public float _fireBallDistance { get => skill_2_distance; }
+    public float _flyAttackDistance { get => skill_3_distance; }
 
     private Transform fireBallEffectPos;
     public Transform _fireBallEffectPos { get => fireBallEffectPos; }
+
+    public float _specialComboCooldown { get => specialComboCooldown; }
+    private float specialComboCooldown;
+    public bool isSpecialComboCooldown;
 
     private Vector3 vToPlayer;
     private Vector3 vToLeft;
@@ -36,8 +41,17 @@ public class Dragon : Monster
 
     private const float FIREBALL_DURATION = 10f;
     private const float FIREBALL_AFTERFREEZE = 2f;
+    private const float SPECAIL_COMBO_COOLDOWN = 120f;
 
-    private DragonFireBallEffect fireBalleffect;
+    private DragonFireBallEffect fireBallEffect;
+
+    public int _TOTAL_FIYBALL_SHOOT { get => TOTAL_FIYBALL_SHOOT; }
+    private const int TOTAL_FIYBALL_SHOOT = 5;
+    public int currentFlyFireBallShoot;
+    private const float FLY_HEIGHT = 2.0f;
+    private const float FLY_SPEED = 3.0f;
+
+    public Vector3 destination;
 
     private void Start()
     {
@@ -76,6 +90,15 @@ public class Dragon : Monster
         return false;
     }
 
+    public bool IsSpecialComboAble()
+    {
+        if (hp < spawnInfo.hp * 0.5f)
+            if (!isSpecialComboCooldown)
+                return true;
+
+        return false;
+    }
+
     public void TurnAround(float turnAroundSpeed)
     {
         vToPlayer = (GameManager.instance.controller.player.transform.position - transform.position).normalized;
@@ -110,6 +133,19 @@ public class Dragon : Monster
         freezeCooldown = 0;
     }
 
+    public IEnumerator SpecialComboCooldown()
+    {
+        while (specialComboCooldown <= SPECAIL_COMBO_COOLDOWN)
+        {
+            isSpecialComboCooldown = true;
+            yield return null;
+            specialComboCooldown += Time.deltaTime;
+        }
+
+        isSpecialComboCooldown = false;
+        specialComboCooldown = 0;
+    }
+
     protected override void Attack(int ani_id)
     {
         switch (ani_id)
@@ -136,11 +172,60 @@ public class Dragon : Monster
         switch (ani_id)
         {
             case (int)DragonAnimation.AniType.FIREBALL:
+            case (int)DragonAnimation.ComboAniType.FLY_FIREBALL:
                 currentAttackDamage = skill_2_damage;
-                fireBalleffect = EffectManager.instance.CreateDragonFireBallEffect(this);
-                fireBalleffect.currentDamage = currentAttackDamage;
-                fireBalleffect.PlayEffect(ani_id, this);
+                fireBallEffect = EffectManager.instance.CreateDragonFireBallEffect(this);
+                fireBallEffect.currentDamage = currentAttackDamage;
+                fireBallEffect.PlayEffect(ani_id, this);
+                break;
+            case (int)DragonAnimation.ComboAniType.METEO:
+                currentAttackDamage = skill_3_damage;
+                fireBallEffect = EffectManager.instance.CreateDragonMeteoEffect(this);
+                fireBallEffect.currentDamage = currentAttackDamage;
+                fireBallEffect.PlayEffect(ani_id, this);
                 break;
         }
+    }
+
+    public Vector3 SetLandingPos()
+    {
+        float distancePlayerFromFarField = Vector3.Distance(GameManager.instance.controller.player.transform.position, GameManager.instance.dragonLandFields[0].position);
+        Vector3 landingPos = GameManager.instance.dragonLandFields[0].position;
+
+        for (int i = 0; i < GameManager.instance.dragonLandFields.Count; i++)
+        {
+            float calculatedDistance = Vector3.Distance(GameManager.instance.controller.player.transform.position, GameManager.instance.dragonLandFields[i].position);
+
+            if (calculatedDistance > distancePlayerFromFarField)
+            {
+                distancePlayerFromFarField = calculatedDistance;
+                landingPos = GameManager.instance.dragonLandFields[i].position;
+            }
+        }
+
+        return landingPos;
+    }
+
+    public Vector3 SetFlyingMovePos(Vector3 destination)
+    {
+        Vector3 reCaculatedPos = new Vector3(destination.x, transform.position.y, destination.z);
+
+        return reCaculatedPos;
+    }
+
+    public IEnumerator Flying()
+    {
+        Vector3 des = new Vector3(transform.position.x, transform.position.y + FLY_HEIGHT, transform.position.z);
+        float timer = 0;
+
+        while (transform.position.y < des.y)
+        {
+            Debug.Log("current y: " + transform.position.y); // 이거 왜 날기 시작 전 위치 값밖에 안 나옴?
+            timer += Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, des, timer);
+            yield return null;
+        }
+
+        Debug.Log("더 이상 안 날래");
     }
 }
