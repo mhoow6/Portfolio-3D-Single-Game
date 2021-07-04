@@ -33,7 +33,10 @@ public class EffectManager : MonoBehaviour
     private const string qSkillHitEffectName = "FX_QSkill_Hit";
     private const string qSkillBackEffectName = "FX_QSkill_Background";
     private const string footStepEffectName = "FX_Cartoony_Footstep";
-    private const string fireBallEffectName = "FX_Fireball_Shooting_Straight_Trail_01";
+    private const string fireBallEffectName = "FX_Fireball_Shooting_Straight_Trail";
+    private const string fireBallHitEffectName = "FX_Explosion_01";
+    private const string meteoEffectName = "FX_Meteo_Shooting_Straight_Trail";
+    private const string meteoHitEffectName = "FX_Explosion_Large_Dark";
 
     private void Awake()
     {
@@ -251,6 +254,7 @@ public class EffectManager : MonoBehaviour
         PlayerFootstepEffect eff = effect.AddComponent<PlayerFootstepEffect>();
 
         eff.effectNode = GameManager.instance.controller.player.transform;
+        eff.name = fireBallEffectName;
         effects.Add(eff);
         effect.transform.SetParent(GameManager.instance.controller.player.transform);
 
@@ -261,23 +265,85 @@ public class EffectManager : MonoBehaviour
     {
         string prefabName = fireBallEffectName;
 
-        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName);
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName && !eff.gameObject.activeSelf);
         DragonFireBallEffect existEffect = (DragonFireBallEffect)_existEffect;
 
         if (existEffect != null)
         {
-            FireBallEffectSetup(existEffect, dragon);
+            existEffect.gameObject.SetActive(true);
+            FireBallEffectSetup(existEffect, prefabName, dragon._fireBallEffectPos.position);
             return existEffect;
         }
             
+        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject effect = Instantiate<GameObject>(_effect);
+
+        DragonFireBallEffect eff = effect.AddComponent<DragonFireBallEffect>();
+
+        FireBallEffectSetup(eff, prefabName, dragon._fireBallEffectPos.position);
+        effects.Add(eff);
+        effect.transform.SetParent(this.transform);
+
+        return eff;
+    }
+
+    public DragonFireBallHitEffect CreateDragonFireBallHitEffect(Vector3 hitPos, string fireBallName)
+    {
+        string prefabName = string.Empty;
+
+        switch (fireBallName)
+        {
+            case fireBallEffectName:
+                prefabName = fireBallHitEffectName;
+                break;
+            
+            case meteoEffectName:
+                prefabName = meteoHitEffectName;
+                break;
+        }
+
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName && !eff.gameObject.activeSelf);
+        DragonFireBallHitEffect existEffect = (DragonFireBallHitEffect)_existEffect;
+
+        if (existEffect != null)
+        {
+            existEffect.gameObject.SetActive(true);
+            FireBallHitEffectSetup(existEffect, prefabName, hitPos);
+            return existEffect;
+        }
+
+        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject effect = Instantiate<GameObject>(_effect);
+
+        DragonFireBallHitEffect eff = effect.AddComponent<DragonFireBallHitEffect>();
+
+        FireBallHitEffectSetup(eff, prefabName, hitPos);
+        effects.Add(eff);
+        effect.transform.SetParent(this.transform);
+
+        return eff;
+    }
+
+    public DragonFireBallEffect CreateDragonMeteoEffect(Dragon dragon)
+    {
+        string prefabName = meteoEffectName;
+
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName && !eff.gameObject.activeSelf);
+        DragonFireBallEffect existEffect = (DragonFireBallEffect)_existEffect;
+
+        if (existEffect != null)
+        {
+            existEffect.gameObject.SetActive(true);
+            FireBallEffectSetup(existEffect, prefabName, dragon._fireBallEffectPos.position);
+            return existEffect;
+        }
 
         GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         DragonFireBallEffect eff = effect.AddComponent<DragonFireBallEffect>();
 
-        FireBallEffectSetup(eff, dragon);
-        eff.effectNode = this.transform;
+        FireBallEffectSetup(eff, prefabName, dragon._fireBallEffectPos.position);
         effects.Add(eff);
         effect.transform.SetParent(this.transform);
 
@@ -354,8 +420,25 @@ public class EffectManager : MonoBehaviour
         return effectPos;
     }
 
-    private void FireBallEffectSetup(Effect eff, Dragon dragon)
+    private void FireBallEffectSetup(Effect eff, string effName, Vector3 startPos)
     {
-        eff.transform.position = dragon._fireBallEffectPos.position;
+        if (eff.effectNode == null)
+        {
+            eff.name = effName;
+            eff.effectNode = this.transform;
+        }
+            
+        eff.transform.position = startPos;
+    }
+
+    private void FireBallHitEffectSetup(Effect eff, string effName, Vector3 hitPos)
+    {
+        if (eff.effectNode == null)
+        {
+            eff.name = effName;
+            eff.effectNode = this.transform;
+        }
+
+        eff.transform.position = hitPos;
     }
 }
