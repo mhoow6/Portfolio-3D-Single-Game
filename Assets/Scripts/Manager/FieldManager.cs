@@ -27,6 +27,7 @@ public class FieldManager : MapManager
         CreateScene(forestPath, field);
         CreatePlayer(SceneInfoManager.instance.spawnPos);
         CreateMonster(forestMonsterPath);
+        
         field.gameObject.SetActive(true);
 
         SceneInfoManager.instance.isSceneLoadCompleted = true;

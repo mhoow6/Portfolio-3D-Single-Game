@@ -92,10 +92,6 @@ public class TableManager : MonoBehaviour
     {
         TextAsset txtAsset = Resources.Load<TextAsset>(filePath);
 
-        // Empty Table
-        if (txtAsset.text == "")
-            return null;
-
         char[] option = { '\r', '\n' };
         string[] _lines = txtAsset.text.Split(option);
         List<string> lines = new List<string>();
@@ -115,6 +111,8 @@ public class TableManager : MonoBehaviour
     {
         string line = string.Empty;
         List<string> lines = new List<string>();
+
+        Debug.Log(filePath);
 
         using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
         {
