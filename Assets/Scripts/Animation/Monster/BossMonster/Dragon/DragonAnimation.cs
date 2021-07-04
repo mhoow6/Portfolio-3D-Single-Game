@@ -33,7 +33,7 @@ public class DragonAnimation : StateMachineBehaviour
     public enum ComboAniType
     {
         NONE = -1,
-        TAKEOFF = 0,
+        TAKEOFF = 10,
         FLY,
         FLY_FIREBALL,
         METEO,
@@ -150,5 +150,31 @@ public class DragonAnimation : StateMachineBehaviour
                     animator.SetInteger("ani_id", (int)AniType.FIREBALL);
             }  
         }
+    }
+
+    protected void SpecialComboCondition(Animator animator, Dragon dragon)
+    {
+        if (player.currentHp > 0)
+        {
+            if (dragon.IsSpecialComboAble())
+            {
+                specialCombo = true;
+                animator.SetBool("specialCombo", true);
+                animator.SetInteger("combo_id", (int)ComboAniType.FLY);
+            }
+                
+        }
+    }
+
+    protected void KeepFlyCondition(Animator animator, Dragon dragon)
+    {
+        if (dragon.transform.position != dragon.destination)
+            animator.SetInteger("combo_id", (int)ComboAniType.FLY_FORWARD);
+    }
+
+    protected void LandReadyCondition(Animator animator, Dragon dragon)
+    {
+        if (dragon.transform.position.x == dragon.destination.x && dragon.transform.position.z == dragon.destination.z)
+            animator.SetInteger("combo_id", (int)ComboAniType.LAND_READY);
     }
 }
