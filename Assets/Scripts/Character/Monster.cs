@@ -165,7 +165,7 @@ public class Monster : Character
         }
         else if (MonsterInfoTableManager.GetMonsterPrefabNameFromID(mobID) == "DragonSoulEaterRedHP")
         {
-            monster = obj.AddComponent<Golem>();
+            monster = obj.AddComponent<Dragon>();
             return monster;
         }
 
