@@ -91,7 +91,7 @@ public static class SaveManager
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
         string data = string.Empty;
 
-        data = "index,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale";
+        data = "index,id,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale";
         data += "\n";
 
         for (int i = 0; i < monsters.Length; i++)
@@ -107,7 +107,8 @@ public static class SaveManager
             monsters[i].transform.rotation.eulerAngles.z + "," +
             monsters[i].transform.localScale.x + "," +
             monsters[i].transform.localScale.y + "," +
-            monsters[i].transform.localScale.z;          
+            monsters[i].transform.localScale.z;
+            data += "\n";
         }
 
         byte[] buffer = Encoding.UTF8.GetBytes(data);
@@ -278,11 +279,11 @@ public static class SaveManager
     {
         string mobInfoPath = Application.dataPath + "/Resources/Tables/MonsterInfo.csv";
 
-        MonsterInfoTableManager.LoadTable(mobInfoPath);
+        MonsterInfoTableManager.LoadTableForSaveManager(mobInfoPath);
 
         foreach (MonsterInfo mobinfo in MonsterInfoTableManager.mobInfoList)
         {
-            if (mobName == mobinfo.monster_name)
+            if (mobName == mobinfo.prefab_name)
                 return mobinfo.id;
         }
 
@@ -293,11 +294,11 @@ public static class SaveManager
     {
         string npcInfoPath = Application.dataPath + "/Resources/Tables/NPCInfo.csv";
 
-        NPCInfoTableManager.LoadTable(npcInfoPath);
+        NPCInfoTableManager.LoadTableForSaveManager(npcInfoPath);
 
         foreach (NpcInfo npcinfo in NPCInfoTableManager.npcInfoList)
         {
-            if (npcName == npcinfo.npc_name)
+            if (npcName == npcinfo.prefab_name)
                 return npcinfo.id;
         }
 

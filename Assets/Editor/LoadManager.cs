@@ -105,8 +105,6 @@ public static class LoadManager
 
     private static void LoadMonsterPosition(string filePath)
     {
-        MonsterInfoTableManager.LoadTable(filePath);
-
         using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
         {
             using (StreamReader sr = new StreamReader(f, Encoding.UTF8))
@@ -154,8 +152,6 @@ public static class LoadManager
 
     private static void LoadNPCPosition(string filePath)
     {
-        NPCInfoTableManager.LoadTable(filePath);
-
         using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
         {
             using (StreamReader sr = new StreamReader(f, Encoding.UTF8))
