@@ -87,6 +87,48 @@ public static class MonsterInfoTableManager
         }
     }
 
+    public static void LoadTableForSaveManager(string filePath)
+    {
+        List<string> lines = GetLinesFromTableForSaveManager(filePath);
+
+        for (int i = 1; i < lines.Count; i++)
+        {
+            string[] datas = lines[i].Split(',');
+
+            MonsterInfo mobInfo;
+
+            mobInfo.id = ushort.Parse(datas[0]);
+            mobInfo.prefab_name = datas[1];
+            mobInfo.monster_name = datas[2];
+            mobInfo.monster_type = byte.Parse(datas[3]);
+            mobInfo.hp = float.Parse(datas[4]);
+            mobInfo.attack_damage = float.Parse(datas[5]);
+            mobInfo.attack_distance = float.Parse(datas[6]);
+            mobInfo.attack_angle = float.Parse(datas[7]);
+            mobInfo.skill_1_damage = float.Parse(datas[8]);
+            mobInfo.skill_1_distance = float.Parse(datas[9]);
+            mobInfo.skill_1_angle = float.Parse(datas[10]);
+            mobInfo.skill_2_damage = float.Parse(datas[11]);
+            mobInfo.skill_2_distance = float.Parse(datas[12]);
+            mobInfo.skill_2_angle = float.Parse(datas[13]);
+            mobInfo.skill_3_damage = float.Parse(datas[14]);
+            mobInfo.skill_3_distance = float.Parse(datas[15]);
+            mobInfo.skill_3_angle = float.Parse(datas[16]);
+            mobInfo.walk_speed = float.Parse(datas[17]);
+            mobInfo.run_speed = float.Parse(datas[18]);
+            mobInfo.detect_range = float.Parse(datas[19]);
+            mobInfo.agent_priority = int.Parse(datas[20]);
+            mobInfo.agent_radius = float.Parse(datas[21]);
+            mobInfo.endurance = byte.Parse(datas[22]);
+            mobInfo.stun_escape = float.Parse(datas[23]);
+            mobInfo.respawn_time = float.Parse(datas[24]);
+            mobInfo.exp = float.Parse(datas[25]);
+            mobInfo.attack_duration = float.Parse(datas[26]);
+
+            mobInfoList.Add(mobInfo);
+        }
+    }
+
     public static string GetMonsterNameFromID(ushort mobID)
     {
         foreach (MonsterInfo mobinfo in mobInfoList)
@@ -130,4 +172,26 @@ public static class MonsterInfoTableManager
 
         throw new System.NotSupportedException(mobID + " 에 해당하는 몬스터는 없습니다.");
     }
+
+    private static List<string> GetLinesFromTableForSaveManager(string filePath)
+    {
+        string line = string.Empty;
+        List<string> lines = new List<string>();
+
+        Debug.Log(filePath);
+
+        using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+        {
+            using (StreamReader sr = new StreamReader(f, System.Text.Encoding.UTF8))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    lines.Add(line);
+                }
+            }
+        }
+
+        return lines;
+    }
 }
+
