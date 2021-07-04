@@ -122,6 +122,9 @@ public class MapManager : MonoBehaviour
             if (objName == "Teleport")
                 GameManager.instance.teleport = obj.AddComponent<Teleport>();
 
+            if (objName == "DragonLand")
+                GameManager.instance.dragonLandFields.Add(obj.transform);
+
             // 5. 실제 게임오브젝트에 테이블 데이터 적용
             obj.name = objName;
             obj.transform.position = objPos;
