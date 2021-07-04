@@ -59,6 +59,28 @@ public class Effect : MonoBehaviour
     {
         yield return null;
     }
+
+    protected void GetNodeObject(Transform parent, string nodeName, ref Transform node)
+    {
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            // 이미 nodeName에 맞는 것을 찾아서 null이 아닐 경우 의미없는 호출을 방지하기 위해 함수 종료
+            if (node != null)
+                return;
+
+            Transform child = parent.GetChild(i);
+
+            if (child.name != nodeName)
+            {
+                // 자식이 또다른 자식을 가질 경우 자식의 자식들을 탐색
+                if (child.childCount != 0)
+                    GetNodeObject(child, nodeName, ref node);
+            }
+
+            if (child.name == nodeName)
+                node = child;
+        }
+    }
 }
 
 public class PlayerAttackEffect : Effect
@@ -70,22 +92,10 @@ public class PlayerAttackEffect : Effect
     }
 }
 
-public class PlayerHitEffect : Effect
+public class HitEffect : Effect
 {
     protected Light hitLight;
     public Light _hitLight { get => hitLight; }
-
-    private WaitForSeconds hitChangeColorWt = new WaitForSeconds(0.2f);
-    private Color hitChangeColor = new Color(0.117f, 0, 0, 1f); // RGB 30, 0, 0
-
-    public void PlayEffects(Monster hitMob)
-    {
-        Play(hitMob);
-    }
-
-    protected virtual void OnAwake() { }
-
-    protected virtual void Play(Monster hitMob) { }
 
     protected IEnumerator LightUpdate()
     {
@@ -104,6 +114,19 @@ public class PlayerHitEffect : Effect
             yield return null;
         }
     }
+}
+
+public class PlayerHitEffect : HitEffect
+{
+    private WaitForSeconds hitChangeColorWt = new WaitForSeconds(0.2f);
+    private Color hitChangeColor = new Color(0.117f, 0, 0, 1f); // RGB 30, 0, 0
+
+    public void PlayEffects(Monster hitMob)
+    {
+        Play(hitMob);
+    }
+
+    protected virtual void Play(Monster hitMob) { }
 
     protected IEnumerator HitChangeMobColor(Monster hitMob)
     {
@@ -277,6 +300,10 @@ public class PlayerQSkillBackEffect : PlayerSkillBackEffect
     {
         ember.Play(true);
         swirl.Play(true);
+
+        front_light.intensity = 1.0f;
+        back_light.intensity = 1.0f;
+
         front_light.gameObject.SetActive(true);
         back_light.gameObject.SetActive(true);
     }
@@ -360,11 +387,14 @@ public class DragonFireBallEffect : Effect
     [SerializeField]
     private Bounds bound;
 
-    private const float fireBallSize = 1.2f;
+    private float fireBallSize;
     private Vector3 originPos;
+    private float originToTargetDistance;
+    private Vector3 originToTargetDirection;
     private Vector3 targetPos;
     private float deltaDistance;
-    private const float FIRE_BALL_MOVE_SPEED = 6.0f;
+    private const float FIRE_BALL_MOVE_SPEED = 10.0f;
+    private const float METEO_MOVE_SPEED = 5.0f;
 
     private void Awake()
     {
@@ -387,6 +417,9 @@ public class DragonFireBallEffect : Effect
     private void BoundSetup()
     {
         bound.center = transform.position;
+
+        fireBallSize = self.main.startSize.constant * 0.5f;
+
         bound.extents = new Vector3(fireBallSize, fireBallSize, fireBallSize);
     }
 
@@ -396,9 +429,10 @@ public class DragonFireBallEffect : Effect
         {
             if (bound.Intersects(GameManager.instance.controller.player._bound))
             {
-                // Create FireBall Explosion
+                EffectManager.instance.CreateDragonFireBallHitEffect(transform.position, gameObject.name).PlayEffect();
                 GameManager.instance.controller.player.currentHp -= currentDamage;
-                StopEffect();
+                self.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                StartCoroutine(PlayCheckUpdate());
                 yield break;
             }
 
@@ -413,31 +447,36 @@ public class DragonFireBallEffect : Effect
         switch (ani_id)
         {
             case (int)DragonAnimation.AniType.FIREBALL:
-                StartCoroutine(MoveFireBall(dragon._fireBallDistance));
+                StartCoroutine(MoveFireBall(dragon._fireBallDistance, FIRE_BALL_MOVE_SPEED));
+                break;
+            case (int)DragonAnimation.ComboAniType.FLY_FIREBALL:
+                StartCoroutine(MoveFireBall(dragon._flyAttackDistance, FIRE_BALL_MOVE_SPEED));
+                break;
+            case (int)DragonAnimation.ComboAniType.METEO:
+                StartCoroutine(MoveFireBall(dragon._flyAttackDistance, METEO_MOVE_SPEED));
                 break;
         }
     }
 
-    private IEnumerator MoveFireBall(float moveDistance)
+    private IEnumerator MoveFireBall(float moveDistance, float moveSpeed)
     {
         originPos = transform.position;
-        targetPos = GameManager.instance.controller.cameraArm.transform.position;
 
-        while (deltaDistance <= moveDistance)
+        originToTargetDistance = Vector3.Distance(originPos, GameManager.instance.controller.cameraArm.transform.position);
+        originToTargetDirection = (GameManager.instance.controller.cameraArm.transform.position - originPos).normalized;
+
+        targetPos = GameManager.instance.controller.cameraArm.transform.position + (originToTargetDirection * (moveDistance - originToTargetDistance));
+
+        while (deltaDistance < moveDistance)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * FIRE_BALL_MOVE_SPEED);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * moveSpeed);
             deltaDistance = Vector3.Distance(originPos, transform.position);
             yield return null;
         }
 
-        StopEffect();
-        deltaDistance = 0f;
-    }
-
-    public void StopEffect()
-    {
         self.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         StartCoroutine(PlayCheckUpdate());
+        deltaDistance = 0f;
     }
 
     protected override IEnumerator PlayCheckUpdate()
@@ -453,5 +492,62 @@ public class DragonFireBallEffect : Effect
             yield return null;
         }
     }
+}
 
+public class DragonFireBallHitEffect : HitEffect
+{
+    private const float LIGHT_TURN_OFF_SPEED = 5.0f;
+
+    private void Awake()
+    {
+        if (self == null)
+            self = GetComponent<ParticleSystem>();
+
+        GetChildLight(this.transform, "Explosion_Light", ref hitLight);
+    }
+
+    public void PlayEffect()
+    {
+        self.Play(true);
+        hitLight.intensity = 1.0f;
+        StartCoroutine(LightTurnoffSmooth(hitLight));
+
+        Invoke("StopEffect", 1f);
+    }
+
+    public void StopEffect()
+    {
+        self.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        StartCoroutine(PlayCheckUpdate());
+    }
+
+    private IEnumerator LightTurnoffSmooth(Light light)
+    {
+        while (true)
+        {
+            light.intensity = Mathf.Lerp(light.intensity, 0f, Time.deltaTime * LIGHT_TURN_OFF_SPEED);
+
+            if (light.intensity <= 0.1f)
+            {
+                light.intensity = 0f;
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+
+    protected override IEnumerator PlayCheckUpdate()
+    {
+        while (true)
+        {
+            if (self.isStopped)
+            {
+                this.gameObject.SetActive(false);
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
 }
