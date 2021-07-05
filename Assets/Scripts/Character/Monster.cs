@@ -60,6 +60,8 @@ public class Monster : Character
     protected float currentAttackDamage;
     protected float currentAttackDistance;
     protected float currentAttackAngle;
+
+    public bool isImmortal;
     public SkinnedMeshRenderer smr;
     public Color originEmissionColor;
     
