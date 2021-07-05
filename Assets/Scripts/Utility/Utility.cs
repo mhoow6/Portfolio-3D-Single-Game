@@ -3,6 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+public struct Line
+{
+    public float min_x;
+    public float max_x;
+    public float Length_x { get => max_x - min_x; }
+
+    public float min_y;
+    public float max_y;
+    public float Length_y { get => max_y - min_y; }
+
+    public float min_z;
+    public float max_z;
+    public float Length_z { get => max_z - min_z; }
+}
 
 public static class Utility
 {
@@ -118,5 +132,42 @@ public static class Utility
 
             tmpText.color = finish;
         }
+    }
+
+    public static void GetBoundsFromMeshFilter(MeshFilter mf, ref Bounds yourBound)
+    {
+        Vector3[] meshVertices = mf.mesh.vertices;
+
+        Line container;
+        container.min_x = meshVertices[0].x;
+        container.max_x = meshVertices[0].x;
+        container.min_y = meshVertices[0].y;
+        container.max_y = meshVertices[0].y;
+        container.min_z = meshVertices[0].z;
+        container.max_z = meshVertices[0].z;
+
+        foreach (Vector3 vertex in meshVertices)
+        {
+            if (vertex.x < container.min_x)
+                container.min_x = vertex.x;
+
+            if (vertex.x > container.max_x)
+                container.max_x = vertex.x;
+
+            if (vertex.y < container.min_y)
+                container.min_y = vertex.y;
+
+            if (vertex.y > container.max_y)
+                container.max_y = vertex.y;
+
+            if (vertex.z < container.min_z)
+                container.min_z = vertex.z;
+
+            if (vertex.z > container.max_z)
+                container.max_z = vertex.z;
+        }
+
+        yourBound.center = mf.gameObject.transform.position;
+        yourBound.size = new Vector3(container.Length_x, container.Length_y, container.Length_z);
     }
 }
