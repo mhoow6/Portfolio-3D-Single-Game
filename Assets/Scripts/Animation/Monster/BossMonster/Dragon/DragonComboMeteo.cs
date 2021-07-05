@@ -11,6 +11,6 @@ public class DragonComboMeteo : DragonAnimation
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self.TurnAround(TURN_AROUND_SPEED * Time.deltaTime);
+        self.TurnAround(self._TURN_AROUND_SPEED);
     }
 }
