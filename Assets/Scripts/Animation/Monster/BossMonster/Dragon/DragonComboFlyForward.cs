@@ -10,5 +10,11 @@ public class DragonComboFlyForward : DragonAnimation
         aniHandler += LandReadyCondition;
         self.destination = self.SetLandingPos();
         self.agent.destination = self.SetFlyingMovePos(self.destination);
+        self.agent.speed = self._flyingSpeed;
+    }
+
+    protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        self.agent.speed = self._originSpeed;
     }
 }
