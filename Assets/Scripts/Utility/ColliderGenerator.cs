@@ -2,21 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct Line
-{
-    public float min_x;
-    public float max_x;
-    public float Length_x { get => max_x - min_x; }
-
-    public float min_y;
-    public float max_y;
-    public float Length_y { get => max_y - min_y; }
-
-    public float min_z;
-    public float max_z;
-    public float Length_z { get => max_z - min_z; }
-}
-
 public class ColliderGenerator : MonoBehaviour
 {
     public List<MeshFilter> childrenMeshes = new List<MeshFilter>();
