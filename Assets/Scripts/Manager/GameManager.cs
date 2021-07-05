@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public List<NPC> npcs = new List<NPC>();
     public List<Transform> dragonLandFields = new List<Transform>();
     public Teleport teleport;
+    public Ground area;
 
     private void Awake()
     {
