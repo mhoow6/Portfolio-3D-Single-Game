@@ -13,10 +13,6 @@ public class DragonAnimation : StateMachineBehaviour
     protected float currentAnimationTime;
 
     protected const float defaultAnimationTransitionTime = 0.25f;
-    protected const float SPARE_DISTANCE = 1f;
-    protected const float ATTACK_MIN_ANGLE = 20f;
-    protected const float FIREBALL_MIN_ANGLE = 5f;
-    protected const float TURN_AROUND_SPEED = 2f;
 
     public enum AniType
     {
@@ -97,7 +93,7 @@ public class DragonAnimation : StateMachineBehaviour
         {
             if (!dragon.isFreeze)
             {
-                if (dragon._currentDistanceWithPlayer >= dragon._attackRange + SPARE_DISTANCE)
+                if (dragon._currentDistanceWithPlayer >= dragon._attackRange + self._SPARE_DISTANCE)
                     animator.SetInteger("ani_id", (int)AniType.WALK);
             }
         }
@@ -109,7 +105,7 @@ public class DragonAnimation : StateMachineBehaviour
         {
             if (!dragon.isAttackCooldown)
             {
-                if (dragon._currentDistanceWithPlayer < dragon._attackRange && dragon._currentAngleWithPlayer < ATTACK_MIN_ANGLE)
+                if (dragon._currentDistanceWithPlayer < dragon._attackRange && dragon._currentAngleWithPlayer < self._ATTACK_MIN_ANGLE)
                     animator.SetInteger("ani_id", (int)AniType.ATTACK);
             }
         }
@@ -146,7 +142,7 @@ public class DragonAnimation : StateMachineBehaviour
         {
             if (!dragon.isFireBallCooldown)
             {
-                if (dragon._currentDistanceWithPlayer >= dragon._attackRange + SPARE_DISTANCE && dragon._currentAngleWithPlayer < FIREBALL_MIN_ANGLE)
+                if (dragon._currentDistanceWithPlayer >= dragon._attackRange + self._SPARE_DISTANCE && dragon._currentAngleWithPlayer < self._FIREBALL_MIN_ANGLE)
                     animator.SetInteger("ani_id", (int)AniType.FIREBALL);
             }  
         }
@@ -160,6 +156,7 @@ public class DragonAnimation : StateMachineBehaviour
             {
                 specialCombo = true;
                 animator.SetBool("specialCombo", true);
+                animator.SetInteger("ani_id", (int)AniType.IDLE);
                 animator.SetInteger("combo_id", (int)ComboAniType.FLY);
             }
                 
