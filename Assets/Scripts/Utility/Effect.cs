@@ -393,8 +393,8 @@ public class DragonFireBallEffect : Effect
     private Vector3 originToTargetDirection;
     private Vector3 targetPos;
     private float deltaDistance;
-    private const float FIRE_BALL_MOVE_SPEED = 10.0f;
-    private const float METEO_MOVE_SPEED = 5.0f;
+    private const float FIRE_BALL_MOVE_SPEED = 15.0f;
+    private const float METEO_MOVE_SPEED = 10.0f;
 
     private void Awake()
     {
@@ -418,7 +418,7 @@ public class DragonFireBallEffect : Effect
     {
         bound.center = transform.position;
 
-        fireBallSize = self.main.startSize.constant * 0.5f;
+        fireBallSize = self.main.startSize.constant * 0.2f;
 
         bound.extents = new Vector3(fireBallSize, fireBallSize, fireBallSize);
     }
@@ -435,6 +435,15 @@ public class DragonFireBallEffect : Effect
                 StartCoroutine(PlayCheckUpdate());
                 yield break;
             }
+
+            if (GameManager.instance.area != null)
+                if (bound.Intersects(GameManager.instance.area.BOUND))
+                {
+                    EffectManager.instance.CreateDragonFireBallHitEffect(transform.position, gameObject.name).PlayEffect();
+                    self.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                    StartCoroutine(PlayCheckUpdate());
+                    yield break;
+                }
 
             yield return null;
         }
