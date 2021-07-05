@@ -184,7 +184,8 @@ public class Player : Character
                 mob.gameObject.activeSelf &&
                 mob.hp > 0 &&
                 PlayerAndMonster_Distance <= attack_distance &&
-                PlayerAndMonster_Angle <= attack_angle)
+                PlayerAndMonster_Angle <= attack_angle &&
+                !mob.isImmortal)
             {
                 mob.hp -= attack_damage;
 
