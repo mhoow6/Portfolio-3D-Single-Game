@@ -125,6 +125,9 @@ public class MapManager : MonoBehaviour
             if (objName == "DragonLand")
                 GameManager.instance.dragonLandFields.Add(obj.transform);
 
+            if (objName == "Swamp")
+                GameManager.instance.area = obj.AddComponent<Ground>();
+
             // 5. 실제 게임오브젝트에 테이블 데이터 적용
             obj.name = objName;
             obj.transform.position = objPos;
