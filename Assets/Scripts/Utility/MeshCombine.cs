@@ -9,18 +9,14 @@ using System.Collections;
 [RequireComponent(typeof(MeshRenderer))]
 public class MeshCombine : MonoBehaviour
 {
-    [SerializeField]
+    public MeshFilter selfMeshFilter;
+    
     MeshFilter[] meshFilters;
-
-    [SerializeField]
     int childCount;
 
     void Start()
     {
-        childCount = transform.childCount;
-        meshFilters = new MeshFilter[childCount];
-
-        ChildrenMeshCombine();
+        MeshCombineObjects();
     }
 
     private void GetChildrenMeshFilter()
@@ -47,8 +43,30 @@ public class MeshCombine : MonoBehaviour
 
             i++;
         }
-        transform.GetComponent<MeshFilter>().mesh = new Mesh();
-        transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
+        selfMeshFilter.sharedMesh = new Mesh();
+        selfMeshFilter.sharedMesh.CombineMeshes(combine);
         transform.gameObject.SetActive(true);
+    }
+
+    public void MeshCombineObjects()
+    {
+        childCount = transform.childCount;
+        meshFilters = new MeshFilter[childCount];
+        selfMeshFilter = GetComponent<MeshFilter>();
+
+        ChildrenMeshCombine();
+    }
+
+    public void Clean()
+    {
+        meshFilters = null;
+        childCount = 0;
+        selfMeshFilter = null;
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(true);
+        }
+
     }
 }
