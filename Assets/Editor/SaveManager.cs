@@ -86,6 +86,106 @@ public static class SaveManager
         Debug.Log("박스 콜라이더 생성이 완료되었습니다. 콜라이더의 센터는 오브젝트마다 다르니 필요시 조정하세요.");
     }
 
+    [MenuItem("Menu/Save/Mesh Combined Objects")]
+    public static void MeshCombinedObjects()
+    {
+        // MeshCombine 컴포넌트가 붙은 게임오브젝트들을 찾아 배열에 저장한다. 
+        MeshCombine[] _instanceRoots = GameObject.FindObjectsOfType<MeshCombine>();
+
+        GameObject instanceRoot; // Temp
+        Mesh instanceRootMesh; // Temp
+        string instancePath; // Temp
+
+        for (int i = 0; i < _instanceRoots.Length; i++)
+        {
+            string resultPath = Application.dataPath + "/Resources/Result/";
+            string path = EditorUtility.SaveFilePanel("Save Separate Mesh Asset", resultPath, _instanceRoots[i].name + "_Mesh", "asset");
+
+            if (string.IsNullOrEmpty(path)) return;
+
+            path = FileUtil.GetProjectRelativePath(path); // For AssetDatabase.CreateAsset
+
+            // 원소의 매쉬 컴바인을 진행한다.
+            _instanceRoots[i].MeshCombineObjects();
+
+            // 매쉬 컴바인을 한 게임오브젝트
+            instanceRoot = _instanceRoots[i].gameObject;
+
+            // 매쉬 컴바인을 한 게임오브젝트를 프리팹으로 저장할 때의 이름
+            instancePath = resultPath + _instanceRoots[i].name + ".prefab";
+
+            // 매쉬 컴바인을 한 게임오브젝트의 매쉬를 인스턴싱
+            instanceRootMesh = Object.Instantiate(_instanceRoots[i].selfMeshFilter.sharedMesh);
+
+            // 인스턴싱된 매쉬를 Asset으로써 저장한다. 실제 매쉬가 없으면 프리팹으로 저장을 할 때 매쉬가 없는 채로 저장됨.
+            AssetDatabase.CreateAsset(instanceRootMesh, path);
+            AssetDatabase.SaveAssets();
+
+            // 인스턴싱 매쉬를 다시 원소의 sharedMesh에 부여한다. (프리팹에 매쉬 자동 부여용도)
+            _instanceRoots[i].selfMeshFilter.sharedMesh = instanceRootMesh;
+
+            // 매쉬 컴바인된 게임오브젝트를 프리팹으로써 저장한다.
+            PrefabUtility.SaveAsPrefabAsset(instanceRoot, instancePath, out bool success);
+
+            if (success == true)
+                Debug.Log(instanceRoot.name + " 안에 속해있는 오브젝트들의 매쉬 컴바인에 성공하였습니다!");
+
+            if (success == false)
+                Debug.Log(instanceRoot.name + " 안에 속해있는 오브젝트들의 매쉬 컴바인에 실패하였습니다...");
+
+            _instanceRoots[i].Clean();
+        }     
+    }
+
+    [MenuItem("Menu/Save/Mesh Combined Object")]
+    public static void MeshCombinedObject()
+    {
+        string resultPath = Application.dataPath + "/Resources/Result/";
+        string path = EditorUtility.SaveFilePanel("Save Separate Mesh Asset", resultPath, "Mesh", "asset");
+
+        if (string.IsNullOrEmpty(path)) return;
+
+        path = FileUtil.GetProjectRelativePath(path); // For AssetDatabase.CreateAsset
+
+        // MeshCombine 컴포넌트가 붙은 게임오브젝트들을 찾아 배열에 저장한다. 
+        MeshCombine _instanceRoot = GameObject.FindObjectOfType<MeshCombine>();
+
+        GameObject instanceRoot; // Temp
+        Mesh instanceRootMesh; // Temp
+        string instancePath; // Temp
+
+        // 원소의 매쉬 컴바인을 진행한다.
+        _instanceRoot.MeshCombineObjects();
+
+        // 매쉬 컴바인을 한 게임오브젝트
+        instanceRoot = _instanceRoot.gameObject;
+
+        // 매쉬 컴바인을 한 게임오브젝트를 프리팹으로 저장할 때의 이름
+        instancePath = resultPath + _instanceRoot.name + ".prefab";
+
+        // 매쉬 컴바인을 한 게임오브젝트의 매쉬를 인스턴싱
+        instanceRootMesh = Object.Instantiate(_instanceRoot.selfMeshFilter.sharedMesh);
+
+        // 인스턴싱된 매쉬를 Asset으로써 저장한다.
+        AssetDatabase.CreateAsset(instanceRootMesh, path);
+        AssetDatabase.SaveAssets();
+
+        // 인스턴싱 매쉬를 다시 원소의 sharedMesh에 부여한다. (프리팹에 매쉬 자동 부여용도)
+        _instanceRoot.selfMeshFilter.sharedMesh = instanceRootMesh;
+
+        // 매쉬 컴바인된 게임오브젝트를 프리팹으로써 저장한다.
+        PrefabUtility.SaveAsPrefabAsset(instanceRoot, instancePath, out bool success);
+
+        if (success == true)
+            Debug.Log(instanceRoot.name + " 안에 속해있는 오브젝트들의 매쉬 컴바인에 성공하였습니다!");
+
+        if (success == false)
+            Debug.Log(instanceRoot.name + " 안에 속해있는 오브젝트들의 매쉬 컴바인에 실패하였습니다...");
+
+        // 씬에 올려진 오브젝트는 초기상태로 복구
+        _instanceRoot.Clean();
+    }
+
     private static void SaveMonsterPosition(string filePath)
     {
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
