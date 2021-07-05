@@ -31,8 +31,11 @@ public class Dragon : Monster
     public Transform _fireBallEffectPos { get => fireBallEffectPos; }
 
     public float _specialComboCooldown { get => specialComboCooldown; }
-    private float specialComboCooldown;
+    public float specialComboCooldown;
     public bool isSpecialComboCooldown;
+
+    public float _originSpeed { get => walk_speed; }
+    public float _flyingSpeed { get => run_speed; }
 
     private Vector3 vToPlayer;
     private Vector3 vToLeft;
@@ -49,7 +52,14 @@ public class Dragon : Monster
     private const int TOTAL_FIYBALL_SHOOT = 5;
     public int currentFlyFireBallShoot;
     private const float FLY_HEIGHT = 2.0f;
-    private const float FLY_SPEED = 3.0f;
+    public float _SPARE_DISTANCE { get => SPARE_DISTANCE; }
+    private const float SPARE_DISTANCE = 1f;
+    public float _ATTACK_MIN_ANGLE { get => ATTACK_MIN_ANGLE; }
+    private const float ATTACK_MIN_ANGLE = 20f;
+    public float _FIREBALL_MIN_ANGLE { get => FIREBALL_MIN_ANGLE; }
+    private const float FIREBALL_MIN_ANGLE = 5f;
+    public float _TURN_AROUND_SPEED { get => TURN_AROUND_SPEED * Time.deltaTime; }
+    private const float TURN_AROUND_SPEED = 2f;
 
     public Vector3 destination;
 
