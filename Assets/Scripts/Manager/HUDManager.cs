@@ -20,12 +20,13 @@ public class HUDManager : MonoBehaviour
     public LoadingManager loading;
     public AwardCheckManager awardCheck;
     public CurrentPlace place;
+    public BlackFade bFade;
 
     public bool isUserStopUIopen
     {
         get
         {
-            if (inventory.isInventoryOn || dialog.isDialogOn || quest.isQuestWindowOn || system.isSystemWindowOn || dead.isDeadWindowOn || loading.isLoadingOn || awardCheck.isAwardCheckOn)
+            if (inventory.isInventoryOn || dialog.isDialogOn || quest.isQuestWindowOn || system.isSystemWindowOn || dead.isDeadWindowOn || loading.isLoadingOn || awardCheck.isAwardCheckOn || bFade.gameObject.activeSelf)
                 return true;
             else
                 return false;
@@ -42,5 +43,25 @@ public class HUDManager : MonoBehaviour
         inventory.itemContent.LoadPlayerItemInventory();
         inventory.equipContent.LoadPlayerEquipment();
         quest.LoadPlayerQuest();
+    }
+
+    public void HideBottomUI()
+    {
+        InputManager.instance.joystick.gameObject.SetActive(false);
+        combat.gameObject.SetActive(false);
+        inGame.gameObject.SetActive(false);
+    }
+
+    public void ActiveUI(bool trigger)
+    {
+        combat.gameObject.SetActive(trigger);
+        inventory.gameObject.SetActive(trigger);
+        menu.gameObject.SetActive(trigger);
+        state.gameObject.SetActive(trigger);
+        system.gameObject.SetActive(trigger);
+        quest.gameObject.SetActive(trigger);
+        InputManager.instance.joystick.gameObject.SetActive(trigger);
+        combat.gameObject.SetActive(trigger);
+        inGame.gameObject.SetActive(trigger);
     }
 }
