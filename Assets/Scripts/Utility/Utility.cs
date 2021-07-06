@@ -168,6 +168,6 @@ public static class Utility
         }
 
         yourBound.center = mf.gameObject.transform.position;
-        yourBound.size = new Vector3(container.Length_x, container.Length_y, container.Length_z);
+        yourBound.size = new Vector3(container.Length_x * mf.transform.localScale.x, container.Length_y * mf.transform.localScale.y, container.Length_z * mf.transform.localScale.z);
     }
 }
