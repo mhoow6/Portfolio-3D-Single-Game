@@ -74,7 +74,7 @@ public class DragonAnimation : StateMachineBehaviour
 
     protected void OnPlayerEncounter(Animator animator, Dragon dragon)
     {
-        if (dragon._currentDistanceWithPlayer <= dragon._detectRange)
+        if (dragon.isPlayerEncounted)
         {
             isEncounted = true;
             animator.SetBool("isEncounted", true);

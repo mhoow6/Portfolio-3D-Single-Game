@@ -37,6 +37,8 @@ public class Dragon : Monster
     public float _originSpeed { get => walk_speed; }
     public float _flyingSpeed { get => run_speed; }
 
+    public bool isPlayerEncounted;
+
     private Vector3 vToPlayer;
     private Vector3 vToLeft;
     private float angleWithLeft;
@@ -67,6 +69,8 @@ public class Dragon : Monster
     {
         Setup();
         GetNodeObject(this.transform, "Fireball_Effect", ref fireBallEffectPos);
+
+        GameManager.instance.bossCam.boss = this;
     }
 
     private void Update()
