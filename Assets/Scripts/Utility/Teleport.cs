@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Teleport : MonoBehaviour
 {
-    protected Bounds selfBound;
+    public Bounds selfBound;
     public Bounds BOUND { get => selfBound; }
     protected MeshFilter meshFilter;
     //public MeshRenderer render;

@@ -31,9 +31,7 @@ public class DialogManager : MonoBehaviour
         dialogNPC = GameManager.instance.controller.player.boundCollideNPC;
 
         // Turn OFF UI
-        InputManager.instance.joystick.gameObject.SetActive(false);
-        HUDManager.instance.combat.gameObject.SetActive(false);
-        HUDManager.instance.inGame.gameObject.SetActive(false);
+        HUDManager.instance.HideBottomUI();
 
         // Turn ON UI
         skipBtn.gameObject.SetActive(true);

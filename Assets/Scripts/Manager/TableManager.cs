@@ -112,8 +112,6 @@ public class TableManager : MonoBehaviour
         string line = string.Empty;
         List<string> lines = new List<string>();
 
-        Debug.Log(filePath);
-
         using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
         {
             using (StreamReader sr = new StreamReader(f, System.Text.Encoding.UTF8))
