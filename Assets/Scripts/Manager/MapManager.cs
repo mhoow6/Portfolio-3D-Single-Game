@@ -92,10 +92,8 @@ public class MapManager : MonoBehaviour
 
             string objName = datas[0];
 
-            // 2. 리소스 폴더 구분
-            if (objName == "Particle" || objName == "Props" || objName == "Vegetation" || objName == "Rocks" || objName == "Terrain" || objName == "Plane")
+            if (IsCategoryInResource(objName, ref path))
             {
-                path = objName;
                 parent = new GameObject(objName);
                 parents.Add(parent);
                 continue;
@@ -126,7 +124,7 @@ public class MapManager : MonoBehaviour
                 GameManager.instance.dragonLandFields.Add(obj.transform);
 
             if (objName == "Swamp")
-                GameManager.instance.area = obj.AddComponent<Ground>();
+                GameManager.instance.area = obj.AddComponent<BossArea>();
 
             // 5. 실제 게임오브젝트에 테이블 데이터 적용
             obj.name = objName;
@@ -246,8 +244,24 @@ public class MapManager : MonoBehaviour
             if (GameManager.instance.teleport.BOUND.Intersects(GameManager.instance.controller.player._bound))
             {
                 SceneInfoManager.instance.spawnPos = spawnPos;
+                HUDManager.instance.system.SaveGame();
                 SceneManager.LoadScene((int)nextScene);
             }
         }
+    }
+
+    private bool IsCategoryInResource(string objName, ref string path)
+    {
+        for (int j = 0; j < SceneInfoManager.instance.resourceSepartors.Length; j++)
+        {
+            if (objName == SceneInfoManager.instance.resourceSepartors[j])
+            {
+                path = SceneInfoManager.instance.resourceSepartors[j];
+                return true;
+            }
+                
+        }
+
+        return false;
     }
 }
