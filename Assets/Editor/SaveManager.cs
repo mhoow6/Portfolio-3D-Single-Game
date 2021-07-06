@@ -247,7 +247,7 @@ public static class SaveManager
         GameObject[] npcs = GameObject.FindGameObjectsWithTag("NPC");
         string data = string.Empty;
 
-        data = "index,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale";
+        data = "index,id,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale";
         data += "\n";
 
         for (int i = 0; i < npcs.Length; i++)
@@ -278,96 +278,22 @@ public static class SaveManager
             sw.WriteLine("name,xpos,ypos,zpos,xrot,yrot,zrot,xscale,yscale,zscale");
 
             GameObject parent = GameObject.FindGameObjectWithTag("Terrain");
-            sw.WriteLine(parent.name);
-            for (int i = 0; i < parent.transform.childCount; i++)
-            {
-                sw.WriteLine(
-                    EraseBracketInName(parent.transform.GetChild(i).name) + "," +
-                    parent.transform.GetChild(i).position.x + "," +
-                    parent.transform.GetChild(i).position.y + "," +
-                    parent.transform.GetChild(i).position.z + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
-                    parent.transform.GetChild(i).localScale.x + "," +
-                    parent.transform.GetChild(i).localScale.y + "," +
-                    parent.transform.GetChild(i).localScale.z
-                    );
-            }
+            WriteSceneData(parent, sw);
 
-            // 반복
             parent = GameObject.FindGameObjectWithTag("Rocks");
-            sw.WriteLine(parent.name);
-            for (int i = 0; i < parent.transform.childCount; i++)
-            {
-                sw.WriteLine(
-                    EraseBracketInName(parent.transform.GetChild(i).name) + "," +
-                    parent.transform.GetChild(i).position.x + "," +
-                    parent.transform.GetChild(i).position.y + "," +
-                    parent.transform.GetChild(i).position.z + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
-                    parent.transform.GetChild(i).localScale.x + "," +
-                    parent.transform.GetChild(i).localScale.y + "," +
-                    parent.transform.GetChild(i).localScale.z
-                    );
-            }
-            // 반복
+            WriteSceneData(parent, sw);
 
             parent = GameObject.FindGameObjectWithTag("Props");
-            sw.WriteLine(parent.name);
-            for (int i = 0; i < parent.transform.childCount; i++)
-            {
-                sw.WriteLine(
-                    EraseBracketInName(parent.transform.GetChild(i).name) + "," +
-                    parent.transform.GetChild(i).position.x + "," +
-                    parent.transform.GetChild(i).position.y + "," +
-                    parent.transform.GetChild(i).position.z + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
-                    parent.transform.GetChild(i).localScale.x + "," +
-                    parent.transform.GetChild(i).localScale.y + "," +
-                    parent.transform.GetChild(i).localScale.z
-                    );
-            }
+            WriteSceneData(parent, sw);
 
             parent = GameObject.FindGameObjectWithTag("Vegetation");
-            sw.WriteLine(parent.name);
-            for (int i = 0; i < parent.transform.childCount; i++)
-            {
-                sw.WriteLine(
-                    EraseBracketInName(parent.transform.GetChild(i).name) + "," +
-                    parent.transform.GetChild(i).position.x + "," +
-                    parent.transform.GetChild(i).position.y + "," +
-                    parent.transform.GetChild(i).position.z + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
-                    parent.transform.GetChild(i).localScale.x + "," +
-                    parent.transform.GetChild(i).localScale.y + "," +
-                    parent.transform.GetChild(i).localScale.z
-                    );
-            }
+            WriteSceneData(parent, sw);
 
             parent = GameObject.FindGameObjectWithTag("Particle");
-            sw.WriteLine(parent.name);
-            for (int i = 0; i < parent.transform.childCount; i++)
-            {
-                sw.WriteLine(
-                    EraseBracketInName(parent.transform.GetChild(i).name) + "," +
-                    parent.transform.GetChild(i).position.x + "," +
-                    parent.transform.GetChild(i).position.y + "," +
-                    parent.transform.GetChild(i).position.z + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
-                    parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
-                    parent.transform.GetChild(i).localScale.x + "," +
-                    parent.transform.GetChild(i).localScale.y + "," +
-                    parent.transform.GetChild(i).localScale.z
-                    );
-            }
+            WriteSceneData(parent, sw);
+
+            parent = GameObject.FindGameObjectWithTag("CombinedObject");
+            WriteSceneData(parent, sw);
 
             sw.Close();
         }
@@ -414,5 +340,25 @@ public static class SaveManager
             return mobName;
 
         return mobNameWithNoSpace.Remove(index);
+    }
+
+    private static void WriteSceneData(GameObject parent, StreamWriter streamWriter)
+    {
+        streamWriter.WriteLine(parent.name);
+        for (int i = 0; i < parent.transform.childCount; i++)
+        {
+            streamWriter.WriteLine(
+                EraseBracketInName(parent.transform.GetChild(i).name) + "," +
+                parent.transform.GetChild(i).position.x + "," +
+                parent.transform.GetChild(i).position.y + "," +
+                parent.transform.GetChild(i).position.z + "," +
+                parent.transform.GetChild(i).rotation.eulerAngles.x + "," +
+                parent.transform.GetChild(i).rotation.eulerAngles.y + "," +
+                parent.transform.GetChild(i).rotation.eulerAngles.z + "," +
+                parent.transform.GetChild(i).localScale.x + "," +
+                parent.transform.GetChild(i).localScale.y + "," +
+                parent.transform.GetChild(i).localScale.z
+                );
+        }
     }
 }
