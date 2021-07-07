@@ -74,7 +74,6 @@ public class MeshCombine : MonoBehaviour
         childCount = 0;
         selfMeshFilter.sharedMesh = null;
         selfMeshFilter = null;
-        
 
         for (int i = 0; i < transform.childCount; i++)
         {
