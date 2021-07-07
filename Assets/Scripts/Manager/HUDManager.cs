@@ -21,6 +21,9 @@ public class HUDManager : MonoBehaviour
     public AwardCheckManager awardCheck;
     public CurrentPlace place;
     public BlackFade bFade;
+    public ScrollMinimap minimap;
+    public FPS fps;
+    public BossStateManager boss_state;
 
     public bool isUserStopUIopen
     {
@@ -55,13 +58,12 @@ public class HUDManager : MonoBehaviour
     public void ActiveUI(bool trigger)
     {
         combat.gameObject.SetActive(trigger);
-        inventory.gameObject.SetActive(trigger);
         menu.gameObject.SetActive(trigger);
         state.gameObject.SetActive(trigger);
-        system.gameObject.SetActive(trigger);
-        quest.gameObject.SetActive(trigger);
         InputManager.instance.joystick.gameObject.SetActive(trigger);
         combat.gameObject.SetActive(trigger);
         inGame.gameObject.SetActive(trigger);
+        minimap.gameObject.SetActive(trigger);
+        fps.gameObject.SetActive(trigger);
     }
 }
