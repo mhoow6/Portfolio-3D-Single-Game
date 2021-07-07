@@ -76,16 +76,15 @@ public class PlayerAnimation : StateMachineBehaviour
 
     protected void WalkCondition(Animator animator)
     {
-        if (GameManager.instance.controller.isPlayerWantToMove && !Input.GetKey(KeyCode.LeftShift)
-            && !HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Run").isClicked)
+        if (GameManager.instance.controller.isPlayerWantToMove &&
+            !(Input.GetKey(KeyCode.LeftShift) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Run").isClicked))
             animator.SetInteger("ani_id", (int)AniType.WALK);
     }
 
     protected void RunCondition(Animator animator)
     {
-        if (Input.GetKey(KeyCode.LeftShift) ||
-            HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Run").isClicked &&
-            GameManager.instance.controller.isPlayerWantToMove &&
+        if (GameManager.instance.controller.isPlayerWantToMove &&
+            (Input.GetKey(KeyCode.LeftShift) || HUDManager.instance.combat.controlSlots.Find(slot => slot.name == "Run").isClicked) &&
             GameManager.instance.controller.player.currentSp >= PlayerInfoTableManager.playerInfo.run_sp)
                 animator.SetInteger("ani_id", (int)AniType.RUN); 
     }
