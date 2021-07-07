@@ -8,4 +8,9 @@ public class DragonBattleStart : DragonAnimation
     {
         aniHandler = BattleStart;
     }
+
+    protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        GameManager.instance.bossCam.CompleteCamMove();
+    }
 }

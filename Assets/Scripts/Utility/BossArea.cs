@@ -21,9 +21,12 @@ public class BossArea : Teleport
             {
                 if (selfBound.Intersects(GameManager.instance.controller.player._bound))
                 {
+                    HUDManager.instance.bFade.gameObject.SetActive(true);
+                    yield return HUDManager.instance.bFade.StartCoroutine(HUDManager.instance.bFade.FadeCoroutine(3f, BlackFade.FadeType.IN));
                     GameManager.instance.bossCam.gameObject.SetActive(true);
+                    GameManager.instance.bossCam.enabled = true;
                     GameManager.instance.bossCam.boss.isPlayerEncounted = true;
-
+                    yield return HUDManager.instance.bFade.StartCoroutine(HUDManager.instance.bFade.FadeCoroutine(3f, BlackFade.FadeType.OUT));
                     yield break;
                 }
             }
@@ -31,5 +34,4 @@ public class BossArea : Teleport
             yield return null;
         }
     }
-
 }

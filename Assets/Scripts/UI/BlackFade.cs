@@ -12,30 +12,26 @@ public class BlackFade : MonoBehaviour
     }
 
     public Image self;
+    public Color _fadeInColor { get => fadeInColor; }
     Color fadeInColor;
+    public Color _fadeOutColor { get => fadeOutColor; }
     Color fadeOutColor;
+    public Color _finishColor { get => finishColor; }
+    Color finishColor;
 
-    // Start is called before the first frame update
-    void Start()
+    float fadeSmoothTime;
+
+    private void Awake()
     {
+        fadeSmoothTime = 0.05f;
         fadeInColor = new Color(0, 0, 0, 1);
         fadeOutColor = new Color(0, 0, 0, 0);
+        gameObject.SetActive(false);
     }
 
-    public void FadeIn(float fadeTime)
-    {
-        StartCoroutine(FadeCoroutine(fadeTime, FadeType.IN));
-    }
-
-    public void FadeOut(float fadeTime)
-    {
-        StartCoroutine(FadeCoroutine(fadeTime, FadeType.OUT));
-    }
-
-    IEnumerator FadeCoroutine(float fadeTime, FadeType type)
+    public IEnumerator FadeCoroutine(float fadeTime, FadeType type)
     {
         float timer = 0f;
-        Color finishColor;
 
         switch (type)
         {
@@ -50,19 +46,17 @@ public class BlackFade : MonoBehaviour
                 break;
         }
 
-        while (timer <= fadeTime)
+
+        while (timer < fadeTime)
         {
             timer += Time.deltaTime;
 
-            self.color = Color.Lerp(self.color, fadeInColor, timer / fadeTime);
+            self.color = Color.Lerp(self.color, finishColor, timer * fadeSmoothTime / fadeTime);
 
             yield return null;
-        }
-    }
 
-    IEnumerator ActiveCoroutine(bool active = true)
-    {
-        this.gameObject.SetActive(active);
-        yield return null;
+        }
+
+        self.color = finishColor;
     }
 }
