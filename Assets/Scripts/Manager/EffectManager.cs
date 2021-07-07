@@ -427,7 +427,8 @@ public class EffectManager : MonoBehaviour
             eff.name = effName;
             eff.effectNode = this.transform;
         }
-            
+
+        eff.name = effName;
         eff.transform.position = startPos;
     }
 
@@ -439,6 +440,7 @@ public class EffectManager : MonoBehaviour
             eff.effectNode = this.transform;
         }
 
+        eff.name = effName;
         eff.transform.position = hitPos;
     }
 }

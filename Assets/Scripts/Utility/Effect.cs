@@ -170,7 +170,7 @@ public class PlayerAttackHitEffect : PlayerHitEffect
 
         StartCoroutine(PlayCheckUpdate());
         StartCoroutine(LightUpdate());
-        StartCoroutine(HitChangeMobColor(hitMob));
+        // StartCoroutine(HitChangeMobColor(hitMob));
     }
 
     protected override IEnumerator PlayCheckUpdate()
@@ -427,6 +427,8 @@ public class DragonFireBallEffect : Effect
     {
         while (true)
         {
+            yield return null; // 최초 OnEnable 시 transform는 Update()가 끝난 뒤에 업데이트되므로 먼저 yield return을 해준다.
+
             if (bound.Intersects(GameManager.instance.controller.player._bound))
             {
                 EffectManager.instance.CreateDragonFireBallHitEffect(transform.position, gameObject.name).PlayEffect();
@@ -444,8 +446,6 @@ public class DragonFireBallEffect : Effect
                     StartCoroutine(PlayCheckUpdate());
                     yield break;
                 }
-
-            yield return null;
         }
     }
 
