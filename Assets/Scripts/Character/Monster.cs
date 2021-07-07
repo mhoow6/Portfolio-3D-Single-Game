@@ -390,42 +390,44 @@ public class EliteMonster : Monster
         {
             yield return wt;
 
-            switch (thinking_param)
+            if (!isAttackCooldown && !isStuned)
             {
-                case (int)MonsterAnimation.AniType.IDLE:
-                    if (currentDistanceWithPlayer <= detect_range && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = Random.Range((int)MonsterAnimation.AniType.WALK, (int)MonsterAnimation.AniType.RUN + 1);
+                switch (thinking_param)
+                {
+                    case (int)MonsterAnimation.AniType.IDLE:
+                        if (currentDistanceWithPlayer <= detect_range && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = Random.Range((int)MonsterAnimation.AniType.WALK, (int)MonsterAnimation.AniType.RUN + 1);
 
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
-                        GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = Random.Range((int)MonsterAnimation.AniType.ATTACK, (int)MonsterAnimation.AniType.SKILL_01 + 1);
+                        if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
+                            GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = Random.Range((int)MonsterAnimation.AniType.ATTACK, (int)MonsterAnimation.AniType.SKILL_01 + 1);
 
-                    if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
-                        currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
-                    break;
+                        if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
+                            currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
+                        break;
 
-                case (int)MonsterAnimation.AniType.WALK:
-                    if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
-                        currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
+                    case (int)MonsterAnimation.AniType.WALK:
+                        if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
+                            currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
 
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
-                        GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.ATTACK;
-                    break;
+                        if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
+                            GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.ATTACK;
+                        break;
 
-                case (int)MonsterAnimation.AniType.RUN:
-                    if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
-                        currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
+                    case (int)MonsterAnimation.AniType.RUN:
+                        if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
+                            currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
 
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
-                        GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.ATTACK;
-                    break;
+                        if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
+                            GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.ATTACK;
+                        break;
+                }
             }
-            
         }
     }
 
@@ -473,50 +475,52 @@ public class Golem : Monster
         {
             yield return wt;
 
-            switch (thinking_param)
+            if (!isAttackCooldown && !isStuned)
             {
-                case (int)MonsterAnimation.AniType.IDLE:
-                    if (currentDistanceWithPlayer <= detect_range && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = Random.Range((int)MonsterAnimation.AniType.WALK, (int)MonsterAnimation.AniType.RUN + 1);
+                switch (thinking_param)
+                {
+                    case (int)MonsterAnimation.AniType.IDLE:
+                        if (currentDistanceWithPlayer <= detect_range && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = Random.Range((int)MonsterAnimation.AniType.WALK, (int)MonsterAnimation.AniType.RUN + 1);
 
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
-                        GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = Random.Range((int)MonsterAnimation.AniType.ATTACK, (int)MonsterAnimation.AniType.SKILL_03 + 1);
+                        if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
+                            GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = Random.Range((int)MonsterAnimation.AniType.ATTACK, (int)MonsterAnimation.AniType.SKILL_03 + 1);
 
-                    if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
-                        currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = Random.Range((int)MonsterAnimation.AniType.SKILL_01, (int)MonsterAnimation.AniType.SKILL_03 + 1);
+                        if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
+                            currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = Random.Range((int)MonsterAnimation.AniType.SKILL_01, (int)MonsterAnimation.AniType.SKILL_03 + 1);
 
-                    if (currentDistanceWithPlayer > skill_1_distance && currentDistanceWithPlayer <= skill_2_distance &&
-                        currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = Random.Range((int)MonsterAnimation.AniType.SKILL_02, (int)MonsterAnimation.AniType.SKILL_03 + 1);
+                        if (currentDistanceWithPlayer > skill_1_distance && currentDistanceWithPlayer <= skill_2_distance &&
+                            currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = Random.Range((int)MonsterAnimation.AniType.SKILL_02, (int)MonsterAnimation.AniType.SKILL_03 + 1);
 
-                    if (currentDistanceWithPlayer > skill_2_distance && currentDistanceWithPlayer <= skill_3_distance &&
-                        currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.SKILL_03 + 1;
-                    break;
+                        if (currentDistanceWithPlayer > skill_2_distance && currentDistanceWithPlayer <= skill_3_distance &&
+                            currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.SKILL_03 + 1;
+                        break;
 
-                case (int)MonsterAnimation.AniType.WALK:
-                    if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
-                        currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
+                    case (int)MonsterAnimation.AniType.WALK:
+                        if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
+                            currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
 
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
-                        GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.ATTACK;
-                    break;
+                        if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
+                            GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.ATTACK;
+                        break;
 
-                case (int)MonsterAnimation.AniType.RUN:
-                    if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
-                        currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
+                    case (int)MonsterAnimation.AniType.RUN:
+                        if (currentDistanceWithPlayer > attack_distance && currentDistanceWithPlayer <= skill_1_distance &&
+                            currentAngleWithPlayer < MIN_SIGHT_ANGLE && GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.SKILL_01;
 
-                    if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
-                        GameManager.instance.controller.player.currentHp > 0)
-                        thinking_param = (int)MonsterAnimation.AniType.ATTACK;
-                    break;
+                        if (currentDistanceWithPlayer <= attack_distance && currentAngleWithPlayer < MIN_SIGHT_ANGLE &&
+                            GameManager.instance.controller.player.currentHp > 0)
+                            thinking_param = (int)MonsterAnimation.AniType.ATTACK;
+                        break;
+                }
             }
-            
         }
     }
 
