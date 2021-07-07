@@ -8,7 +8,23 @@ public class InputManager : MonoBehaviour
     public VirtualJoystick joystick;
     public CustomCameraMoblie moblieCamera;
 
-    public Vector2 moveInput;
+    public Vector2 moveInput
+    {
+        get
+        {
+            if (keyboardMove.magnitude == 0)
+                return joystickMove;
+
+            if (joystickMove.magnitude == 0)
+                return keyboardMove;
+
+            return Vector2.zero;
+        }
+    }
+
+    private Vector2 keyboardMove;
+    private Vector2 joystickMove;
+
     public Vector2 moveDelta;
     public float zoomScale; // ¹Ì±¸Çö
 
@@ -35,7 +51,7 @@ public class InputManager : MonoBehaviour
         }
 
         StartCoroutine(MoveInputPC());
-        //StartCoroutine(MoveInputMoblie());
+        StartCoroutine(MoveInputMoblie());
         StartCoroutine(MoveDeltaPC());
         StartCoroutine(ShortcutPC());
     }
@@ -47,9 +63,9 @@ public class InputManager : MonoBehaviour
             yield return null;
 
             if (!HUDManager.instance.isUserStopUIopen)
-                moveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                keyboardMove = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             else
-                moveInput = Vector2.zero;
+                keyboardMove = Vector2.zero;
         }
     }
 
@@ -60,9 +76,9 @@ public class InputManager : MonoBehaviour
             yield return null;
 
             if (!HUDManager.instance.isUserStopUIopen)
-                moveInput = joystick._inputDirection;
+                joystickMove = joystick._inputDirection;
             else
-                moveInput = Vector2.zero;
+                joystickMove = Vector2.zero;
         }
     }
 
