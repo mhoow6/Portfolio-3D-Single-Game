@@ -14,7 +14,7 @@ public static class SceneInfoTableManager
 
     public static void LoadTable(string filePath)
     {
-        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTableFileStream(filePath);
 
         SceneInfo sceneInfo; // temp
 

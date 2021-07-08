@@ -17,7 +17,7 @@ public static class PlayerExpInfoTableManager
 
     public static void LoadTable(string filePath)
     {
-        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTableFileStream(filePath);
 
         for (int i = 1; i < lines.Count; i++)
         {

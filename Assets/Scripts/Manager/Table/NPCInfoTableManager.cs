@@ -17,7 +17,7 @@ public static class NPCInfoTableManager
 
     public static void LoadTable(string filePath)
     {
-        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTableFileStream(filePath);
 
         for (int i = 1; i < lines.Count; i++)
         {
