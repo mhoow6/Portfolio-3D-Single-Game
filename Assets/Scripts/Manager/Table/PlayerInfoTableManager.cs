@@ -2,6 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using SimpleJSON;
+
+public enum EquipmentIndex
+{
+    WEAPON = 0,
+    QUICKITEM
+}
+
+public enum ItemType
+{
+    NONE = 0,
+    EQUIPMENT,
+    CONSUME,
+    QUEST,
+    REINFORCE
+}
+
+public struct ItemInfo
+{
+    public byte item_type;
+    public ushort id;
+    public string icon_name;
+    public int count;
+    public byte reinforce_level;
+}
 
 public struct PlayerInfo
 {
@@ -49,68 +74,111 @@ public struct PlayerTempInfo
     public float currentExp;
 }
 
+// 구조체는 읽기 전용의 데이터만 담아두자. 변경이 일어날 경우 클래스로 하는게 낫다.
+public class PlayerQuestStateInfo
+{
+    public ushort quest_id;
+    public bool isClear;
+    public bool isPlayerAccept;
+    public int target_monster_hunted;
+}
+
 public static class PlayerInfoTableManager
 {
     public static PlayerInfo playerInfo;
     public static PlayerTempInfo playerTempInfo;
+    public static ItemInfo[] playerInventory = new ItemInfo[50];
+    public static ItemInfo[] playerEquipment = new ItemInfo[2];
+    public static List<PlayerQuestStateInfo> playerQuests = new List<PlayerQuestStateInfo>();
 
     public static void LoadTable(string filePath)
     {
-        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+        string txtAsset = TableManager.instance.GetLinesWithFileStream(filePath);
+        string data = txtAsset.Replace(" ", "");
 
-        for (int i = 1; i < lines.Count; i++)
+        JSONNode root = JSON.Parse(data);
+
+        // Player Info
+        JSONNode player = root["Player"];
+        playerInfo.level = byte.Parse(player["level"]);
+        playerInfo.hp = float.Parse(player["hp"]);
+        playerInfo.mp = float.Parse(player["mp"]);
+        playerInfo.sp = float.Parse(player["sp"]);
+        playerInfo.attack_01_angle = float.Parse(player["attack_01_angle"]);
+        playerInfo.attack_02_angle = float.Parse(player["attack_02_angle"]);
+        playerInfo.attack_sp = float.Parse(player["attack_sp"]);
+        playerInfo.combat_attack_01_angle = float.Parse(player["combat_attack_01_angle"]);
+        playerInfo.combat_attack_02_angle = float.Parse(player["combat_attack_02_angle"]);
+        playerInfo.combat_attack_03_angle = float.Parse(player["combat_attack_03_angle"]);
+        playerInfo.combat_attack_sp = float.Parse(player["combat_attack_sp"]);
+        playerInfo.skill_01_angle = float.Parse(player["skill_01_angle"]);
+        playerInfo.skill_01_mp = float.Parse(player["skill_01_mp"]);
+        playerInfo.skill_01_sp = float.Parse(player["skill_01_sp"]);
+        playerInfo.skill_01_cooldown = float.Parse(player["skill_01_cooldown"]);
+        playerInfo.skill_01_damage = float.Parse(player["skill_01_damage"]);
+        playerInfo.skill_01_distance = float.Parse(player["skill_01_distance"]);
+        playerInfo.skill_02_angle = float.Parse(player["skill_02_angle"]);
+        playerInfo.skill_02_mp = float.Parse(player["skill_02_mp"]);
+        playerInfo.skill_02_sp = float.Parse(player["skill_02_sp"]);
+        playerInfo.skill_02_cooldown = float.Parse(player["skill_02_cooldown"]);
+        playerInfo.skill_02_damage = float.Parse(player["skill_02_damage"]);
+        playerInfo.skill_02_distance = float.Parse(player["skill_02_distance"]);
+        playerInfo.walk_speed = float.Parse(player["walk_speed"]);
+        playerInfo.run_speed = float.Parse(player["run_speed"]);
+        playerInfo.run_sp = float.Parse(player["run_sp"]);
+        playerInfo.combat_walk_speed = float.Parse(player["combat_walk_speed"]);
+        playerInfo.roll_distance = float.Parse(player["roll_distance"]);
+        playerInfo.roll_sp = float.Parse(player["roll_sp"]);
+        playerInfo.basic_weapon_id = ushort.Parse(player["basic_weapon_id"]);
+        playerInfo.sp_recovery_point = ushort.Parse(player["sp_recovery_point"]);
+        playerInfo.running_sp_reduction_rate = float.Parse(player["running_sp_reduction_rate"]);
+        playerInfo.exp = float.Parse(player["exp"]);
+
+
+        // Player Inventory
+        JSONNode inventory = root["Inventory"];
+        for (int i = 0; i < inventory.Count; i++)
         {
-            string[] datas = lines[i].Split(',');
+            ItemInfo itemInfo;
 
-            playerInfo.level = byte.Parse(datas[0]);
-            playerInfo.hp = float.Parse(datas[1]);
-            playerInfo.mp = float.Parse(datas[2]);
-            playerInfo.sp = float.Parse(datas[3]);
-            playerInfo.attack_01_angle = float.Parse(datas[4]);
-            playerInfo.attack_02_angle = float.Parse(datas[5]);
-            playerInfo.attack_sp = float.Parse(datas[6]);
-            playerInfo.combat_attack_01_angle = float.Parse(datas[7]);
-            playerInfo.combat_attack_02_angle = float.Parse(datas[8]);
-            playerInfo.combat_attack_03_angle = float.Parse(datas[9]);
-            playerInfo.combat_attack_sp = float.Parse(datas[10]);
-            playerInfo.skill_01_angle = float.Parse(datas[11]);
-            playerInfo.skill_01_mp = float.Parse(datas[12]);
-            playerInfo.skill_01_sp = float.Parse(datas[13]);
-            playerInfo.skill_01_cooldown = float.Parse(datas[14]);
-            playerInfo.skill_01_damage = float.Parse(datas[15]);
-            playerInfo.skill_01_distance = float.Parse(datas[16]);
-            playerInfo.skill_02_angle = float.Parse(datas[17]);
-            playerInfo.skill_02_mp = float.Parse(datas[18]);
-            playerInfo.skill_02_sp = float.Parse(datas[19]);
-            playerInfo.skill_02_cooldown = float.Parse(datas[20]);
-            playerInfo.skill_02_damage = float.Parse(datas[21]);
-            playerInfo.skill_02_distance = float.Parse(datas[22]);
-            playerInfo.walk_speed = float.Parse(datas[23]);
-            playerInfo.run_speed = float.Parse(datas[24]);
-            playerInfo.run_sp = float.Parse(datas[25]);
-            playerInfo.combat_walk_speed = float.Parse(datas[26]);
-            playerInfo.roll_distance = float.Parse(datas[27]);
-            playerInfo.roll_sp = float.Parse(datas[28]);
-            playerInfo.basic_weapon_id = ushort.Parse(datas[29]);
-            playerInfo.sp_recovery_point = float.Parse(datas[30]);
-            playerInfo.running_sp_reduction_rate = float.Parse(datas[31]);
-            playerInfo.exp = float.Parse(datas[32]);
+            itemInfo.item_type = byte.Parse(inventory[i]["item_type"]);
+            itemInfo.id = ushort.Parse(inventory[i]["id"]);
+            itemInfo.icon_name = inventory[i]["icon_name"];
+            itemInfo.count = int.Parse(inventory[i]["count"]);
+            itemInfo.reinforce_level = byte.Parse(inventory[i]["reinforce_lv"]);
+
+            playerInventory[i] = itemInfo;
         }
-    }
 
-    public static void LoadTempTable(string filePath)
-    {
-        List<string> lines = TableManager.instance.GetLinesFromTempTable(filePath);
-
-        for (int i = 1; i < lines.Count; i++)
+        // Player Equipment
+        JSONNode equipment = root["Equipment"];
+        for (int i = 0; i < equipment.Count; i++)
         {
-            string[] datas = lines[i].Split(',');
+            ItemInfo itemInfo;
 
-            playerTempInfo.level = byte.Parse(datas[0]);
-            playerTempInfo.currentHp = float.Parse(datas[1]);
-            playerTempInfo.currentMp = float.Parse(datas[2]);
-            playerTempInfo.currentSp = float.Parse(datas[3]);
-            playerTempInfo.currentExp = float.Parse(datas[4]);
+            itemInfo.item_type = byte.Parse(equipment[i]["item_type"]);
+            itemInfo.id = ushort.Parse(equipment[i]["id"]);
+            itemInfo.icon_name = equipment[i]["icon_name"];
+            itemInfo.count = int.Parse(equipment[i]["count"]);
+            itemInfo.reinforce_level = byte.Parse(equipment[i]["reinforce_lv"]);
+
+            playerEquipment[i] = itemInfo;
         }
+
+
+        // Player Quest State
+        JSONNode queststate = root["QuestState"];
+        for (int i = 0; i < queststate.Count; i++)
+        {
+            PlayerQuestStateInfo playerQuestInfo = new PlayerQuestStateInfo();
+
+            playerQuestInfo.quest_id = ushort.Parse(queststate[i]["quest_id"]);
+            playerQuestInfo.isClear = bool.Parse(queststate[i]["isClear"]);
+            playerQuestInfo.isPlayerAccept = bool.Parse(queststate[i]["isPlayerAccept"]);
+            playerQuestInfo.target_monster_hunted = int.Parse(queststate[i]["target_monster_hunted"]);
+
+            playerQuests.Add(playerQuestInfo);
+        }
+
     }
 }
