@@ -88,7 +88,7 @@ public class Player : Character
         if (currentSp <= sp)
             isPlayerNeedSP = true;
 
-        equip_weapon_id = PlayerEquipmentTableManager.playerEquipment[(int)EquipmentIndex.WEAPON].id;
+        equip_weapon_id = PlayerInfoTableManager.playerEquipment[(int)EquipmentIndex.WEAPON].id;
         walk_speed = PlayerInfoTableManager.playerInfo.walk_speed;
         run_speed = PlayerInfoTableManager.playerInfo.run_speed;
         basic_weapon_id = PlayerInfoTableManager.playerInfo.basic_weapon_id;

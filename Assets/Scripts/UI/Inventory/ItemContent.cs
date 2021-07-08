@@ -28,28 +28,28 @@ public class ItemContent : MonoBehaviour
     public void LoadPlayerItemInventory()
     {
         // Load Inventory UI From Player Inventory
-        for (int i = 0; i < PlayerInventoryTableManager.playerInventory.Length; i++)
+        for (int i = 0; i < PlayerInfoTableManager.playerInventory.Length; i++)
         {
             ItemSlot newItem = Instantiate(dummy);
 
             newItem.name = "Item (" + i + ")";
 
             // NO DATA
-            if (PlayerInventoryTableManager.playerInventory[i].item_type == (byte)ItemType.NONE)
+            if (PlayerInfoTableManager.playerInventory[i].item_type == (byte)ItemType.NONE)
             {
                 newItem.itemIcon.sprite = null;
                 newItem.itemIcon.enabled = false;
                 newItem.itemCount.enabled = false;
             }
             else
-                newItem.itemIcon.sprite = Resources.Load<Sprite>(PlayerInventoryTableManager.spritePath + PlayerInventoryTableManager.playerInventory[i].icon_name);
+                newItem.itemIcon.sprite = Resources.Load<Sprite>(PlayerInventoryTableManager.spritePath + PlayerInfoTableManager.playerInventory[i].icon_name);
 
-            newItem.count = PlayerInventoryTableManager.playerInventory[i].count;
+            newItem.count = PlayerInfoTableManager.playerInventory[i].count;
             newItem.itemCount.text = newItem.count.ToString();
-            newItem.item_type = PlayerInventoryTableManager.playerInventory[i].item_type;
-            newItem.item_id = PlayerInventoryTableManager.playerInventory[i].id;
-            newItem.reinforce_level = PlayerInventoryTableManager.playerInventory[i].reinforce_level;
-            newItem.item_name = PlayerInventoryTableManager.playerInventory[i].icon_name;
+            newItem.item_type = PlayerInfoTableManager.playerInventory[i].item_type;
+            newItem.item_id = PlayerInfoTableManager.playerInventory[i].id;
+            newItem.reinforce_level = PlayerInfoTableManager.playerInventory[i].reinforce_level;
+            newItem.item_name = PlayerInfoTableManager.playerInventory[i].icon_name;
             newItem.originIndex = i;
 
             if (newItem.item_type == (byte)ItemType.EQUIPMENT)
