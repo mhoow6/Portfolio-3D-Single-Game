@@ -80,7 +80,7 @@ public class MapManager : MonoBehaviour
 
     public void CreateScene(string filePath, GameObject node)
     {
-        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTableFileStream(filePath);
         List<GameObject> parents = new List<GameObject>();
 
         GameObject parent = null;
@@ -144,7 +144,7 @@ public class MapManager : MonoBehaviour
 
     public void CreateNPC(string filePath)
     {
-        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTableFileStream(filePath);
 
         GameObject parent = new GameObject("NPC");
 
@@ -191,7 +191,7 @@ public class MapManager : MonoBehaviour
 
     public void CreateMonster(string filePath)
     {
-        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+        List<string> lines = TableManager.instance.GetLinesFromTableFileStream(filePath);
         GameObject parent = new GameObject("Monster");
 
         for (int i = 1; i < lines.Count; i++)
