@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Xml;
 
 public struct ConsumeItemInfo
 {
@@ -19,21 +20,24 @@ public static class ConsumeInfoTableManager
 
     public static void LoadTable(string filePath)
     {
-        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+        string lines = TableManager.instance.GetLinesWithFileStream(filePath);
 
-        for (int i = 1; i < lines.Count; i++)
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(lines);
+
+        XmlNodeList items = xmlDoc.SelectNodes("dataroot/ConsumeItem");
+
+        foreach (XmlNode node in items)
         {
-            string[] datas = lines[i].Split(',');
-
             ConsumeItemInfo consumeInfo;
 
-            consumeInfo.id = ushort.Parse(datas[0]);
-            consumeInfo.prefab_name = datas[1];
-            consumeInfo.item_name = datas[2];
-            consumeInfo.hp_heal = float.Parse(datas[3]);
-            consumeInfo.mp_heal = float.Parse(datas[4]);
-            consumeInfo.damage_boost = float.Parse(datas[5]);
-            consumeInfo.max_count = byte.Parse(datas[6]);
+            consumeInfo.id = ushort.Parse(node.SelectSingleNode("id").InnerText);
+            consumeInfo.prefab_name = node.SelectSingleNode("prefab_name").InnerText;
+            consumeInfo.item_name = node.SelectSingleNode("item_name").InnerText;
+            consumeInfo.hp_heal = float.Parse(node.SelectSingleNode("hp_heal").InnerText);
+            consumeInfo.mp_heal = float.Parse(node.SelectSingleNode("mp_heal").InnerText);
+            consumeInfo.damage_boost = float.Parse(node.SelectSingleNode("damage_boost").InnerText);
+            consumeInfo.max_count = byte.Parse(node.SelectSingleNode("max_count").InnerText);
 
             consumeInfoList.Add(consumeInfo);
         }

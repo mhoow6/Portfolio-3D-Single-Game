@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Xml;
 
 public struct WeaponInfo
 {
@@ -19,20 +20,22 @@ public static class WeaponInfoTableManager
 
     public static void LoadTable(string filePath)
     {
-        List<string> lines = TableManager.instance.GetLinesFromTable(filePath);
+        string lines = TableManager.instance.GetLinesWithFileStream(filePath);
+        XmlDocument xmlDocument = new XmlDocument();
+        xmlDocument.LoadXml(lines);
 
-        for (int i = 1; i < lines.Count; i++)
+        XmlNodeList weapons = xmlDocument.SelectNodes("dataroot/Weapon");
+
+        foreach (XmlNode node in weapons)
         {
-            string[] datas = lines[i].Split(',');
-
             WeaponInfo weaponInfo;
 
-            weaponInfo.id = ushort.Parse(datas[0]);
-            weaponInfo.prefab_name = datas[1];
-            weaponInfo.weapon_name = datas[2];
-            weaponInfo.basic_damage = float.Parse(datas[3]);
-            weaponInfo.basic_distance = float.Parse(datas[4]);
-            weaponInfo.max_reinforce = byte.Parse(datas[5]);
+            weaponInfo.id = ushort.Parse(node.SelectSingleNode("id").InnerText);
+            weaponInfo.prefab_name = node.SelectSingleNode("prefab_name").InnerText;
+            weaponInfo.weapon_name = node.SelectSingleNode("weapon_name").InnerText;
+            weaponInfo.basic_damage = float.Parse(node.SelectSingleNode("basic_damage").InnerText);
+            weaponInfo.basic_distance = float.Parse(node.SelectSingleNode("basic_distance").InnerText);
+            weaponInfo.max_reinforce = byte.Parse(node.SelectSingleNode("max_reinforce").InnerText);
 
             weaponInfoList.Add(weaponInfo);
         }
