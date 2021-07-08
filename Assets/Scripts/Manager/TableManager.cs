@@ -7,88 +7,65 @@ public class TableManager : MonoBehaviour
 {
     public static TableManager instance;
 
-    [HideInInspector]
-    public string playerTempInventoryPath;
-    [HideInInspector]
-    public string playerTempEquipmentPath;
-    [HideInInspector]
-    public string playerTempPath;
-    [HideInInspector]
-    public string playerTempQuestStatePath;
-
     private string weaponPath;
+    public string _playerPath { get => playerPath; }
     private string playerPath;
     private string monsterPath;
     private string npcPath;
-    private string playerInventoryPath;
-    private string playerEquipmentPath;
     private string consumeItemPath;
     private string dialogPath;
     private string questPath;
-    private string playerQuestStatePath;
     private string playerExpPath;
     private string playerLevelPath;
     private string sceneInfoPath;
     private string playerSpawnInfoPath;
-    
-    public const string FILE_EXTENSION = ".csv";
+
+    public string _FILE_EXTENSION { get => FILE_EXTENSION; }
+    private const string FILE_EXTENSION = ".csv";
+    public string _JSON_EXTENSION { get => JSON_EXTENSION; }
+    private const string JSON_EXTENSION = ".json";
 
     private void Awake()
     {
         instance = this;
 
-        // Table Path
-        weaponPath = "Tables/WeaponInfo";
-        playerPath = "Tables/PlayerInfo";
-        monsterPath = "Tables/MonsterInfo";
-        npcPath = "Tables/NPCInfo";
-        playerInventoryPath = "Tables/PlayerInventory";
-        playerEquipmentPath = "Tables/PlayerEquipment";
-        consumeItemPath = "Tables/ConsumeItemInfo";
-        dialogPath = "Tables/DialogInfo";
-        questPath = "Tables/QuestInfo";
-        playerQuestStatePath = "Tables/PlayerQuestState";
-        playerExpPath = "Tables/PlayerExp";
-        playerLevelPath = "Tables/PlayerLevel";
-        sceneInfoPath = "Tables/SceneInfo";
-        playerSpawnInfoPath = "Tables/PlayerSpawnInfo";
+        // Data Path
+        weaponPath = Application.persistentDataPath + "/Xmls/WeaponInfo.xml";
+        playerPath = Application.persistentDataPath + "/Jsons/Player.json";
+        monsterPath = Application.persistentDataPath + "/Tables/MonsterInfo.csv";
+        npcPath = Application.persistentDataPath + "/Tables/NPCInfo.csv";
+        consumeItemPath = Application.persistentDataPath + "/Xmls/ConsumeItemInfo.xml";
+        dialogPath = Application.persistentDataPath + "/Tables/DialogInfo.csv";
+        questPath = Application.persistentDataPath + "/Tables/QuestInfo.csv";
+        playerExpPath = Application.persistentDataPath + "/Tables/PlayerExp.csv";
+        playerLevelPath = Application.persistentDataPath + "/Tables/PlayerLevel.csv";
+        sceneInfoPath = Application.persistentDataPath + "/Tables/SceneInfo.csv";
+        playerSpawnInfoPath = Application.persistentDataPath + "/Tables/PlayerSpawnInfo.csv";
 
-        // Temp Path
-        playerTempInventoryPath = Application.persistentDataPath + "/Tables/PlayerInventory" + FILE_EXTENSION;
-        playerTempEquipmentPath = Application.persistentDataPath + "/Tables/PlayerEquipment" + FILE_EXTENSION;
-        playerTempPath = Application.persistentDataPath + "/Tables/PlayerInfo" + FILE_EXTENSION;
-        playerTempQuestStatePath = Application.persistentDataPath + "/Tables/PlayerQuestState" + FILE_EXTENSION;
+        PlayerInfoTableManager.LoadTable(playerPath);
 
         if (!SceneInfoManager.instance.isTableManagerAwakeOnce)
         {
+            DirectoryCheck(Application.persistentDataPath + "/Tables");
+            DirectoryCheck(Application.persistentDataPath + "/Jsons");
+            DirectoryCheck(Application.persistentDataPath + "/Xmls");
+
             WeaponInfoTableManager.LoadTable(weaponPath);
-            PlayerInfoTableManager.LoadTable(playerPath);
-            PlayerInventoryTableManager.LoadTable(playerInventoryPath);
-            PlayerEquipmentTableManager.LoadTable(playerEquipmentPath);
             MonsterInfoTableManager.LoadTable(monsterPath);
             NPCInfoTableManager.LoadTable(npcPath);
             ConsumeInfoTableManager.LoadTable(consumeItemPath);
             DialogInfoTableManager.LoadTable(dialogPath);
             QuestInfoTableManager.LoadTable(questPath);
-            PlayerQuestStateTableManager.LoadTable(playerQuestStatePath);
             PlayerExpInfoTableManager.LoadTable(playerExpPath);
             PlayerLevelInfoTableManager.LoadTable(playerLevelPath);
             SceneInfoTableManager.LoadTable(sceneInfoPath);
             PlayerSpawnInfoTableManager.LoadTable(playerSpawnInfoPath);
         }
 
-        if (SceneInfoManager.instance.isTempDataExists)
-        {
-            PlayerInfoTableManager.LoadTempTable(playerTempPath);
-            PlayerInventoryTableManager.LoadTempTable(playerTempInventoryPath);
-            PlayerEquipmentTableManager.LoadTempTable(playerTempEquipmentPath);
-            PlayerQuestStateTableManager.LoadTempTable(playerTempQuestStatePath);
-        }
-
         SceneInfoManager.instance.isTableManagerAwakeOnce = true;
     }
 
-    public List<string> GetLinesFromTable(string filePath)
+    public List<string> GetLinesFromTableTextAsset(string filePath)
     {
         TextAsset txtAsset = Resources.Load<TextAsset>(filePath);
 
@@ -107,7 +84,7 @@ public class TableManager : MonoBehaviour
         return lines;
     }
 
-    public List<string> GetLinesFromTempTable(string filePath)
+    public List<string> GetLinesFromTableFileStream(string filePath)
     {
         string line = string.Empty;
         List<string> lines = new List<string>();
@@ -124,6 +101,31 @@ public class TableManager : MonoBehaviour
         }
 
         return lines;
+    }
+
+    public string GetLinesWithFileStream(string filePath)
+    {
+        string line = string.Empty;
+        string lines = string.Empty;
+
+        using (FileStream f = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+        {
+            using (StreamReader sr = new StreamReader(f, System.Text.Encoding.UTF8))
+            {
+                while ((line = sr.ReadLine()) != null)
+                {
+                    lines += line;
+                }
+            }
+        }
+
+        return lines;
+    }
+
+    public void DirectoryCheck(string directory)
+    {
+        if (!Directory.Exists(directory))
+            Directory.CreateDirectory(directory);
     }
 
 }
