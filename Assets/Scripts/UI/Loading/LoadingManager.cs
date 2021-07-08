@@ -12,6 +12,7 @@ public class LoadingManager : MonoBehaviour
     public Slider loadingGauge;
     public bool isLoadingOn;
 
+    public float _LOADING_SPEED { get => LOADING_SPEED; }
     private const float LOADING_SPEED = 0.5f;
     private const float SCENE_LOAD_CHECK_DURATION = 2f;
     private const float FADE_SPEED = 2f;
@@ -21,12 +22,7 @@ public class LoadingManager : MonoBehaviour
         isLoadingOn = true;
     }
 
-    private void Start()
-    {
-        StartCoroutine(loading(LOADING_SPEED));
-    }
-
-    private IEnumerator loading(float loadingSpeed)
+    public IEnumerator Loading(float loadingSpeed)
     {
         WaitForSeconds wt = new WaitForSeconds(SCENE_LOAD_CHECK_DURATION);
             
