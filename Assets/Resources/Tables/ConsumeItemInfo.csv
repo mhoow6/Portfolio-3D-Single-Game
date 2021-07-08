@@ -1,6 +1,0 @@
-id,prefab_name,item_name,hp_heal,mp_heal,damage_boost,max_count
-4000,equip_potion_red_3,체력 포션,50,0,0,99
-4001,equip_potion_red_4,쓸만한 체력 포션,200,0,0,99
-4002,equip_potion_blue_3,마력 포션,0,50,0,99
-4003,equip_potion_blue_4,쓸만한 마력포션,0,100,0,99
-4004,equip_tooth_red,붉은 이빨,0,0,0.2,99
