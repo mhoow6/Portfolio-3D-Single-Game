@@ -13,8 +13,8 @@ public class VillageManager : MapManager
 
     private void Awake()
     {
-        villagePath = "Tables/Village";
-        villageNPCPath = "Tables/VillageNPCPosition";
+        villagePath = Application.persistentDataPath + "/Tables/Village.csv";
+        villageNPCPath = Application.persistentDataPath + "/Tables/VillageNPCPosition.csv";
 
         SceneInfoManager.instance.currentScene = SceneType.Village;
     }
@@ -23,6 +23,7 @@ public class VillageManager : MapManager
     {
         NavMeshManager.instance.CreateNavMesh(SceneInfoManager.instance.currentScene);
 
+        HUDManager.instance.loading.StartCoroutine(HUDManager.instance.loading.Loading(HUDManager.instance.loading._LOADING_SPEED));
         CreateScene(villagePath, village);
         CreatePlayer(SceneInfoManager.instance.spawnPos);
         CreateNPC(villageNPCPath);

@@ -14,8 +14,8 @@ public class FieldManager : MapManager
 
     private void Awake()
     {
-        forestPath = "Tables/Forest";
-        forestMonsterPath = "Tables/ForestMonsterPosition";
+        forestPath = Application.persistentDataPath + "/Tables/Forest.csv";
+        forestMonsterPath = Application.persistentDataPath + "/Tables/ForestMonsterPosition.csv";
 
         SceneInfoManager.instance.currentScene = SceneType.Forest;
     }
@@ -24,6 +24,7 @@ public class FieldManager : MapManager
     {
         NavMeshManager.instance.CreateNavMesh(SceneInfoManager.instance.currentScene);
 
+        HUDManager.instance.loading.StartCoroutine(HUDManager.instance.loading.Loading(HUDManager.instance.loading._LOADING_SPEED));
         CreateScene(forestPath, field);
         CreatePlayer(SceneInfoManager.instance.spawnPos);
         CreateMonster(forestMonsterPath);
