@@ -32,5 +32,5 @@ public class SceneInfoManager : SingleTon<SceneInfoManager>
     public bool isTempDataExists;
     public bool isSceneLoadCompleted;
     public SpawnPosID spawnPos = SpawnPosID.VILLAGE_START;
-    public string[] resourceSepartors = new string[] { "Particle", "Props", "Vegetation", "Rocks", "Terrain", "Plane", "CombinedObject" };
+    public string[] resourceSepartors = new string[] { "Particle", "Props", "Vegetation", "Rocks", "Terrain", "CombinedObject" };
 }
