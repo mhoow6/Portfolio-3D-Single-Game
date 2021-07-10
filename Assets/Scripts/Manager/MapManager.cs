@@ -14,7 +14,7 @@ public class MapManager : MonoBehaviour
         GameObject cameraArm = new GameObject("cameraArm");
 
         // Player Load
-        GameObject _player = Resources.Load<GameObject>("Character/Player/Character_Knight_01_Black");
+        GameObject _player = ResourceManager.player.LoadAsset<GameObject>("Character_Knight_01_Black");
         GameObject player = GameObject.Instantiate(_player);
         Player playerScript = player.AddComponent<Player>();
         playerScript.name = "Player";
@@ -113,8 +113,31 @@ public class MapManager : MonoBehaviour
             float zScale = float.Parse(datas[9]);
             Vector3 objScale = new Vector3(xScale, yScale, zScale);
 
+            GameObject _obj = null;
+
             // 4. 로드 & 인스턴싱
-            GameObject _obj = Resources.Load<GameObject>(path + "/" + objName);
+            switch (path)
+            {
+                case "Particle":
+                    _obj = ResourceManager.particle.LoadAsset<GameObject>(objName);
+                    break;
+                case "Props":
+                    _obj = ResourceManager.props.LoadAsset<GameObject>(objName);
+                    break;
+                case "Vegetation":
+                    _obj = ResourceManager.vegetation.LoadAsset<GameObject>(objName);
+                    break;
+                case "Rocks":
+                    _obj = ResourceManager.rocks.LoadAsset<GameObject>(objName);
+                    break;
+                case "Terrain":
+                    _obj = ResourceManager.terrain.LoadAsset<GameObject>(objName);
+                    break;
+                case "CombinedObject":
+                    _obj = ResourceManager.combinedobject.LoadAsset<GameObject>(objName);
+                    break;
+            }
+
             GameObject obj = GameObject.Instantiate(_obj);
 
             if (objName == "Teleport")
@@ -166,7 +189,7 @@ public class MapManager : MonoBehaviour
 
             string npcPrefab = NPCInfoTableManager.GetNPCPrefabFromID(id);
 
-            GameObject _npc = Resources.Load<GameObject>("Character/NPC/" + npcPrefab);
+            GameObject _npc = ResourceManager.npc.LoadAsset<GameObject>(npcPrefab);
             GameObject npc = GameObject.Instantiate(_npc);
             NPC npcScript = npc.AddComponent<NPC>();
 
