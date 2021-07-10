@@ -23,7 +23,7 @@ public class EquipContent : MonoBehaviour
                 newItem.itemCount.enabled = false;
             }
             else
-                newItem.itemIcon.sprite = Resources.Load<Sprite>(PlayerInventoryTableManager.spritePath + PlayerInfoTableManager.playerEquipment[i].icon_name);
+                newItem.itemIcon.sprite = Resources.Load<Sprite>("Sprite/" + PlayerInfoTableManager.playerEquipment[i].icon_name);
 
             newItem.isEquiped = true;
             newItem.count = PlayerInfoTableManager.playerEquipment[i].count;
@@ -39,6 +39,6 @@ public class EquipContent : MonoBehaviour
         }
 
         // Combat control Slot Item Change
-        HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].itemIcon.sprite = Resources.Load<Sprite>(PlayerInventoryTableManager.spritePath + PlayerInfoTableManager.playerEquipment[(int)EquipmentIndex.QUICKITEM].icon_name);
+        HUDManager.instance.combat.controlSlots[(int)CombatIndex.QUICKITEM].itemIcon.sprite = Resources.Load<Sprite>("Sprite/" + PlayerInfoTableManager.playerEquipment[(int)EquipmentIndex.QUICKITEM].icon_name);
     }
 }

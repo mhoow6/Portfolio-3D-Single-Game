@@ -22,7 +22,7 @@ public class ItemContent : MonoBehaviour
     private void ItemCounter()
     {
         currentItemCount = items.FindAll(item => item.item_type != (byte)ItemType.NONE).Count;
-        textItemCount.text = currentItemCount + " / " + PlayerInventoryTableManager.MAX_SLOTS.ToString();
+        textItemCount.text = currentItemCount + " / " + PlayerInfoTableManager.playerInventory.Length.ToString();
     }
 
     public void LoadPlayerItemInventory()
@@ -42,7 +42,7 @@ public class ItemContent : MonoBehaviour
                 newItem.itemCount.enabled = false;
             }
             else
-                newItem.itemIcon.sprite = Resources.Load<Sprite>(PlayerInventoryTableManager.spritePath + PlayerInfoTableManager.playerInventory[i].icon_name);
+                newItem.itemIcon.sprite = Resources.Load<Sprite>("Sprite/" + PlayerInfoTableManager.playerInventory[i].icon_name);
 
             newItem.count = PlayerInfoTableManager.playerInventory[i].count;
             newItem.itemCount.text = newItem.count.ToString();

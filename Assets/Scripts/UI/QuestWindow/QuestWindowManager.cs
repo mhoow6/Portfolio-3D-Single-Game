@@ -38,11 +38,11 @@ public class QuestWindowManager : MonoBehaviour
 
     public void LoadPlayerQuest()
     {
-        if (PlayerQuestStateTableManager.playerQuestStateList.Count == 0)
+        if (PlayerInfoTableManager.playerQuests.Count == 0)
             return;
 
-        for (int i = 0; i < PlayerQuestStateTableManager.playerQuestStateList.Count; i++)
-            AddPlayerQuestInQuestWindow(PlayerQuestStateTableManager.playerQuestStateList[i].quest_id, PlayerQuestStateTableManager.playerQuestStateList[i].isClear);
+        for (int i = 0; i < PlayerInfoTableManager.playerQuests.Count; i++)
+            AddPlayerQuestInQuestWindow(PlayerInfoTableManager.playerQuests[i].quest_id, PlayerInfoTableManager.playerQuests[i].isClear);
     }
 
     public void AddPlayerQuestInQuestWindow(ushort questID, bool isClear)

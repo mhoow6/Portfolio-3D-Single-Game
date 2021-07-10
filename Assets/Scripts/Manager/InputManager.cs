@@ -383,7 +383,7 @@ public class InputManager : MonoBehaviour
             return;
 
         // Inventory already full -> exit
-        if (HUDManager.instance.inventory.itemContent.currentItemCount > PlayerInventoryTableManager.MAX_SLOTS)
+        if (HUDManager.instance.inventory.itemContent.currentItemCount > PlayerInfoTableManager.playerInventory.Length)
             return;
 
         // 1. Find Empty Slot

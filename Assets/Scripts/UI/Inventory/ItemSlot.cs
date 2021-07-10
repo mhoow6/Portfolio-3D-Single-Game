@@ -70,7 +70,7 @@ public class ItemSlot : ControlSlot, IPointerDownHandler, IDragHandler, IPointer
 
         // Toggle Select
         if (!isSelected && item_type != (byte)ItemType.NONE)
-            itemGradeFrame.sprite = Resources.Load<Sprite>(PlayerInventoryTableManager.spritePath + SELECTED_FRAME);
+            itemGradeFrame.sprite = Resources.Load<Sprite>("Sprite/" + SELECTED_FRAME);
         else
             itemGradeFrame.sprite = originGradeFrameSprite;
 

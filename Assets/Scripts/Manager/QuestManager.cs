@@ -168,9 +168,9 @@ public class QuestManager : MonoBehaviour
 
     private void QuestListUpdateFromTable()
     {
-        if (PlayerQuestStateTableManager.playerQuestStateList.Count != 0)
+        if (PlayerInfoTableManager.playerQuests.Count != 0)
         {
-            foreach (PlayerQuestStateInfo state in PlayerQuestStateTableManager.playerQuestStateList)
+            foreach (PlayerQuestStateInfo state in PlayerInfoTableManager.playerQuests)
                 playerQuests.Add(QuestInfoTableManager.GetQuestInfoFromQuestID(state.quest_id), state);
         }
 
