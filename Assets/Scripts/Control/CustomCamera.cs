@@ -5,6 +5,8 @@ using UnityEngine;
 public class CustomCamera : MonoBehaviour
 {
     public Player player;
+    public Camera mainCam;
+
     public Vector3 offset
     {
         get => new Vector3(0, 1.683f, 0);
@@ -23,6 +25,8 @@ public class CustomCamera : MonoBehaviour
     private float zoomSenstivity;
     private float zoomSpeed;
 
+    private float originHeight;
+
     void Awake()
     {
         zoom = 0;
@@ -31,6 +35,8 @@ public class CustomCamera : MonoBehaviour
         zoomMax = 1f;
         zoomSenstivity = 0.5f;
         zoomSpeed = 5.0f;
+
+        mainCam = Camera.main;
     }
 
     void LateUpdate()
@@ -67,5 +73,22 @@ public class CustomCamera : MonoBehaviour
         zoomResult = Mathf.Lerp(zoomResult, zoom, Time.deltaTime * zoomSpeed);
 
         return transform.forward * zoomResult;
+    }
+
+    public IEnumerator jitterCamera()
+    {
+        Debug.Log("작동하나?");
+
+        originHeight = mainCam.transform.position.y;
+
+        Vector3 jitterUp = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y + 0.1f, mainCam.transform.position.z);
+        mainCam.transform.position = jitterUp;
+        yield return null;
+        Vector3 jitterDown = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y - 0.2f, mainCam.transform.position.z);
+        mainCam.transform.position = jitterDown;
+        yield return null;
+        Vector3 backOrigin = new Vector3(mainCam.transform.position.x, originHeight, mainCam.transform.position.z);
+        mainCam.transform.position = backOrigin;
+        yield return null;
     }
 }
