@@ -97,7 +97,7 @@ public class Dragon : Monster
         if (!IsTailAttackHitable())
         {
             if (currentDistanceWithPlayer < attack_distance)
-                if (currentAngleWithPlayer > attack_angle)
+                if (currentAngleWithPlayer > ATTACK_MIN_ANGLE)
                     return true;
         }
 
