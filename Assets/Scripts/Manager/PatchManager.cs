@@ -51,34 +51,44 @@ public class PatchManager : MonoBehaviour
 
         yield return StartCoroutine(PatchAssetBundle("monster.pak", "Monster"));
         ResourceManager.monster = KeepAssetBundle("monster.pak");
+        RefreshShader<SkinnedMeshRenderer>(ResourceManager.monster);
 
         yield return StartCoroutine(PatchAssetBundle("npc.pak", "NPC"));
         ResourceManager.npc = KeepAssetBundle("npc.pak");
+        RefreshShader<SkinnedMeshRenderer>(ResourceManager.npc);
 
         yield return StartCoroutine(PatchAssetBundle("player.pak", "Player"));
         ResourceManager.player = KeepAssetBundle("player.pak");
-        
+        RefreshShader<SkinnedMeshRenderer>(ResourceManager.player);
+
         yield return StartCoroutine(PatchAssetBundle("combinedobject.pak", "CombinedObject"));
         ResourceManager.combinedobject = KeepAssetBundle("combinedobject.pak");
+        RefreshShader<MeshRenderer>(ResourceManager.combinedobject);
 
         yield return StartCoroutine(PatchAssetBundle("terrain.pak", "Terrain"));
         ResourceManager.terrain = KeepAssetBundle("terrain.pak");
+        RefreshShader<MeshRenderer>(ResourceManager.terrain);
 
         yield return StartCoroutine(PatchAssetBundle("rocks.pak", "Rocks"));
         ResourceManager.rocks = KeepAssetBundle("rocks.pak");
+        RefreshShader<MeshRenderer>(ResourceManager.rocks);
 
         yield return StartCoroutine(PatchAssetBundle("vegetation.pak", "Vegetation"));
         ResourceManager.vegetation = KeepAssetBundle("vegetation.pak");
+        RefreshShader<MeshRenderer>(ResourceManager.vegetation);
 
         yield return StartCoroutine(PatchAssetBundle("props.pak", "Props"));
         ResourceManager.props = KeepAssetBundle("props.pak");
+        RefreshShader<MeshRenderer>(ResourceManager.props);
 
         yield return StartCoroutine(PatchAssetBundle("particle.pak", "Particle"));
         ResourceManager.particle = KeepAssetBundle("particle.pak");
+        RefreshShaderFromParticleSystemRenderer(ResourceManager.particle);
 
         yield return StartCoroutine(PatchAssetBundle("weapon.pak", "Weapon"));
         ResourceManager.weapon = KeepAssetBundle("weapon.pak");
-
+        RefreshShader<MeshRenderer>(ResourceManager.weapon);
+        
         if (downloadSlider.value == downloadSlider.maxValue)
         {
             downloadText.text = "게임 준비 완료";
@@ -301,6 +311,62 @@ public class PatchManager : MonoBehaviour
         AssetBundle assetBundle = AssetBundle.LoadFromFile(filePath);
 
         return assetBundle;
+    }
+
+    /// <summary>
+    /// 쉐이더를 리프레시하여 에셋번들 로드시 쉐이더가 정상적용하게 합니다.
+    /// </summary>
+    /// <typeparam name="T">Renderer 컴포넌트를 상속받은 컴포넌트만 사용하세요. 단, ParticleSystemRenderer는 사용하지 않는 것을 권장합니다.</typeparam>
+    /// <param name="assetbundle">Null이 아닌 에셋번들을 넣어주세요.</param>
+    private void RefreshShader<T>(AssetBundle assetbundle) where T : UnityEngine.Renderer
+    {
+        GameObject[] all = assetbundle.LoadAllAssets<GameObject>();
+        T[] renderer;
+        Material[] ms;
+
+        for (int i = 0; i < all.Length; i++)
+        {
+            // SyntyStudios/Water 쉐이더는 리프레쉬로 해결이 안 됨
+            
+            renderer = all[i].GetComponentsInChildren<T>();
+
+            for (int j = 0; j < renderer.Length; j++)
+            {
+                if (renderer[j] != null)
+                {
+                    ms = renderer[j].sharedMaterials;
+
+                    for (int k = 0; k < ms.Length; k++)
+                    {
+                        if (ms[k] != null && ms[k].shader.name != "SyntyStudios/Water")
+                            ms[k].shader = Shader.Find(ms[k].shader.name);
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 쉐이더를 리프레시하여 에셋번들 로드시 쉐이더가 정상적용하게 합니다. (ParticleSystemRenderer 전용)
+    /// </summary>
+    /// <param name="assetbundle">Null이 아닌 에셋번들을 넣어주세요.</param>
+    private void RefreshShaderFromParticleSystemRenderer(AssetBundle assetbundle)
+    {
+        GameObject[] all = assetbundle.LoadAllAssets<GameObject>();
+        ParticleSystemRenderer renderer;
+
+        for (int i = 0; i < all.Length; i++)
+        {
+            renderer = all[i].GetComponentInChildren<ParticleSystemRenderer>();
+
+            if (renderer == null)
+                return;
+            else
+                if (renderer.sharedMaterial != null)
+                    renderer.sharedMaterial.shader = Shader.Find(renderer.sharedMaterial.shader.name);
+                else if (renderer.trailMaterial != null)
+                    renderer.trailMaterial.shader = Shader.Find(renderer.trailMaterial.shader.name);
+        }
     }
 
     /// <summary>
