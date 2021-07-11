@@ -188,6 +188,7 @@ public class Player : Character
                 !mob.isImmortal)
             {
                 mob.hp -= attack_damage;
+                StartCoroutine(GameManager.instance.controller.cameraArm.jitterCamera());
 
                 attackHitEffect = EffectManager.instance.CreateHitEffect(ani_id, mob);
 
