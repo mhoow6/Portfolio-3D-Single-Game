@@ -395,6 +395,7 @@ public class DragonFireBallEffect : Effect
     private float deltaDistance;
     private const float FIRE_BALL_MOVE_SPEED = 15.0f;
     private const float METEO_MOVE_SPEED = 10.0f;
+    private Vector3 PLAYER_BODY_POS = new Vector3(0, 0.5f, 0);
 
     private void Awake()
     {
