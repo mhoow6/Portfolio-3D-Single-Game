@@ -145,7 +145,7 @@ public static class PlayerInfoTableManager
             itemInfo.id = ushort.Parse(inventory[i]["id"]);
             itemInfo.icon_name = inventory[i]["icon_name"];
             itemInfo.count = int.Parse(inventory[i]["count"]);
-            itemInfo.reinforce_level = byte.Parse(inventory[i]["reinforce_lv"]);
+            itemInfo.reinforce_level = byte.Parse(inventory[i]["reinforce_level"]);
 
             playerInventory[i] = itemInfo;
         }
@@ -160,7 +160,7 @@ public static class PlayerInfoTableManager
             itemInfo.id = ushort.Parse(equipment[i]["id"]);
             itemInfo.icon_name = equipment[i]["icon_name"];
             itemInfo.count = int.Parse(equipment[i]["count"]);
-            itemInfo.reinforce_level = byte.Parse(equipment[i]["reinforce_lv"]);
+            itemInfo.reinforce_level = byte.Parse(equipment[i]["reinforce_level"]);
 
             playerEquipment[i] = itemInfo;
         }
