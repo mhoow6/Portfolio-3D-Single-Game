@@ -61,7 +61,7 @@ public class MapManager : MonoBehaviour
         PlayerFootstepEffect footstep = EffectManager.instance.CreateFootStepEffect();
         footstep.transform.position = playerScript.transform.position;
         playerScript.footStepEffect = footstep;
-        
+
 
         // Add NavMeshAgent
         player.AddComponent<NavMeshAgent>();
@@ -116,7 +116,7 @@ public class MapManager : MonoBehaviour
             GameObject _obj = null;
 
             // 4. 로드 & 인스턴싱
-            switch (path)
+            switch (parent.name)
             {
                 case "Particle":
                     _obj = ResourceManager.particle.LoadAsset<GameObject>(objName);
@@ -137,7 +137,7 @@ public class MapManager : MonoBehaviour
                     _obj = ResourceManager.combinedobject.LoadAsset<GameObject>(objName);
                     break;
             }
-
+    
             GameObject obj = GameObject.Instantiate(_obj);
 
             if (objName == "Teleport")
@@ -282,7 +282,7 @@ public class MapManager : MonoBehaviour
                 path = SceneInfoManager.instance.resourceSepartors[j];
                 return true;
             }
-                
+
         }
 
         return false;
