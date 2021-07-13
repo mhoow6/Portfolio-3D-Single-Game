@@ -177,7 +177,13 @@ public static class PlayerInfoTableManager
             playerQuestInfo.isPlayerAccept = bool.Parse(queststate[i]["isPlayerAccept"]);
             playerQuestInfo.target_monster_hunted = int.Parse(queststate[i]["target_monster_hunted"]);
 
-            playerQuests.Add(playerQuestInfo);
+            PlayerQuestStateInfo existQuest = playerQuests.Find(quest => quest.quest_id == playerQuestInfo.quest_id);
+
+            // 이미 리스트에 있을 경우 데이터만 갱신 추가를 하지 않음
+            if (existQuest != null)
+                existQuest = playerQuestInfo;
+            else
+                playerQuests.Add(playerQuestInfo);
         }
 
     }
