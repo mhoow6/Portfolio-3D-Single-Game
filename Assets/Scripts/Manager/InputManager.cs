@@ -141,7 +141,7 @@ public class InputManager : MonoBehaviour
             // Quest Window
             if (Input.GetKeyDown(KeyCode.J))
             {
-                bool toggle = HUDManager.instance.system.isSystemWindowOn = HUDManager.instance.system.isSystemWindowOn == false ? true : false;
+                bool toggle = HUDManager.instance.quest.isQuestWindowOn = HUDManager.instance.quest.isQuestWindowOn == false ? true : false;
                 QuestWindowSwitch(toggle);
             }
 
@@ -394,6 +394,7 @@ public class InputManager : MonoBehaviour
         emptySlot.originGradeFrameSprite = item.originGradeFrameSprite;
         emptySlot.item_id = item.item_id;
         emptySlot.item_type = item.item_type;
+        emptySlot.item_name = item.item_name;
         emptySlot.count = item.count;
         emptySlot.itemCount.text = item.itemCount.text;
         emptySlot.itemIcon.enabled = true;
