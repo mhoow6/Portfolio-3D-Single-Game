@@ -25,7 +25,15 @@ public class CustomCamera : MonoBehaviour
     private float zoomSenstivity;
     private float zoomSpeed;
 
-    private float originHeight;
+    private float originZ;
+    private float originY;
+    private float originX;
+
+    private const float JITTER_SENSIVITY = 0.007f;
+    private const float JITTER_MAX = 0.6f;
+    private WaitForSeconds jitter_cooldown = new WaitForSeconds(0.1f);
+    private WaitForSeconds jitter_wait = new WaitForSeconds(0.05f);
+    public bool isJitter;
 
     void Awake()
     {
@@ -75,20 +83,24 @@ public class CustomCamera : MonoBehaviour
         return transform.forward * zoomResult;
     }
 
-    public IEnumerator jitterCamera()
+    public IEnumerator jitterCamera(float damage)
     {
-        Debug.Log("작동하나?");
+        float normalized = damage * JITTER_SENSIVITY;
+        normalized = (float)(normalized > JITTER_MAX ? JITTER_MAX : normalized);
+        isJitter = true;
 
-        originHeight = mainCam.transform.position.y;
+        originX = mainCam.transform.localPosition.x;
+        originZ = mainCam.transform.localPosition.z;
+        
+        Vector3 jitterUp = new Vector3(mainCam.transform.localPosition.x + normalized, mainCam.transform.localPosition.y, mainCam.transform.localPosition.z + normalized);
+        mainCam.transform.localPosition = jitterUp;
+        yield return jitter_wait;
 
-        Vector3 jitterUp = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y + 0.1f, mainCam.transform.position.z);
-        mainCam.transform.position = jitterUp;
-        yield return null;
-        Vector3 jitterDown = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y - 0.2f, mainCam.transform.position.z);
-        mainCam.transform.position = jitterDown;
-        yield return null;
-        Vector3 backOrigin = new Vector3(mainCam.transform.position.x, originHeight, mainCam.transform.position.z);
-        mainCam.transform.position = backOrigin;
+        Vector3 backOrigin = new Vector3(originX, mainCam.transform.localPosition.y, originZ);
+        mainCam.transform.localPosition = backOrigin;
+        yield return jitter_cooldown;
+
+        isJitter = false;
         yield return null;
     }
 }
