@@ -6,7 +6,8 @@ using UnityEngine;
 public enum SceneType
 {
     Village,
-    Forest
+    Forest,
+    Menu
 }
 
 
