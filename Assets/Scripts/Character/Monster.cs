@@ -64,13 +64,14 @@ public class Monster : Character
     public bool isImmortal;
     public SkinnedMeshRenderer smr;
     public Color originEmissionColor;
-    
+
     protected const float THINKING_DURATION = 0.1f;
     protected const float MIN_SIGHT_ANGLE = 20f;
     private const float ANGULAR_SPEED = 999f;
     private const float DISABLE_TIME = 5f;
     private const float COLOR_LERF_SPEED = 0.1f;
 
+    public Effect _stunEffect { get => stunEffect; }
     private Effect stunEffect;
 
     private void Start()
@@ -188,6 +189,8 @@ public class Monster : Character
         if (GameManager.instance.controller.player.level == PlayerExpInfoTableManager.playerExpInfo.Length)
             GameManager.instance.controller.player.currentExp = 0f;
 
+        hp = 0f;
+
         // Level up
         GameManager.instance.controller.player.LevelUpCheck();
 
@@ -262,19 +265,25 @@ public class Monster : Character
         }
     }
 
-    protected virtual void Attack(int ani_id)
+    protected void Attack(int ani_id)
     {
-        switch (ani_id)
-        {
-            case (int)MonsterAnimation.AniType.ATTACK:
-                currentAttackDamage = attack_damage;
-                currentAttackDistance = attack_distance;
-                currentAttackAngle = attack_angle;
-                break;
-        }
+        AttackType(ani_id);
+        RealAttack();
+    }
 
+    private void RealAttack()
+    {
         if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
+        {
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
+            GameManager.instance.controller.player.KnockBackEffect(currentAttackDamage);
+            AudioManager.instance.PlayAudio(AudioManager.instance.GetAudio(AudioCondition.ALL, AudioCondition.PLAYER_HIT), 1f);
+        }
+    }
+
+    protected virtual void AttackType(int ani_id)
+    {
+
     }
 
     private void DeadState()
@@ -352,7 +361,7 @@ public class CommonMonster : Monster
         Detector();
     }
 
-    protected override void Attack(int ani_id)
+    protected override void AttackType(int ani_id)
     {
         switch (ani_id)
         {
@@ -362,9 +371,6 @@ public class CommonMonster : Monster
                 currentAttackAngle = attack_angle;
                 break;
         }
-
-        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle)
-            GameManager.instance.controller.player.currentHp -= currentAttackDamage;
     }
 }
 
@@ -431,7 +437,7 @@ public class EliteMonster : Monster
         }
     }
 
-    protected override void Attack(int ani_id)
+    protected override void AttackType(int ani_id)
     {
         switch (ani_id)
         {
@@ -447,10 +453,8 @@ public class EliteMonster : Monster
                 currentAttackAngle = skill_1_angle;
                 break;
         }
-
-        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
-            GameManager.instance.controller.player.currentHp -= currentAttackDamage;
     }
+
 }
 
 public class Golem : Monster
@@ -524,7 +528,7 @@ public class Golem : Monster
         }
     }
 
-    protected override void Attack(int ani_id)
+    protected override void AttackType(int ani_id)
     {
         switch (ani_id)
         {
@@ -552,9 +556,6 @@ public class Golem : Monster
                 currentAttackAngle = skill_3_angle;
                 break;
         }
-
-        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
-            GameManager.instance.controller.player.currentHp -= currentAttackDamage;
-
     }
 }
+

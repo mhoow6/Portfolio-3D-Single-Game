@@ -160,7 +160,7 @@ public class Dragon : Monster
         specialComboCooldown = 0;
     }
 
-    protected override void Attack(int ani_id)
+    protected override void AttackType(int ani_id)
     {
         switch (ani_id)
         {
@@ -176,9 +176,6 @@ public class Dragon : Monster
                 currentAttackAngle = skill_1_angle;
                 break;
         }
-
-        if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
-            GameManager.instance.controller.player.currentHp -= currentAttackDamage;
     }
 
     public void RangeAttack(int ani_id)
