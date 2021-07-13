@@ -7,6 +7,7 @@ public class DragonBattleTailAttack : DragonAnimation
     protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         self.agent.destination = self.transform.position;
+        aniHandler = DeadCondition;
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

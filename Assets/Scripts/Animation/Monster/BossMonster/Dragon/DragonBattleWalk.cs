@@ -10,6 +10,7 @@ public class DragonBattleWalk : DragonAnimation
         aniHandler += AttackCondition;
         aniHandler += FireBallCondition;
         aniHandler += SpecialComboCondition;
+        aniHandler += DeadCondition;
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
