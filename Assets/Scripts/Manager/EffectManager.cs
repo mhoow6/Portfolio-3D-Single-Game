@@ -52,7 +52,7 @@ public class EffectManager : MonoBehaviour
             return existEffect;
 
         // 2. 그게 아니면 새로 이펙트 생성
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + starStunEffectName);
+        GameObject _effect = ResourceManager.particle.LoadAsset<GameObject>(starStunEffectName);
         Effect effect = Instantiate(_effect.AddComponent<Effect>());
 
         // 3. 데이터 추가
@@ -82,38 +82,38 @@ public class EffectManager : MonoBehaviour
 
     public PlayerAttackEffect CreateAttackEffect(int ani_id)
     {
-        string effectPrefabName = string.Empty;
+        string prefabName = string.Empty;
 
         switch (ani_id)
         {
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_01:
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_02:
             case (int)PlayerAnimation.AniType.COMBAT_ATTACK_03:
-                effectPrefabName = attackEffectName;
+                prefabName = attackEffectName;
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_SKILL_01:
-                effectPrefabName = eSkillAttackEffectName;
+                prefabName = eSkillAttackEffectName;
                 break;
 
             case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
-                effectPrefabName = qSkillAttackEffectName;
+                prefabName = qSkillAttackEffectName;
                 break;
         }
 
         // 이펙트 풀에 이미 해당 노드에 비활성화 된 이펙트가 있는지 검사
-        Effect _existEffect = effects.Find(eff => eff.gameObject.name == effectPrefabName && eff.self.isStopped);
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName && eff.self.isStopped);
         PlayerAttackEffect existEffect = (PlayerAttackEffect)_existEffect;
 
         if (existEffect != null)
         {
             // 해당 공격에 맞게 이펙트 조정 및 데이터 추가
-            AttackEffectSetup(existEffect, effectPrefabName, ani_id);
+            AttackEffectSetup(existEffect, prefabName, ani_id);
             return existEffect;
         }
 
         // 그게 아니면 새로 이펙트 생성
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + effectPrefabName);
+        GameObject _effect = ResourceManager.particle.LoadAsset<GameObject>(prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         PlayerAttackEffect eff = effect.AddComponent<PlayerAttackEffect>();
@@ -123,7 +123,7 @@ public class EffectManager : MonoBehaviour
         effect.transform.SetParent(GameManager.instance.controller.player.transform);
 
         // 해당 공격에 맞게 이펙트 조정 및 데이터 추가
-        AttackEffectSetup(eff, effectPrefabName, ani_id);
+        AttackEffectSetup(eff, prefabName, ani_id);
 
         // 해당 이펙트 return
         return eff;
@@ -131,20 +131,20 @@ public class EffectManager : MonoBehaviour
 
     public PlayerHitEffect CreateHitEffect(int ani_id, Monster hitMob)
     {
-        string effectPrefabName = string.Empty;
+        string prefabName = string.Empty;
 
         switch (ani_id)
         {
             case (int)PlayerAnimation.AniType.COMBAT_SKILL_02:
-                effectPrefabName = qSkillHitEffectName;
+                prefabName = qSkillHitEffectName;
                 break;
 
             default:
-                effectPrefabName = hitEffectName;
+                prefabName = hitEffectName;
                 break;
         }
 
-        Effect _existEffect = effects.Find(eff => eff.gameObject.name == effectPrefabName && !eff.gameObject.activeSelf);
+        Effect _existEffect = effects.Find(eff => eff.gameObject.name == prefabName && !eff.gameObject.activeSelf);
         PlayerHitEffect existEffect = (PlayerHitEffect)_existEffect;
 
         if (existEffect != null)
@@ -156,7 +156,7 @@ public class EffectManager : MonoBehaviour
             return existEffect;
         }
 
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + effectPrefabName);
+        GameObject _effect = ResourceManager.particle.LoadAsset<GameObject>(prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
         PlayerHitEffect eff;
 
@@ -174,7 +174,7 @@ public class EffectManager : MonoBehaviour
         effects.Add(eff);
 
         eff.effectNode = hitMob.transform;
-        eff.gameObject.name = effectPrefabName;
+        eff.gameObject.name = prefabName;
         effect.transform.SetParent(this.transform);
         effect.transform.position = SetHitEffectPosition(hitMob);
 
@@ -196,7 +196,7 @@ public class EffectManager : MonoBehaviour
             return existEffect;
         }
             
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject _effect = ResourceManager.particle.LoadAsset<GameObject>(prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         PlayerESkillBackEffect eff = effect.AddComponent<PlayerESkillBackEffect>();
@@ -225,7 +225,7 @@ public class EffectManager : MonoBehaviour
             return existEffect;
         }
 
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject _effect = ResourceManager.particle.LoadAsset<GameObject>(prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         PlayerQSkillBackEffect eff = effect.AddComponent<PlayerQSkillBackEffect>();
@@ -248,7 +248,7 @@ public class EffectManager : MonoBehaviour
         if (existEffect != null)
             return existEffect;
 
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject _effect = ResourceManager.particle.LoadAsset<GameObject>(prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         PlayerFootstepEffect eff = effect.AddComponent<PlayerFootstepEffect>();
@@ -275,7 +275,7 @@ public class EffectManager : MonoBehaviour
             return existEffect;
         }
             
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject _effect = ResourceManager.particle.LoadAsset<GameObject>(prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         DragonFireBallEffect eff = effect.AddComponent<DragonFireBallEffect>();
@@ -312,7 +312,7 @@ public class EffectManager : MonoBehaviour
             return existEffect;
         }
 
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject _effect = ResourceManager.particle.LoadAsset<GameObject>(prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         DragonFireBallHitEffect eff = effect.AddComponent<DragonFireBallHitEffect>();
@@ -338,7 +338,7 @@ public class EffectManager : MonoBehaviour
             return existEffect;
         }
 
-        GameObject _effect = Resources.Load<GameObject>("Particle/" + prefabName);
+        GameObject _effect = ResourceManager.particle.LoadAsset<GameObject>(prefabName);
         GameObject effect = Instantiate<GameObject>(_effect);
 
         DragonFireBallEffect eff = effect.AddComponent<DragonFireBallEffect>();
