@@ -10,6 +10,9 @@ public class PlayerRun : PlayerAnimation
         GameManager.instance.controller.isPlayerWantToRun = true;
         GameManager.instance.controller.immobile = false;
 
+        walkSource = AudioManager.instance.PlayAudio(AudioManager.instance.GetAudio(AudioCondition.ALL, AudioCondition.PLAYER_RUN), AudioManager.instance._WALK_SOUND);
+        walkSource.loop = true;
+
         if (GameManager.instance.controller.player.footStepEffect != null)
             GameManager.instance.controller.player.footStepEffect.FootStepChange(AniType.RUN);
     }
@@ -27,18 +30,17 @@ public class PlayerRun : PlayerAnimation
             animator.SetInteger("ani_id", (int)AniType.WALK);
         }
 
-
         IdleCondition(animator);
         WalkCondition(animator);
         DeadCondition(animator);
         Attack_01_Condition(animator);
         RollCondition(animator);
-
     }
 
     protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         GameManager.instance.controller.isPlayerWantToRun = false;
         GameManager.instance.controller.player.isPlayerNeedSP = true;
+        walkSource.Stop();
     }
 }

@@ -13,6 +13,8 @@ public class PlayerAnimation : StateMachineBehaviour
     protected float prevHP;
     protected const float animationBackTime = 0.1f;
 
+    protected AudioSource walkSource;
+
     public enum AniType {
         NONE=-1,
         IDLE=0,

@@ -8,6 +8,9 @@ public class PlayerCombatWalk : PlayerAnimation
     {
         if (GameManager.instance.controller.player.footStepEffect != null)
             GameManager.instance.controller.player.footStepEffect.FootStepChange(AniType.COMBAT_WALK);
+
+        walkSource = AudioManager.instance.PlayAudio(AudioManager.instance.GetAudio(AudioCondition.ALL, AudioCondition.PLAYER_WALK), AudioManager.instance._WALK_SOUND);
+        walkSource.loop = true;
     }
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -21,5 +24,10 @@ public class PlayerCombatWalk : PlayerAnimation
         CombatModeAttack_01_Condition(animator);
         CombatModeSkill_01_Condition(animator);
         CombatModeSkill_02_Condition(animator);
+    }
+
+    protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        walkSource.Stop();
     }
 }
