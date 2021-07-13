@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using System.Runtime.InteropServices;
 
 public class Player : Character
@@ -45,6 +46,17 @@ public class Player : Character
     private PlayerSkillBackEffect skillBackEffect;
     private PlayerHitEffect attackHitEffect;
     public PlayerFootstepEffect footStepEffect;
+
+    // For KnockBack
+    public NavMeshAgent agent;
+    private float MAX_HIT_HEIGHT = 0.4f;
+    private float JUMP_SENSIVITY = 0.3f;
+    private bool isJump;
+
+    float normalizeBackDistance;
+    float timer = 0f;
+    Vector3 origin = Vector3.zero;
+    Vector3 goal = Vector3.zero;
 
     private void Awake()
     {
@@ -188,7 +200,11 @@ public class Player : Character
                 !mob.isImmortal)
             {
                 mob.hp -= attack_damage;
-                StartCoroutine(GameManager.instance.controller.cameraArm.jitterCamera());
+
+                if (!GameManager.instance.controller.cameraArm.isJitter)
+                    StartCoroutine(GameManager.instance.controller.cameraArm.jitterCamera(attack_damage));
+
+                AudioManager.instance.PlayAudioAtPoint(AudioManager.instance.GetAudio(AudioCondition.ALL, AudioCondition.MONSTER_HIT), transform.position, AudioManager.instance._HIT_SOUND);
 
                 attackHitEffect = EffectManager.instance.CreateHitEffect(ani_id, mob);
 
@@ -237,7 +253,7 @@ public class Player : Character
 
     public GameObject GetWeaponFromResource(ushort equipWeaponID)
     {
-        GameObject _weapon = Resources.Load<GameObject>("Weapon/" + WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equipWeaponID).prefab_name);
+        GameObject _weapon = ResourceManager.weapon.LoadAsset<GameObject>(WeaponInfoTableManager.GetWeaponInfoFromWeaponID(equipWeaponID).prefab_name);
         GameObject weapon = Instantiate(_weapon);
 
         weapon.name = "Weapon";
@@ -268,6 +284,11 @@ public class Player : Character
         if (GameManager.instance.controller.player.currentExp >= PlayerExpInfoTableManager.GetPlayerExpInfoFromLevel(GameManager.instance.controller.player.level).max_exp)
         {
             GameManager.instance.controller.player.level++;
+
+            GameManager.instance.controller.player.hp = PlayerLevelInfoTableManager.GetPlayerLevelInfoFromLevel(GameManager.instance.controller.player.level).hp;
+            GameManager.instance.controller.player.mp = PlayerLevelInfoTableManager.GetPlayerLevelInfoFromLevel(GameManager.instance.controller.player.level).mp;
+            GameManager.instance.controller.player.sp = PlayerLevelInfoTableManager.GetPlayerLevelInfoFromLevel(GameManager.instance.controller.player.level).sp;
+
             LevelUpCheck();
             HUDManager.instance.levelup.gameObject.SetActive(true);
         }
@@ -399,6 +420,49 @@ public class Player : Character
                 skillBackEffect = EffectManager.instance.CreateQSkillBackEffect();
                 skillBackEffect.PlayEffect();
                 break;
+        }
+    }
+
+    public void KnockBackEffect(float damage)
+    {
+        StartCoroutine(GameManager.instance.controller.cameraArm.jitterCamera(damage));
+        StartCoroutine(JumpingKnockBack(damage));
+    }
+
+    private IEnumerator JumpingKnockBack(float damage)
+    {
+        if (!isJump)
+        {
+            normalizeBackDistance = damage * 0.001f;
+            normalizeBackDistance = normalizeBackDistance > 0.3f ? 0.3f : normalizeBackDistance;
+
+            isJump = true;
+            agent.enabled = false;
+            timer = 0;
+
+            origin = transform.position;
+            goal = -transform.forward + new Vector3(transform.position.x, transform.position.y + MAX_HIT_HEIGHT, transform.position.z);
+
+            while (transform.position.y != goal.y)
+            {
+                timer += Time.deltaTime * JUMP_SENSIVITY;
+                transform.position = Vector3.MoveTowards(transform.position, goal, timer);
+                yield return null;
+            }
+
+            timer = 0f;
+            goal = -transform.forward * normalizeBackDistance + new Vector3(transform.position.x, origin.y, transform.position.z);
+
+            while (transform.position.y != origin.y)
+            {
+                timer += Time.deltaTime;
+                transform.position = Vector3.Lerp(transform.position, goal, timer);
+                yield return null;
+            }
+
+            isJump = false;
+            agent.enabled = true;
+            timer = 0;
         }
     }
 }
