@@ -126,24 +126,25 @@ public class SystemWindowManager : MonoBehaviour
         data +=
             "\t" + "\"QuestState\"" + ": {\n";
 
-
         int count = 0;
         foreach (KeyValuePair<QuestInfo, PlayerQuestStateInfo> quests in QuestManager.instance.playerQuests)
         {
-            count++;
+            string cond = quests.Value.isClear ? "TRUE" : "FALSE";
 
             data +=
                 "\t\t" + "\"" + count + "\"" + " : {" + "\n" +
                 "\t\t\t" + "\"quest_id\" : " + quests.Key.id + "," + "\n" +
-                "\t\t\t" + "\"isClear\" : " + quests.Value.isClear + "," + "\n" +
+                "\t\t\t" + "\"isClear\" : " + cond + "," + "\n" +
                 "\t\t\t" + "\"isPlayerAccept\" : " + quests.Value.isPlayerAccept + "," + "\n" +
-                "\t\t\t" + "\"target_monster_hunted\" : " + quests.Value.target_monster_hunted + "," + "\n" +
+                "\t\t\t" + "\"target_monster_hunted\" : " + quests.Value.target_monster_hunted + "\n" +
                 "\t\t" + "}";
 
             if (count != QuestManager.instance.playerQuests.Count - 1)
                 data += "," + "\n";
             else
                 data += "\n";
+
+            count++;
         }
         count = 0;
         data += "\t" + "}" + "\n";

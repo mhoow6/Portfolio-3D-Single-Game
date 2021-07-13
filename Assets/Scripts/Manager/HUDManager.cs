@@ -45,7 +45,6 @@ public class HUDManager : MonoBehaviour
     {
         inventory.itemContent.LoadPlayerItemInventory();
         inventory.equipContent.LoadPlayerEquipment();
-        quest.LoadPlayerQuest();
     }
 
     public void HideBottomUI()

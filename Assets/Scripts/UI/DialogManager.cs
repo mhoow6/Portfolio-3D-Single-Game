@@ -13,14 +13,12 @@ public class DialogManager : MonoBehaviour
     public bool isDialogOn;
 
     private NPC dialogNPC;
-    [SerializeField]
     private ushort currentDialogID;
-    [SerializeField]
     private bool isQuestDialog;
-    [SerializeField]
     private bool isAwardDialog;
-    [SerializeField]
     private bool isAwardEndDialog;
+
+    private QuestInfo completeQuest;
 
     private void OnEnable()
     {
@@ -54,6 +52,7 @@ public class DialogManager : MonoBehaviour
                     if (state.isClear)
                     {
                         isAwardDialog = true;
+                        completeQuest = npcQuests[i];
 
                         // 테이블에서 퀘스트 완료 시작 대사를 찾아서 출력
                         DialogInfo awardDialog = DialogInfoTableManager.dialogInfoList.Find(dialog => dialog.id == npcQuests[i].award_start_dialog_id);
@@ -104,6 +103,7 @@ public class DialogManager : MonoBehaviour
                     if (state.isClear)
                     {
                         isAwardDialog = true;
+                        completeQuest = npcQuests[i];
 
                         // 그 퀘스트를 현재 퀘스트로 한다.
                         QuestManager.instance.AddCurrentQuest(npcQuests[i]);
@@ -188,10 +188,10 @@ public class DialogManager : MonoBehaviour
             if (isAwardEndDialog)
             {
                 // 보상
-                QuestManager.instance.GiveQuestAward(QuestManager.instance.currentQuestInfo);
+                QuestManager.instance.GiveQuestAward(completeQuest);
 
                 // 현재 퀘스트를 딕셔너리에서 삭제, 현재 퀘스트 초기화
-                QuestManager.instance.DeletePlayerQuest(QuestManager.instance.currentQuestInfo);
+                QuestManager.instance.DeletePlayerQuest(completeQuest);
 
                 isAwardDialog = false;
                 isAwardEndDialog = false;

@@ -26,7 +26,7 @@ public class QuestWindowManager : MonoBehaviour
     private void OnEnable()
     {
         isQuestWindowOn = true;
-        QuestListUpdate();
+        LoadPlayerQuest();
         HUDManager.instance.system.TimeStop();
     }
 
@@ -47,42 +47,109 @@ public class QuestWindowManager : MonoBehaviour
 
     public void AddPlayerQuestInQuestWindow(ushort questID, bool isClear)
     {
-        QuestSlot questSlot = Instantiate(questDummy); // 오브젝트 풀링
-        QuestInfo questInfo = QuestInfoTableManager.GetQuestInfoFromQuestID(questID);
+        QuestSlot existQuest = questSlots.Find(quest => quest.questID == questID);
+        QuestSlot questSlot = null;
+        QuestInfo questInfo;
 
-        questSlot.name = "Quest";
-        questSlot.questID = questID;
-        questSlot.quest_name = questInfo.quest_name;
-        questSlot.target_monster_id = questInfo.target_monster_id;
-        questSlot.target_monster_count = questInfo.target_monster_count;
-        questSlot.isClear = false;
+        if (existQuest != null)
+        {
+            if (QuestManager.instance.playerQuests.TryGetValue(QuestInfoTableManager.GetQuestInfoFromQuestID(questID), out PlayerQuestStateInfo state))
+            {
+                existQuest.target_monster_hunted = state.target_monster_hunted;
+                existQuest.isClear = state.isClear;
 
-        spr = Resources.LoadAll<Sprite>("Sprite/btn_color_green");
-        questSlot.questButton.selfImage.sprite = spr[0];
+                existQuest.questTitle.text = existQuest.quest_name + "\n" +
+                "<size=26><color=#BEB5B6>" +
+                MonsterInfoTableManager.GetMonsterNameFromID(existQuest.target_monster_id) + " " +
+                state.target_monster_hunted + " / " +
+                existQuest.target_monster_count +
+                "</color></size>";
 
-        QuestButtonChange(questSlot, isClear);
+                existQuest.gameObject.SetActive(true);
 
-        questSlots.Add(questSlot);
-        questSlot.questTitle.text = questInfo.quest_name + "\n" +
-            "<size=26><color=#BEB5B6>" +
-            MonsterInfoTableManager.GetMonsterNameFromID(questSlot.target_monster_id) +
-            " 0 / " +
-            questSlot.target_monster_count +
-            "</color></size>";
-        questSlot.gameObject.SetActive(true);
-        questSlot.transform.SetParent(questContent);
+                if (existQuest.isClear)
+                    QuestButtonChange(existQuest, state.isClear);
+            }
+
+        }
+        else
+        {
+            QuestSlot usedSlot = questSlots.Find(slot => !slot.gameObject.activeSelf);
+
+            if (usedSlot != null)
+                questSlot = usedSlot;
+            else
+                questSlot = Instantiate(questDummy); // 오브젝트 풀링
+
+            questInfo = QuestInfoTableManager.GetQuestInfoFromQuestID(questID);
+
+            if (QuestManager.instance.playerQuests.TryGetValue(QuestInfoTableManager.GetQuestInfoFromQuestID(questID), out PlayerQuestStateInfo state))
+            {
+                questSlot.name = "Quest";
+                questSlot.questID = questID;
+                questSlot.quest_name = questInfo.quest_name;
+                questSlot.target_monster_id = questInfo.target_monster_id;
+                questSlot.target_monster_count = questInfo.target_monster_count;
+                questSlot.target_monster_hunted = state.target_monster_hunted;
+                questSlot.isClear = state.isClear;
+
+                questSlot.questTitle.text = questInfo.quest_name + "\n" +
+                "<size=26><color=#BEB5B6>" +
+                MonsterInfoTableManager.GetMonsterNameFromID(questInfo.target_monster_id) + " " +
+                questSlot.target_monster_hunted + " / " +
+                questInfo.target_monster_count +
+                "</color></size>";
+
+                if (questSlot.isClear)
+                    QuestButtonChange(questSlot, state.isClear);
+
+                questSlot.gameObject.SetActive(true);
+                questSlot.transform.SetParent(questContent);
+
+                questSlots.Add(questSlot);
+                return;
+            }
+
+            questSlot.name = "Quest";
+            questSlot.questID = questID;
+            questSlot.quest_name = questInfo.quest_name;
+            questSlot.target_monster_id = questInfo.target_monster_id;
+            questSlot.target_monster_count = questInfo.target_monster_count;
+            questSlot.target_monster_hunted = 0;
+            questSlot.isClear = false;
+
+            questSlot.questTitle.text = questInfo.quest_name + "\n" +
+                "<size=26><color=#BEB5B6>" +
+                MonsterInfoTableManager.GetMonsterNameFromID(questInfo.target_monster_id) + " " +
+                questSlot.target_monster_hunted + " / " +
+                questInfo.target_monster_count +
+                "</color></size>";
+
+            spr = Resources.LoadAll<Sprite>("Sprite/btn_color_green");
+            questSlot.questButton.selfImage.sprite = spr[0];
+            QuestButtonChange(questSlot, isClear);
+
+            questSlot.gameObject.SetActive(true);
+            questSlot.transform.SetParent(questContent);
+
+            questSlots.Add(questSlot);
+        }
     }
 
     public void DeletePlayerQuestInQuestWindow(ushort questID)
     {
         QuestSlot found = questSlots.Find(quest => quest.questID == questID);
-        questSlots.Remove(found);
-        found.gameObject.SetActive(false);
+
+        if (found != null)
+        {
+            questSlots.Remove(found);
+            Destroy(found.gameObject);
+        }
     }
 
     private void QuestListUpdate()
     {
-        for (int i = 0; i < questSlots.Count; i++)
+        for (int i = 0; i < QuestManager.instance.playerQuests.Count; i++)
         {
             if (QuestManager.instance.playerQuests.TryGetValue(QuestInfoTableManager.GetQuestInfoFromQuestID(questSlots[i].questID), out PlayerQuestStateInfo state))
             {
