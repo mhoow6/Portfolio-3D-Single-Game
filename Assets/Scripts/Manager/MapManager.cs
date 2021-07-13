@@ -62,9 +62,8 @@ public class MapManager : MonoBehaviour
         footstep.transform.position = playerScript.transform.position;
         playerScript.footStepEffect = footstep;
 
-
         // Add NavMeshAgent
-        player.AddComponent<NavMeshAgent>();
+        playerScript.agent = player.AddComponent<NavMeshAgent>();
 
         // Set Parent each            
         playerScript.transform.SetParent(parent.transform);
@@ -234,7 +233,7 @@ public class MapManager : MonoBehaviour
             float zScale = float.Parse(datas[10]);
             string prefabName = MonsterInfoTableManager.GetMonsterPrefabNameFromID(id);
 
-            GameObject _obj = Resources.Load<GameObject>("Character/Monster/" + prefabName);
+            GameObject _obj = ResourceManager.monster.LoadAsset<GameObject>(prefabName);
             GameObject obj = Instantiate(_obj);
             Monster monster = Monster.AddMonsterComponent(obj, id);
 
