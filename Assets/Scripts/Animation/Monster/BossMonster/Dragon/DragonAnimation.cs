@@ -14,6 +14,8 @@ public class DragonAnimation : StateMachineBehaviour
 
     protected const float defaultAnimationTransitionTime = 0.25f;
 
+    protected AudioSource fireballSource;
+
     public enum AniType
     {
         NONE = -1,
@@ -173,5 +175,11 @@ public class DragonAnimation : StateMachineBehaviour
     {
         if (dragon.transform.position.x == dragon.destination.x && dragon.transform.position.z == dragon.destination.z)
             animator.SetInteger("combo_id", (int)ComboAniType.LAND_READY);
+    }
+
+    protected void DeadCondition(Animator animator, Dragon dragon)
+    {
+        if (dragon.hp <= 0)
+            animator.SetBool("isDead", true);
     }
 }
