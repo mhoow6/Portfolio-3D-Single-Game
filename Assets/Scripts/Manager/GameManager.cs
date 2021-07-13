@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     public BossArea area;
     public BossCamera bossCam;
 
+    public AudioSource BGM;
+
     private void Awake()
     {
         instance = this;

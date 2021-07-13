@@ -20,7 +20,7 @@ public class FieldManager : MapManager
         SceneInfoManager.instance.currentScene = SceneType.Forest;
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
         NavMeshManager.instance.CreateNavMesh(SceneInfoManager.instance.currentScene);
 
@@ -28,10 +28,13 @@ public class FieldManager : MapManager
         CreateScene(forestPath, field);
         CreatePlayer(SceneInfoManager.instance.spawnPos);
         CreateMonster(forestMonsterPath);
-        
-        field.gameObject.SetActive(true);
-
         SceneInfoManager.instance.isSceneLoadCompleted = true;
+        yield return HUDManager.instance.loading.StartCoroutine(HUDManager.instance.loading.Loading(HUDManager.instance.loading._LOADING_SPEED));
+
+        field.gameObject.SetActive(true);
+        GameManager.instance.BGM = AudioManager.instance.PlayAudio(AudioManager.instance.GetAudio(AudioCondition.SCENE_FOREST, AudioCondition.SCENE_AWAKE));
+        GameManager.instance.BGM.loop = true;
+        AudioManager.instance.PlayAudioFadeIn(GameManager.instance.BGM, AudioManager.instance._FOREST_SOUND);
 
         StartCoroutine(GoToTheNextScene(SceneType.Village, SpawnPosID.FOREST_TO_VILLAGE));
     }

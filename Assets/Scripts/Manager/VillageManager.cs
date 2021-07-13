@@ -19,18 +19,21 @@ public class VillageManager : MapManager
         SceneInfoManager.instance.currentScene = SceneType.Village;
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
         NavMeshManager.instance.CreateNavMesh(SceneInfoManager.instance.currentScene);
 
-        HUDManager.instance.loading.StartCoroutine(HUDManager.instance.loading.Loading(HUDManager.instance.loading._LOADING_SPEED));
         CreateScene(villagePath, village);
         CreatePlayer(SceneInfoManager.instance.spawnPos);
         CreateNPC(villageNPCPath);
-        village.gameObject.SetActive(true);
-
         SceneInfoManager.instance.isSceneLoadCompleted = true;
+        yield return HUDManager.instance.loading.StartCoroutine(HUDManager.instance.loading.Loading(HUDManager.instance.loading._LOADING_SPEED));
 
+        village.gameObject.SetActive(true);
+        GameManager.instance.BGM = AudioManager.instance.PlayAudio(AudioManager.instance.GetAudio(AudioCondition.SCENE_VILLAGE, AudioCondition.SCENE_AWAKE));
+        GameManager.instance.BGM.loop = true;
+        AudioManager.instance.PlayAudioFadeIn(GameManager.instance.BGM, AudioManager.instance._VILLAGE_SOUND);
+        
         StartCoroutine(GoToTheNextScene(SceneType.Forest, SpawnPosID.VILLAGE_TO_FOREST));
     }
 
