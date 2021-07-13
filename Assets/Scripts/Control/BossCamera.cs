@@ -9,6 +9,9 @@ public class BossCamera : MonoBehaviour
     private void OnEnable()
     {
         HUDManager.instance.ActiveUI(false);
+
+        AudioManager.instance.StopAudioFadeOut(GameManager.instance.BGM);
+
         StartCoroutine(CutsceneStart());
     }
 
