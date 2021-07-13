@@ -28,17 +28,11 @@ Assets/Scenes/
 Assets/Fonts/
 Assets/FreeDragons/
 Assets/CombinedMesh/
+Assets/AssetBundles
+Assets/Shaders
 
 # Ignore Resources
-Assets/Resources/Character/
-Assets/Resources/Particle/
-Assets/Resources/Props/
-Assets/Resources/Rocks/
-Assets/Resources/Terrain/
-Assets/Resources/Vegetation/
-Assets/Resources/Weapon/
-Assets/Resources/Sprite/
-Assets/Resources/Result/
+Assets/Resources
 
 # Ignore File
 *.unity
@@ -51,6 +45,8 @@ Assets/Resources/Result/
 *.renderTexture
 *.prefab
 *.png
+*.user
+*.shadervariants
 
 # Ignore UnitTest
 Assets/Scripts/UnitTest/
