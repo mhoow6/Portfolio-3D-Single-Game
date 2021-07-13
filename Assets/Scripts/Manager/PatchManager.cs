@@ -83,7 +83,7 @@ public class PatchManager : MonoBehaviour
 
         yield return StartCoroutine(PatchAssetBundle("particle.pak", "Particle"));
         ResourceManager.particle = KeepAssetBundle("particle.pak");
-        RefreshShaderFromParticleSystemRenderer(ResourceManager.particle);
+        // RefreshShaderFromParticleSystemRenderer(ResourceManager.particle);
 
         yield return StartCoroutine(PatchAssetBundle("weapon.pak", "Weapon"));
         ResourceManager.weapon = KeepAssetBundle("weapon.pak");
@@ -273,7 +273,7 @@ public class PatchManager : MonoBehaviour
             Debug.Log(GetFileNameOnlyFromFilePath(url) + " 파일 다운로드에 실패하였습니다.");
         }
 
-        yield return FillGaugeSmooth(results.Length);
+        yield return StartCoroutine(FillGaugeSmooth(results.Length));
         downloadText.text = GetFileNameOnlyFromFilePath(url) + " 다운로드 완료";
     }
 
@@ -320,6 +320,7 @@ public class PatchManager : MonoBehaviour
     /// <param name="assetbundle">Null이 아닌 에셋번들을 넣어주세요.</param>
     private void RefreshShader<T>(AssetBundle assetbundle) where T : UnityEngine.Renderer
     {
+#if UNITY_EDITOR
         GameObject[] all = assetbundle.LoadAllAssets<GameObject>();
         T[] renderer;
         Material[] ms;
@@ -327,7 +328,7 @@ public class PatchManager : MonoBehaviour
         for (int i = 0; i < all.Length; i++)
         {
             // SyntyStudios/Water 쉐이더는 리프레쉬로 해결이 안 됨
-            
+
             renderer = all[i].GetComponentsInChildren<T>();
 
             for (int j = 0; j < renderer.Length; j++)
@@ -344,6 +345,7 @@ public class PatchManager : MonoBehaviour
                 }
             }
         }
+#endif
     }
 
     /// <summary>
