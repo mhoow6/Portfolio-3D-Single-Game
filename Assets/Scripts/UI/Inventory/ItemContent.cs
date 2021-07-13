@@ -80,8 +80,6 @@ public class ItemContent : MonoBehaviour
                 break;
         }
 
-        Debug.Log(ConsumeInfoTableManager.GetPrefabNameInfoFromID(itemID));
-
         emptySlot.count = itemCount;
         emptySlot.itemCount.text = itemCount.ToString();
         emptySlot.item_type = itemType;
