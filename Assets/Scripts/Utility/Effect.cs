@@ -204,7 +204,6 @@ public class PlayerQSkillHitEffect : PlayerHitEffect
 
         StartCoroutine(PlayCheckUpdate());
         StartCoroutine(LightUpdate());
-        StartCoroutine(HitChangeMobColor(hitMob));
     }
 
     protected override IEnumerator PlayCheckUpdate()
