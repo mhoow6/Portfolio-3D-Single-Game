@@ -431,8 +431,10 @@ public class DragonFireBallEffect : Effect
 
             if (bound.Intersects(GameManager.instance.controller.player._bound))
             {
-                EffectManager.instance.CreateDragonFireBallHitEffect(transform.position, gameObject.name).PlayEffect();
                 GameManager.instance.controller.player.currentHp -= currentDamage;
+                EffectManager.instance.CreateDragonFireBallHitEffect(transform.position, gameObject.name).PlayEffect();
+                AudioManager.instance.PlayAudio(AudioManager.instance.GetAudio(AudioCondition.ALL, AudioCondition.PLAYER_HIT), 1f);
+                GameManager.instance.controller.player.KnockBackEffect(currentDamage, transform.forward);
                 self.Stop(true, ParticleSystemStopBehavior.StopEmitting);
                 StartCoroutine(PlayCheckUpdate());
                 yield break;
