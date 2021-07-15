@@ -25,6 +25,7 @@ public class CommonMonsterRun : CommonMonsterAnimation
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self.agent.destination = self.transform.position;
+        if (self.agent.enabled == true)
+            self.agent.destination = self.transform.position;
     }
 }

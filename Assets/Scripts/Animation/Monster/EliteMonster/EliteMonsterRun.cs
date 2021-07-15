@@ -6,8 +6,12 @@ public class EliteMonsterRun : EliteMonsterAnimation
 {
     protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self.agent.speed = self.run_speed;
-        self.agent.acceleration = self.run_speed;
+        if (self.agent.enabled == true)
+        {
+            self.agent.speed = self.run_speed;
+            self.agent.acceleration = self.run_speed;
+        }
+        
         animationHandler += Skill_01_Condition;
     }
 
@@ -22,6 +26,7 @@ public class EliteMonsterRun : EliteMonsterAnimation
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self.agent.destination = self.transform.position;
+        if (self.agent.enabled == true)
+            self.agent.destination = self.transform.position;
     }
 }

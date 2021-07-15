@@ -6,8 +6,12 @@ public class EliteMonsterWalk : EliteMonsterAnimation
 {
     protected override void StateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self.agent.speed = self.walk_speed;
-        self.agent.acceleration = self.walk_speed;
+        if (self.agent.enabled == true)
+        {
+            self.agent.speed = self.walk_speed;
+            self.agent.acceleration = self.walk_speed;
+        }
+            
         animationHandler += Skill_01_Condition;
     }
 
