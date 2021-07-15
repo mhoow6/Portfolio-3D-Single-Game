@@ -5,9 +5,9 @@ using UnityEngine;
 
 public enum SceneType
 {
+    Menu,
     Village,
     Forest,
-    Menu
 }
 
 
