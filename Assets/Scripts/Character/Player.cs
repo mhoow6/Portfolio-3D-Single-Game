@@ -52,12 +52,17 @@ public class Player : Character
     private float MAX_HIT_HEIGHT = 0.4f;
     private float JUMP_SENSIVITY = 0.3f;
     private bool isJump;
+    private WaitForSeconds hitChangeColorWt = new WaitForSeconds(0.2f);
+    private Color hitChangeColor = new Color(0.2f, 0, 0, 1f); // RGB 50, 0, 0
+    private Color originEmissionColor;
+    private SkinnedMeshRenderer smr;
 
     float normalizeBackDistance;
     float timer = 0f;
     Vector3 origin = Vector3.zero;
     Vector3 goal = Vector3.zero;
-
+    
+    
     private void Awake()
     {
         current_combat_skill_01_cooldown = 0;
@@ -75,24 +80,11 @@ public class Player : Character
 
     void Start()
     {
-        if (!SceneInfoManager.instance.isTempDataExists)
-        {
-            level = PlayerInfoTableManager.playerInfo.level;
-            currentHp = PlayerInfoTableManager.playerInfo.hp;
-            currentMp = PlayerInfoTableManager.playerInfo.mp;
-            currentSp = PlayerInfoTableManager.playerInfo.sp;
-            currentExp = PlayerInfoTableManager.playerInfo.exp;
-        }
-
-        if (SceneInfoManager.instance.isTempDataExists)
-        {
-            level = PlayerInfoTableManager.playerTempInfo.level;
-            currentHp = PlayerInfoTableManager.playerTempInfo.currentHp;
-            currentMp = PlayerInfoTableManager.playerTempInfo.currentMp;
-            currentSp = PlayerInfoTableManager.playerTempInfo.currentSp;
-            currentExp = PlayerInfoTableManager.playerTempInfo.currentExp;
-        }
-
+        level = PlayerInfoTableManager.playerInfo.level;
+        currentHp = PlayerInfoTableManager.playerInfo.hp;
+        currentMp = PlayerInfoTableManager.playerInfo.mp;
+        currentSp = PlayerInfoTableManager.playerInfo.sp;
+        currentExp = PlayerInfoTableManager.playerInfo.exp;
         hp = PlayerLevelInfoTableManager.GetPlayerLevelInfoFromLevel(level).hp;
         mp = PlayerLevelInfoTableManager.GetPlayerLevelInfoFromLevel(level).mp;
         sp = PlayerLevelInfoTableManager.GetPlayerLevelInfoFromLevel(level).sp;
@@ -112,6 +104,8 @@ public class Player : Character
         sheath = GetNodeObject("Spine_03");
         righthand = GetNodeObject("Hand_R");
         weapon = GetWeaponFromResource(equip_weapon_id);
+        smr = GetComponentInChildren<SkinnedMeshRenderer>();
+        originEmissionColor = smr.material.GetColor("_EmissionColor");
 
         StartCoroutine(SpRecovery(SpRecoveryDuration));
         StartCoroutine(CombatSkill01Cooldown(SkillDuration * Time.deltaTime));
@@ -423,13 +417,16 @@ public class Player : Character
         }
     }
 
-    public void KnockBackEffect(float damage)
+    public void KnockBackEffect(float damage, Vector3 direction)
     {
-        StartCoroutine(GameManager.instance.controller.cameraArm.jitterCamera(damage));
-        StartCoroutine(JumpingKnockBack(damage));
+        if (!GameManager.instance.controller.cameraArm.isJitter)
+            StartCoroutine(GameManager.instance.controller.cameraArm.jitterCamera(damage));
+
+        StartCoroutine(JumpingKnockBack(damage, direction));
+        StartCoroutine(HitChangeColor());
     }
 
-    private IEnumerator JumpingKnockBack(float damage)
+    private IEnumerator JumpingKnockBack(float damage, Vector3 direction)
     {
         if (!isJump)
         {
@@ -441,7 +438,7 @@ public class Player : Character
             timer = 0;
 
             origin = transform.position;
-            goal = -transform.forward + new Vector3(transform.position.x, transform.position.y + MAX_HIT_HEIGHT, transform.position.z);
+            goal = direction.normalized + new Vector3(transform.position.x, transform.position.y + MAX_HIT_HEIGHT, transform.position.z);
 
             while (transform.position.y != goal.y)
             {
@@ -451,7 +448,7 @@ public class Player : Character
             }
 
             timer = 0f;
-            goal = -transform.forward * normalizeBackDistance + new Vector3(transform.position.x, origin.y, transform.position.z);
+            goal = direction.normalized * normalizeBackDistance + new Vector3(transform.position.x, origin.y, transform.position.z);
 
             while (transform.position.y != origin.y)
             {
@@ -464,5 +461,16 @@ public class Player : Character
             agent.enabled = true;
             timer = 0;
         }
+    }
+
+    private IEnumerator HitChangeColor()
+    {
+        smr.material.EnableKeyword("_EMISSION");
+        smr.material.SetColor("_EmissionColor", hitChangeColor);
+
+        yield return hitChangeColorWt;
+
+        smr.material.DisableKeyword("_EMISSION");
+        smr.material.SetColor("_EmissionColor", originEmissionColor);
     }
 }
