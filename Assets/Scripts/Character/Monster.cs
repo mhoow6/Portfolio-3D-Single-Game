@@ -276,7 +276,7 @@ public class Monster : Character
         if (currentDistanceWithPlayer < currentAttackDistance && currentAngleWithPlayer < currentAttackAngle && !GameManager.instance.controller.isPlayerWantToRoll)
         {
             GameManager.instance.controller.player.currentHp -= currentAttackDamage;
-            GameManager.instance.controller.player.KnockBackEffect(currentAttackDamage);
+            GameManager.instance.controller.player.KnockBackEffect(currentAttackDamage, transform.forward);
             AudioManager.instance.PlayAudio(AudioManager.instance.GetAudio(AudioCondition.ALL, AudioCondition.PLAYER_HIT), 1f);
         }
     }
@@ -323,29 +323,6 @@ public class Monster : Character
         yield return StartCoroutine(Utility.AlphaBlending(smr.material, 1, COLOR_LERF_SPEED));
         yield return StartCoroutine(Thinking(THINKING_DURATION));
     }
-
-    protected void GetNodeObject(Transform parent, string nodeName, ref Transform node)
-    {
-        for (int i = 0; i < parent.childCount; i++)
-        {
-            // 이미 nodeName에 맞는 것을 찾아서 null이 아닐 경우 의미없는 호출을 방지하기 위해 함수 종료
-            if (node != null)
-                return;
-
-            Transform child = parent.GetChild(i);
-
-            if (child.name != nodeName)
-            {
-                // 자식이 또다른 자식을 가질 경우 자식의 자식들을 탐색
-                if (child.childCount != 0)
-                    GetNodeObject(child, nodeName, ref node);
-            }
-
-            if (child.name == nodeName)
-                node = child;
-        }
-    }
-
 }
 
 public class CommonMonster : Monster
