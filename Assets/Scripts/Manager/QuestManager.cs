@@ -106,13 +106,13 @@ public class QuestManager : MonoBehaviour
         // 퀘스트 UI에서도 삭제
         HUDManager.instance.quest.DeletePlayerQuestInQuestWindow(questInfo.id);
 
-        // PlayerInfoTableManager에서도 삭제
-        PlayerInfoTableManager.playerQuests.Remove(PlayerInfoTableManager.playerQuests.Find(quest => quest.quest_id == questInfo.id));
-
-        // 파일과의 데이터 혼동 방지를 위해 파일에도 현재 플레이어 상태를 저장한다.
+        // 파일과의 데이터 혼동 방지를 위해 파일에 현재 플레이어 상태를 저장한다.
         HUDManager.instance.system.SaveGame();
 
-        // 유니티 인스펙터에서 확인할 퀘스트 리스트에도 추가
+        // 게임 내의 데이터 혼동 방지를 위해 PlayerInfoTableManager에서도 삭제
+        PlayerInfoTableManager.playerQuests.Remove(PlayerInfoTableManager.playerQuests.Find(quest => quest.quest_id == questInfo.id));
+
+        // 유니티 인스펙터에서 확인할 퀘스트 리스트에도 삭제
         playerQuestsID.Remove(questInfo.id);
 
         // 현재 퀘스트 종료
