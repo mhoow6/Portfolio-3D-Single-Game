@@ -65,7 +65,7 @@ public class Monster : Character
     public SkinnedMeshRenderer smr;
     public Color originEmissionColor;
 
-    protected const float THINKING_DURATION = 0.1f;
+    protected const float THINKING_DURATION = 0.05f;
     protected const float MIN_SIGHT_ANGLE = 20f;
     private const float ANGULAR_SPEED = 999f;
     private const float DISABLE_TIME = 5f;
@@ -194,6 +194,10 @@ public class Monster : Character
         // Level up
         GameManager.instance.controller.player.LevelUpCheck();
 
+        // Star Stun Effect Gone
+        if (stunEffect != null)
+            stunEffect.gameObject.SetActive(false);
+
         agent.enabled = false;
         
         Invoke("DeadState", DISABLE_TIME);
@@ -201,34 +205,38 @@ public class Monster : Character
 
     public IEnumerator StunCooldown(float duration)
     {
-        stunEffect = EffectManager.instance.CreateStarStunEffect(id, head);
-        stunEffect.self.Play();
-
-        while (currentStunTimer <= duration)
+        if (isStuned)
         {
-            yield return null;
-            isStuned = true;
-            currentStunTimer += Time.deltaTime;
+            stunEffect = EffectManager.instance.CreateStarStunEffect(id, head);
+            stunEffect.self.Play();
+
+            while (currentStunTimer <= duration)
+            {
+                isStuned = true;
+                yield return null;
+                currentStunTimer += Time.deltaTime;
+            }
+
+            isStuned = false;
+            stunEffect.self.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            currentStunTimer = 0;
         }
-
-        isStuned = false;
-        StartCoroutine(thinking);
-
-        stunEffect.self.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        currentStunTimer = 0;
     }
 
     public IEnumerator AttackCooldown(float duration)
     {
-        while (currentAttackCooldown <= duration)
+        if (isAttackCooldown)
         {
-            isAttackCooldown = true;
-            yield return null;
-            currentAttackCooldown += Time.deltaTime;
-        }
+            while (currentAttackCooldown <= duration)
+            {
+                isAttackCooldown = true;
+                yield return null;
+                currentAttackCooldown += Time.deltaTime;
+            }
 
-        isAttackCooldown = false;
-        currentAttackCooldown = 0;
+            isAttackCooldown = false;
+            currentAttackCooldown = 0;
+        }
     }
 
     protected virtual IEnumerator Thinking(float thinkingDuration)
