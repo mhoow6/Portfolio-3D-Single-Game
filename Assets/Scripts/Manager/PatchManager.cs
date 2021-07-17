@@ -88,15 +88,10 @@ public class PatchManager : MonoBehaviour
         yield return StartCoroutine(PatchAssetBundle("weapon.pak", "Weapon"));
         ResourceManager.weapon = KeepAssetBundle("weapon.pak");
         RefreshShader<MeshRenderer>(ResourceManager.weapon);
-        
-        if (downloadSlider.value == downloadSlider.maxValue)
-        {
-            downloadText.text = "게임 준비 완료";
-            StartCoroutine(DownloadCompletedFadeOut());
-        }
-        else
-            downloadText.text = "서버에서 받은 파일이 잘 못 되었습니다. 운영자에게 문의해주세요.";
 
+        downloadSlider.value = downloadSlider.maxValue;
+        downloadText.text = "게임 준비 완료";
+        StartCoroutine(DownloadCompletedFadeOut());
     }
 
     private IEnumerator DownloadCompletedFadeOut()
@@ -320,7 +315,7 @@ public class PatchManager : MonoBehaviour
     /// <param name="assetbundle">Null이 아닌 에셋번들을 넣어주세요.</param>
     private void RefreshShader<T>(AssetBundle assetbundle) where T : UnityEngine.Renderer
     {
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
         GameObject[] all = assetbundle.LoadAllAssets<GameObject>();
         T[] renderer;
         Material[] ms;
@@ -345,7 +340,7 @@ public class PatchManager : MonoBehaviour
                 }
             }
         }
-#endif
+    #endif
     }
 
     /// <summary>
