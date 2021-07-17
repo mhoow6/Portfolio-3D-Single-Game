@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviour
     public float _FOREST_SOUND { get => 0.05f; }
     public float _WALK_SOUND { get => normalVolumes[1]; }
     public float _GAME_START_SOUND { get => normalVolumes[4]; }
-    private float FADE_SPEED { get => 0.05f; }
+    private float FADE_SPEED { get => 0.00005f; }
 
 private void Awake()
     {
@@ -166,13 +166,29 @@ private void Awake()
     /// <param name="volume">소리 음량 0.0 ~ 1.0</param>
     public AudioSource PlayAudio(AudioClip sound, float volume)
     {
-        AudioSource source = PlayAudio(sound);
+        AudioSource existSound = sounds.Find(element => element.name == sound.name && !element.gameObject.activeSelf);
 
-        source.volume = volume;
+        if (existSound != null)
+        {
+            existSound.gameObject.SetActive(true);
+            existSound.Play();
+            existSound.volume = volume;
+            StartCoroutine(AutoTurnOff(existSound));
+            return existSound;
+        }
 
-        StartCoroutine(AutoTurnOff(source));
+        GameObject _obj = new GameObject(sound.name);
+        _obj.transform.SetParent(this.transform);
 
-        return source;
+        AudioSource obj = _obj.AddComponent<AudioSource>();
+        sounds.Add(obj);
+
+        obj.clip = sound;
+        obj.Play();
+        obj.volume = volume;
+        StartCoroutine(AutoTurnOff(obj));
+
+        return obj;
     }
 
     /// <summary>
@@ -223,9 +239,9 @@ private void Awake()
 
     private IEnumerator SoundFadeOut(AudioSource source)
     {
-        while (source.volume < 0.005f)
+        while (source.volume < 0f)
         {
-            source.volume -= Time.deltaTime * FADE_SPEED;
+            source.volume -= FADE_SPEED;
 
             yield return null;
         }
