@@ -10,9 +10,6 @@ public class CommonMonsterDead : CommonMonsterAnimation
         self.hp = 0;
         self.endurance_stack = 0;
         
-        if (self._stunEffect != null)
-            self._stunEffect.self.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-
         animationHandler = null;
         damagedStateHandler = null;
     }
