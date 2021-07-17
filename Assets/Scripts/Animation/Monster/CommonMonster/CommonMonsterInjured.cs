@@ -10,13 +10,12 @@ public class CommonMonsterInjured : CommonMonsterAnimation
         animationHandler = IdleCondition;
         animationHandler += InjuredCondition;
         animationHandler += DeadCondition;
-        self.StopCoroutine(self.thinking);
         self.thinking_param = (int)AniType.IDLE;
+        self.isStuned = true;
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        self.isStuned = true;
         self.StartCoroutine(self.StunCooldown(self.stun_escape));
     }
 }
