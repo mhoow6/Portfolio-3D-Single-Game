@@ -180,6 +180,9 @@ public class DragonAnimation : StateMachineBehaviour
     protected void DeadCondition(Animator animator, Dragon dragon)
     {
         if (dragon.hp <= 0)
+        {
             animator.SetBool("isDead", true);
+            dragon.hp = 0;
+        }
     }
 }
