@@ -13,6 +13,8 @@ public class BossStateManager : MonoBehaviour
     public TMP_Text txtbBossTotalHp;
     private float bossTotalHp;
 
+    const float DISABLE_TIME = 1f;
+
     private void OnEnable()
     {
         bossName.text = GameManager.instance.bossCam.boss.monster_name;
@@ -29,16 +31,6 @@ public class BossStateManager : MonoBehaviour
         AudioManager.instance.PlayAudioFadeIn(GameManager.instance.BGM, AudioManager.instance._DRAGON_BATTLE_SOUND);
     }
 
-    private void OnDisable()
-    {
-        if (GameManager.instance.BGM != null)
-        {
-            AudioManager.instance.StopAudioFadeOut(GameManager.instance.BGM);
-            Invoke("DeadAfter", 1f);
-        }
-            
-    }
-
     private void Update()
     {
         bossHp = GameManager.instance.bossCam.boss.hp;
@@ -46,10 +38,32 @@ public class BossStateManager : MonoBehaviour
         bossSlider.value = bossHp;
     }
 
-    private void DeadAfter()
+    public void DisableSoon()
+    {
+        AudioManager.instance.StopAudioFadeOut(GameManager.instance.BGM);
+
+        StartCoroutine(DisableCoroutine());
+    }
+
+    IEnumerator DisableCoroutine()
+    {
+        float timer = 0f;
+
+        while (timer < DISABLE_TIME)
+        {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        DisableEnter();
+    }
+
+    void DisableEnter()
     {
         GameManager.instance.BGM = AudioManager.instance.PlayAudio(AudioManager.instance.GetAudio(AudioCondition.SCENE_FOREST, AudioCondition.SCENE_AWAKE));
         GameManager.instance.BGM.loop = true;
         AudioManager.instance.PlayAudioFadeIn(GameManager.instance.BGM, AudioManager.instance._FOREST_SOUND);
+
+        this.gameObject.SetActive(false);
     }
 }
