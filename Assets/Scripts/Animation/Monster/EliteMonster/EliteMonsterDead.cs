@@ -9,7 +9,7 @@ public class EliteMonsterDead : EliteMonsterAnimation
         self.Dead();
         self.hp = 0;
         self.endurance_stack = 0;
-        self._stunEffect.self.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
         animationHandler = null;
         damagedStateHandler = null;
     }

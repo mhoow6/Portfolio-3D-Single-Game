@@ -11,7 +11,7 @@ public class DragonDead : DragonAnimation
         self.endurance_stack = 0;
         aniHandler = null;
 
-        HUDManager.instance.boss_state.gameObject.SetActive(false);
+        HUDManager.instance.boss_state.DisableSoon();
 
     }
 
