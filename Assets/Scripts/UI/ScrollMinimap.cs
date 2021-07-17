@@ -14,9 +14,11 @@ public class ScrollMinimap : MonoBehaviour
 {
     public ScrollRect self;
 
-    Vector3 START_POS; // 실제 게임에서의 중앙
-    Vector2 MAP_SIZE;
-    Vector2 NORMAL_POS = new Vector2(0.5f, 0.5f); // 실제 게임에서의 중앙
+    public Vector3 START_POS; // 미니맵 중앙좌표가 가리키는 실제 게임에서의 좌표
+    public Vector2 MAP_SIZE;
+    public Vector3 originPos;
+
+    Vector2 NORMAL_POS = new Vector2(0.5f, 0.5f); // 미니맵의 중앙
 
     private void Start()
     {
@@ -32,6 +34,8 @@ public class ScrollMinimap : MonoBehaviour
                 break;
         }
 
+        originPos = START_POS;
+
         self.normalizedPosition = NORMAL_POS;
         MinimapUpdate();
 
@@ -41,6 +45,13 @@ public class ScrollMinimap : MonoBehaviour
     {
         if (InputManager.instance.moveInput.magnitude != 0)
             MinimapUpdate();
+
+        if (Input.GetKeyDown(KeyCode.Return))
+            CenterEstimate();
+
+        if (Input.GetKeyDown(KeyCode.Backspace))
+            self.normalizedPosition = new Vector2(0.5f, 0.5f);
+
     }
 
     private void MinimapUpdate()
@@ -55,5 +66,17 @@ public class ScrollMinimap : MonoBehaviour
         self.normalizedPosition = self.normalizedPosition + NORMAL_POS;
 
         START_POS = GameManager.instance.controller.player.transform.position;
+    }
+
+    private void CenterEstimate()
+    {
+        float fDeltax = GameManager.instance.controller.player.transform.position.x - originPos.x;
+        float fDeltay = GameManager.instance.controller.player.transform.position.z - originPos.z;
+
+        float ratiox = fDeltax / MAP_SIZE.x;
+        float ratioy = fDeltay / MAP_SIZE.y;
+        NORMAL_POS.Set(ratiox, ratioy);
+
+        self.normalizedPosition = self.normalizedPosition + NORMAL_POS;
     }
 }
