@@ -12,7 +12,11 @@ public class DragonComboFlyFireBall : DragonAnimation
 
     protected override void StateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        AudioManager.instance.StopAudioFadeOut(fireballSource);
         self.TurnAround(self._TURN_AROUND_SPEED);
+    }
+
+    protected override void StateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        AudioManager.instance.StopAudioFadeOut(fireballSource);
     }
 }
