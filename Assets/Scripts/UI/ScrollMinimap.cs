@@ -16,8 +16,8 @@ public class ScrollMinimap : MonoBehaviour
 
     public Vector3 START_POS; // ¹Ì´Ï¸Ê Áß¾ÓÁÂÇ¥°¡ °¡¸®Å°´Â ½ÇÁ¦ °ÔÀÓ¿¡¼­ÀÇ ÁÂÇ¥
     public Vector2 MAP_SIZE;
-    public Vector3 originPos;
 
+    Vector2 scrollViewCenter = new Vector2(0.5f, 0.5f);
     Vector2 NORMAL_POS = new Vector2(0.5f, 0.5f); // ¹Ì´Ï¸ÊÀÇ Áß¾Ó
 
     private void Start()
@@ -34,8 +34,6 @@ public class ScrollMinimap : MonoBehaviour
                 break;
         }
 
-        originPos = START_POS;
-
         self.normalizedPosition = NORMAL_POS;
         MinimapUpdate();
 
@@ -45,13 +43,6 @@ public class ScrollMinimap : MonoBehaviour
     {
         if (InputManager.instance.moveInput.magnitude != 0)
             MinimapUpdate();
-
-        if (Input.GetKeyDown(KeyCode.Return))
-            CenterEstimate();
-
-        if (Input.GetKeyDown(KeyCode.Backspace))
-            self.normalizedPosition = new Vector2(0.5f, 0.5f);
-
     }
 
     private void MinimapUpdate()
@@ -63,20 +54,6 @@ public class ScrollMinimap : MonoBehaviour
         float ratioy = fDeltay / MAP_SIZE.y;
         NORMAL_POS.Set(ratiox, ratioy);
 
-        self.normalizedPosition = self.normalizedPosition + NORMAL_POS;
-
-        START_POS = GameManager.instance.controller.player.transform.position;
-    }
-
-    private void CenterEstimate()
-    {
-        float fDeltax = GameManager.instance.controller.player.transform.position.x - originPos.x;
-        float fDeltay = GameManager.instance.controller.player.transform.position.z - originPos.z;
-
-        float ratiox = fDeltax / MAP_SIZE.x;
-        float ratioy = fDeltay / MAP_SIZE.y;
-        NORMAL_POS.Set(ratiox, ratioy);
-
-        self.normalizedPosition = self.normalizedPosition + NORMAL_POS;
+        self.normalizedPosition = scrollViewCenter + NORMAL_POS;
     }
 }
