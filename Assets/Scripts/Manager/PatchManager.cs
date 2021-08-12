@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using System.IO;
 using UnityEngine.UI;
 using TMPro;
+using ServerCore;
 
 public class PatchManager : MonoBehaviour
 {
@@ -142,9 +143,11 @@ public class PatchManager : MonoBehaviour
         else
         {
             downloadText.text = targetFile + " 다운로드 중..";
-            yield return StartCoroutine(StoreAssetBundle(serverMainfestUrl));
+            yield return StartCoroutine(GetAssetBundle(maniFestName));
+            // yield return StartCoroutine(StoreAssetBundle(serverMainfestUrl));
             downloadText.text = targetFile + " 다운로드 중..";
-            yield return StartCoroutine(StoreAssetBundle(serverTargetFileUrl));
+            yield return StartCoroutine(GetAssetBundle(targetFile));
+            // yield return StartCoroutine(StoreAssetBundle(serverTargetFileUrl));
             yield return completeWaitTime;
             yield break;
         }
@@ -165,9 +168,11 @@ public class PatchManager : MonoBehaviour
         else
         {
             downloadText.text = targetFile + " 다운로드 중..";
-            yield return StartCoroutine(StoreAssetBundle(serverMainfestUrl));
+            yield return StartCoroutine(GetAssetBundle(maniFestName));
+            // yield return StartCoroutine(StoreAssetBundle(serverMainfestUrl));
             downloadText.text = targetFile + " 다운로드 중..";
-            yield return StartCoroutine(StoreAssetBundle(serverTargetFileUrl));
+            yield return StartCoroutine(GetAssetBundle(targetFile));
+            // yield return StartCoroutine(StoreAssetBundle(serverTargetFileUrl));
             yield return completeWaitTime;
         }
     }
@@ -207,7 +212,7 @@ public class PatchManager : MonoBehaviour
     /// <paramref name="targetFile"/>: 서버에서 가져올 파일명.확장자
     /// <paramref name="mainFestUrl"/>: 서버에서 가져올 파일의 매니패스트 파일 Url
     /// <para>
-    /// 서버 에셋번들의 해시값을 가져올 때 사용합니다.
+    /// (UnityWebRequest 활용) 서버 에셋번들의 해시값을 가져올 때 사용합니다.
     /// </para>
     /// </summary>
     private IEnumerator GetServerAssetBundleHash(string targetFile, string mainFestUrl)
@@ -246,7 +251,7 @@ public class PatchManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 서버에 있는 에셋 번들을 가져와 로컬 저장소에 저장할 때 사용
+    /// (UnityWebRequest 활용) 서버에 있는 에셋 번들을 가져와 로컬 저장소에 저장할 때 사용
     /// </summary>
     private IEnumerator StoreAssetBundle(string url)
     {
@@ -270,6 +275,28 @@ public class PatchManager : MonoBehaviour
 
         yield return StartCoroutine(FillGaugeSmooth(results.Length));
         downloadText.text = GetFileNameOnlyFromFilePath(url) + " 다운로드 완료";
+    }
+    private IEnumerator GetAssetBundle(string targetfile)
+    {
+        C_FileRequest request = new C_FileRequest(targetfile);
+        NetworkManager.Instance.Send(request.Write());
+
+        // NetworkManager에서 파일다운로드가 완료될 때까지 대기
+        yield return new WaitUntil(() => NetworkManager.Instance.IsFileDownloadCompleted());
+
+        byte[] results = NetworkManager.Instance.session.fileRoom.file;
+
+        try
+        {
+            File.WriteAllBytes(assetBundleDirectory + "/" + targetfile, results);
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(targetfile + " 파일 다운로드에 실패하였습니다.");
+        }
+
+        yield return StartCoroutine(FillGaugeSmooth(results.Length));
+        downloadText.text = targetfile + " 다운로드 완료";
     }
 
     /// <summary>
