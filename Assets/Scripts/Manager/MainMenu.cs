@@ -7,6 +7,7 @@ public class MainMenu : MonoBehaviour
     public static MainMenu instance;
     public Title title;
     public PatchManager patch;
+    public NetworkManager network;
 
     private AudioSource mainBGM;
 
