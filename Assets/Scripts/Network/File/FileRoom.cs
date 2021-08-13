@@ -13,14 +13,11 @@ namespace ServerCore
             private set;
         }
 
-        string root = "C:\\Users\\mhoow\\AppData\\LocalLow\\JWY\\Knight\\Resources";
-
         public int seek
         {
             get;
             private set;
         }
-        public int fileSize { get => file.Length; }
 
         public bool Alloc(int fileSize)
         {
@@ -29,8 +26,8 @@ namespace ServerCore
                 file = new byte[fileSize];
                 return true;
             }
-            
-            if (fileSize > file.Length)
+
+            if (fileSize != file.Length)
             {
                 file = new byte[fileSize];
                 return true;
@@ -47,16 +44,22 @@ namespace ServerCore
 
         public bool IsFull()
         {
-            return seek == file.Length ? true : false;
+            if (file != null)
+                return seek == file.Length ? true : false;
+            
+            return false;
         }
 
-        public void MakeFile(string fileName)
+        public bool Clear()
         {
-            if (!Directory.Exists(root))
-                Directory.CreateDirectory(root);
-            
-            File.WriteAllBytes(root + "\\" + fileName, file);
-            file = null;
+            if (file != null)
+            {
+                Array.Clear(file, 0, file.Length);
+                seek = 0;
+                return true;
+            }
+
+            return false;
         }
     }
 }
