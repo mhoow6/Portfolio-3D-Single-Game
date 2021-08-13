@@ -37,19 +37,14 @@ public class NetworkManager : MonoBehaviour
         
     }
 
-    public void Send(ArraySegment<byte> sendBuff)
+    /*public void Send(ArraySegment<byte> sendBuff)
     {
         session.Send(sendBuff);
-    }
+    }*/
 
     public void Push(Session session, ArraySegment<byte> buff)
     {
         queue.Push(buff);
-    }
-
-    public bool IsFileDownloadCompleted()
-    {
-        return session.fileRoom.IsFull();
     }
 
     private void OnDestroy()
