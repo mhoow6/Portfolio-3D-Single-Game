@@ -18,9 +18,7 @@ namespace ServerCore
 
         void Init()
         {
-            handler.Add((ushort)PacketID.C_Chat, PacketHandler.C_ChatHandler);
             handler.Add((ushort)PacketID.S_Chat, PacketHandler.S_ChatHandler);
-            handler.Add((ushort)PacketID.C_FileRequest, PacketHandler.C_FileRequestHandler);
             handler.Add((ushort)PacketID.S_FileResponse, PacketHandler.S_FileResponseHandler);
         }
 
