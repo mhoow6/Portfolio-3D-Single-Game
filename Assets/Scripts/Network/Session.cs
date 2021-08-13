@@ -92,13 +92,13 @@ namespace ServerCore
             // 콜백 함수
             OnDisconnected(socket.RemoteEndPoint);
 
-            // 세션에서 킥
-            SessionManager.Instance.Kick(this);
-
             // 소켓 처리
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Close();
-
+            if (socket.Connected)
+            {
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
+            }
+            
             // 더 이상 버퍼를 보낼 수 없으므로 큐, 리스트 초기화
             lock (_lock)
             {
@@ -215,7 +215,7 @@ namespace ServerCore
                 byte[] bData = new byte[size];
                 Array.Copy(buffer.Array, buffer.Offset, bData, 0, bData.Length);
                 ArraySegment<byte> handleBuff = new ArraySegment<byte>(bData, 0, bData.Length);
-                NetworkManager.Instance.Push(this, buffer); // 유니티 환경을 고려해서 작업할 버퍼내용을 MonoBehaviour가 관리하는 객체에 넣어준다.
+                NetworkManager.Instance.Push(this, handleBuff); // 유니티 환경을 고려해서 작업할 버퍼내용을 MonoBehaviour가 관리하는 객체에 넣어준다.
 
                 // 처리한 패킷 수, 패킷 데이터 기록
                 processLen += size;
@@ -235,14 +235,7 @@ namespace ServerCore
 
         public override void OnConnected(EndPoint endPoint)
         {
-            try
-            {
-                SessionManager.Instance.ClientSendForEach();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"[Client] {e.ToString()}");
-            }
+            Console.WriteLine($"[ServerSession] 서버와 연결이 되었습니다.");
         }
 
         public override void OnDisconnected(EndPoint endPoint)
