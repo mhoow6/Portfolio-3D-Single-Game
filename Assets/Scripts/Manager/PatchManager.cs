@@ -127,7 +127,6 @@ public class PatchManager : MonoBehaviour
     private IEnumerator PatchAssetBundle(string targetFile, string maniFestName)
     {
         string serverMainfestUrl = serverAssetBundleDirectory + "/" + maniFestName;
-        string serverTargetFileUrl = serverAssetBundleDirectory + "/" + targetFile;
         string myManiFestFilePath = assetBundleDirectory + "/" + maniFestName;
 
         downloadText.text = targetFile + " 검사 중..";
@@ -144,10 +143,8 @@ public class PatchManager : MonoBehaviour
         {
             downloadText.text = targetFile + " 다운로드 중..";
             yield return StartCoroutine(GetAssetBundle(maniFestName));
-            // yield return StartCoroutine(StoreAssetBundle(serverMainfestUrl));
             downloadText.text = targetFile + " 다운로드 중..";
             yield return StartCoroutine(GetAssetBundle(targetFile));
-            // yield return StartCoroutine(StoreAssetBundle(serverTargetFileUrl));
             yield return completeWaitTime;
             yield break;
         }
@@ -169,10 +166,8 @@ public class PatchManager : MonoBehaviour
         {
             downloadText.text = targetFile + " 다운로드 중..";
             yield return StartCoroutine(GetAssetBundle(maniFestName));
-            // yield return StartCoroutine(StoreAssetBundle(serverMainfestUrl));
             downloadText.text = targetFile + " 다운로드 중..";
             yield return StartCoroutine(GetAssetBundle(targetFile));
-            // yield return StartCoroutine(StoreAssetBundle(serverTargetFileUrl));
             yield return completeWaitTime;
         }
     }
@@ -279,16 +274,17 @@ public class PatchManager : MonoBehaviour
     private IEnumerator GetAssetBundle(string targetfile)
     {
         C_FileRequest request = new C_FileRequest(targetfile);
-        NetworkManager.Instance.Send(request.Write());
+        NetworkManager.Instance.session.Send(request.Write());
 
-        // NetworkManager에서 파일다운로드가 완료될 때까지 대기
-        yield return new WaitUntil(() => NetworkManager.Instance.IsFileDownloadCompleted());
+        // 파일다운로드가 완료될 때까지 대기
+        yield return new WaitUntil(() => NetworkManager.Instance.session.fileRoom.IsFull());
 
         byte[] results = NetworkManager.Instance.session.fileRoom.file;
 
         try
         {
             File.WriteAllBytes(assetBundleDirectory + "/" + targetfile, results);
+            NetworkManager.Instance.session.fileRoom.Clear();
         }
         catch (System.Exception e)
         {
